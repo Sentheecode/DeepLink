@@ -1,0 +1,29 @@
+{
+  "" : {
+    "diagnostics" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceTests.build/Objects-normal/arm64/DeepSeekBalanceTests-primary.dia",
+    "emit-module-dependencies" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceTests.build/Objects-normal/arm64/DeepSeekBalanceTests-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceTests.build/Objects-normal/arm64/DeepSeekBalanceTests-primary-emit-module.dia",
+    "pch" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceTests.build/Objects-normal/arm64/DeepSeekBalanceTests-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceTests.build/Objects-normal/arm64/DeepSeekBalanceTests-primary.swiftdeps"
+  },
+  "/Users/zhaoyumeng/code/DeepSeekBalance/DeepSeekBalanceTests/CredentialStoreTests.swift" : {
+    "const-values" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceTests.build/Objects-normal/arm64/CredentialStoreTests.swiftconstvalues",
+    "dependencies" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceTests.build/Objects-normal/arm64/CredentialStoreTests.d",
+    "diagnostics" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceTests.build/Objects-normal/arm64/CredentialStoreTests.dia",
+    "index-unit-output-path" : "/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceTests.build/Objects-normal/arm64/CredentialStoreTests.o",
+    "llvm-bc" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceTests.build/Objects-normal/arm64/CredentialStoreTests.bc",
+    "object" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceTests.build/Objects-normal/arm64/CredentialStoreTests.o",
+    "swift-dependencies" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceTests.build/Objects-normal/arm64/CredentialStoreTests.swiftdeps",
+    "swiftmodule" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceTests.build/Objects-normal/arm64/CredentialStoreTests~partial.swiftmodule"
+  },
+  "/Users/zhaoyumeng/code/DeepSeekBalance/DeepSeekBalanceTests/RepositoryTests.swift" : {
+    "const-values" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceTests.build/Objects-normal/arm64/RepositoryTests.swiftconstvalues",
+    "dependencies" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceTests.build/Objects-normal/arm64/RepositoryTests.d",
+    "diagnostics" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceTests.build/Objects-normal/arm64/RepositoryTests.dia",
+    "index-unit-output-path" : "/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceTests.build/Objects-normal/arm64/RepositoryTests.o",
+    "llvm-bc" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceTests.build/Objects-normal/arm64/RepositoryTests.bc",
+    "object" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceTests.build/Objects-normal/arm64/RepositoryTests.o",
+    "swift-dependencies" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceTests.build/Objects-normal/arm64/RepositoryTests.swiftdeps",
+    "swiftmodule" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceTests.build/Objects-normal/arm64/RepositoryTests~partial.swiftmodule"
+  }
+}

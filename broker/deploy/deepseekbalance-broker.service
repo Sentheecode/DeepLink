@@ -1,0 +1,22 @@
+[Unit]
+Description=DeepSeekBalance Agent Broker
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=deepseekbroker
+Group=deepseekbroker
+WorkingDirectory=/opt/deepseekbalance-broker
+EnvironmentFile=/etc/deepseekbalance-broker.env
+ExecStart=/opt/deepseekbalance-broker/.venv/bin/uvicorn app:app --host 127.0.0.1 --port 8010
+Restart=always
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/deepseekbalance-broker
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,121 @@
+name: DeepLink
+options:
+  bundleIdPrefix: com.deepseek
+  deploymentTarget:
+    iOS: "18.0"
+  xcodeVersion: "16.0"
+  generateEmptyDirectories: false
+  developmentLanguage: zh-Hans
+
+settings:
+  MARKETING_VERSION: "1.0"
+  CURRENT_PROJECT_VERSION: "1"
+  SWIFT_VERSION: "5.0"
+
+targets:
+  DeepSeekBalance:
+    type: application
+    platform: iOS
+    deploymentTarget: "18.0"
+    testTarget: DeepSeekBalanceTests
+    info:
+      path: DeepSeekBalance/Info.plist
+      properties:
+        UILaunchScreen: {}
+        UIApplicationSupportsIndirectInputEvents: true
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight, UIInterfaceOrientationPortraitUpsideDown]
+        CFBundleDisplayName: DeepLink
+        BrokerBaseURL: https://139.224.211.170
+        CFBundleURLTypes:
+          - CFBundleURLName: com.deepseek.balance
+            CFBundleURLSchemes: [deepseekbalance]
+        NSSupportsLiveActivities: true
+        NSSpeechRecognitionUsageDescription: 用于将您的语音实时转换为文字
+        NSMicrophoneUsageDescription: 用于录制语音并进行文字识别
+        NSCameraUsageDescription: 用于拍照并进行文字识别
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: false
+      configs:
+        Debug:
+          NSAppTransportSecurity:
+            NSAllowsArbitraryLoads: true
+    sources:
+      - path: DeepSeekBalance
+        includes:
+          - "*.swift"
+          - Assets.xcassets
+          - Info.plist
+          - DeepSeekBalance.entitlements
+      - path: DeepSeekBalance/Features
+        includes:
+          - "**/*.swift"
+      - path: Shared
+        includes:
+          - "*.swift"
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.deepseek.balance
+        CODE_SIGN_ENTITLEMENTS: DeepSeekBalance/DeepSeekBalance.entitlements
+        INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: YES
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_CFBundleDisplayName: DeepLink
+        INFOPLIST_KEY_NSSupportsLiveActivities: YES
+        TARGETED_DEVICE_FAMILY: "1,2"
+        SUPPORTED_INTERFACE_ORIENTATIONS: [UIInterfaceOrientationPortrait]
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: 534H8W5WL8
+    dependencies:
+      - target: DeepSeekBalanceWidgetExtension
+        embed: true
+
+  DeepSeekBalanceWidgetExtension:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "18.0"
+    info:
+      path: DeepSeekBalanceWidget/Info.plist
+      properties:
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    sources:
+      - path: DeepSeekBalanceWidget
+        includes:
+          - "*.swift"
+          - Assets.xcassets
+      - path: Shared
+        includes:
+          - "*.swift"
+        excludes:
+          - "AgentServer.swift"
+          - "DashboardStore.swift"
+          - "UsageRepository.swift"
+          - "LiveActivityManager.swift"
+          - "DeepSeekProvider.swift"
+          - "ContentView.swift"
+          - "TokenWebView.swift"
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.deepseek.balance.widget
+        CODE_SIGN_ENTITLEMENTS: DeepSeekBalanceWidget/DeepSeekBalanceWidget.entitlements
+        SKIP_INSTALL: YES
+        TARGETED_DEVICE_FAMILY: "1,2"
+        SUPPORTED_INTERFACE_ORIENTATIONS: [UIInterfaceOrientationPortrait]
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: 534H8W5WL8
+
+  DeepSeekBalanceTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "18.0"
+    sources:
+      - path: DeepSeekBalanceTests
+        includes:
+          - "*.swift"
+    dependencies:
+      - target: DeepSeekBalance
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.deepseek.balance.tests
+        GENERATE_INFOPLIST_FILE: YES
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: 534H8W5WL8

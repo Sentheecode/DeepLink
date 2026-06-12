@@ -1,0 +1,285 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		74488605E782F229236D8205 /* DeepSeekBalanceApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4700B2AE631070FF932A8DF1; };
+		7D85B903824C5E4E2FF331E7 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F0273CB5F87B9C5F3A28758; };
+		F43B67D1A5E171CC5FF54E75 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 196A1AA79B2F6CA186E2C2D0; };
+		AEE64065E5F9425838ED4D44 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF89368A42B9B1EFE72C3DF; };
+		524B99530031F2D2FDFE34AB /* DeepSeekAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0097AB4A8FB62FB30011CA99; };
+		6E1AD774F3831FF11D677989 /* UserDefaults+Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 701D3E96D8E201AE1844F3D2; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		4700B2AE631070FF932A8DF1 /* DeepSeekBalanceApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepSeekBalanceApp.swift; sourceTree = "<group>"; };
+		2F0273CB5F87B9C5F3A28758 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		196A1AA79B2F6CA186E2C2D0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		C2EA5945DAFBFF80E492585D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A7D7BAD80583F2B97D31947F /* DeepSeekBalance.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DeepSeekBalance.entitlements; sourceTree = "<group>"; };
+		3AF89368A42B9B1EFE72C3DF /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		0097AB4A8FB62FB30011CA99 /* DeepSeekAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepSeekAPI.swift; sourceTree = "<group>"; };
+		701D3E96D8E201AE1844F3D2 /* UserDefaults+Shared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults+Shared.swift; sourceTree = "<group>"; };
+		C8074BB318FB85693233E64A /* DeepSeekBalance.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DeepSeekBalance.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		EEE26E2E7FEFBA7E96FE30B2 = {
+			isa = PBXGroup;
+			children = (
+				4133148486FD3F88917196CC /* DeepSeekBalance */,
+				5946ABB114403A2E5563F52C /* Shared */,
+				22FA749F46EB0A5BEDC7ECB3 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		4133148486FD3F88917196CC /* DeepSeekBalance */ = {
+			isa = PBXGroup;
+			children = (
+				4700B2AE631070FF932A8DF1 /* DeepSeekBalanceApp.swift */,
+				2F0273CB5F87B9C5F3A28758 /* ContentView.swift */,
+				A7D7BAD80583F2B97D31947F /* DeepSeekBalance.entitlements */,
+				E3F14A7684C6D41A156E24A0 /* Assets.xcassets */,
+				C2EA5945DAFBFF80E492585D /* Info.plist */,
+			);
+			path = DeepSeekBalance;
+			sourceTree = "<group>";
+		};
+		E3F14A7684C6D41A156E24A0 /* Assets.xcassets */ = {
+			isa = PBXGroup;
+			children = ( );
+			path = Assets.xcassets;
+			sourceTree = "<group>";
+		};
+		5946ABB114403A2E5563F52C /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				3AF89368A42B9B1EFE72C3DF /* Models.swift */,
+				0097AB4A8FB62FB30011CA99 /* DeepSeekAPI.swift */,
+				701D3E96D8E201AE1844F3D2 /* UserDefaults+Shared.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		22FA749F46EB0A5BEDC7ECB3 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C8074BB318FB85693233E64A /* DeepSeekBalance.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		0B2F908F4F664B0A34BD8BCA /* DeepSeekBalance */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3310DDD30EFB4A8C6AB9C189;
+			buildPhases = (
+				0E6A12D3A2421A876715DC66 /* Sources */,
+				B13A63579D1184201E05F633 /* Frameworks */,
+				99AEF87373BB8E0DBCA64F78 /* Resources */,
+			);
+			buildRules = ( );
+			dependencies = ( );
+			name = DeepSeekBalance;
+			productName = DeepSeekBalance;
+			productReference = C8074BB318FB85693233E64A;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		DD7512F5E0289CDDCE66B0F8 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2600;
+				LastUpgradeCheck = 2600;
+				TargetAttributes = {
+					0B2F908F4F664B0A34BD8BCA = { 						CreatedOnToolsVersion = 26.0; 					};
+				};
+			};
+			buildConfigurationList = B9EACD5B950CEA3A53B1A8E9;
+			compatibilityVersion = "Xcode 16.0";
+			developmentRegion = "zh-Hans";
+			hasScannedForEncodings = 0;
+			knownRegions = ( en, "zh-Hans", Base );
+			mainGroup = EEE26E2E7FEFBA7E96FE30B2;
+			productRefGroup = 22FA749F46EB0A5BEDC7ECB3;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				0B2F908F4F664B0A34BD8BCA /* DeepSeekBalance */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		0E6A12D3A2421A876715DC66 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				74488605E782F229236D8205 /* DeepSeekBalanceApp.swift in Sources */,
+				7D85B903824C5E4E2FF331E7 /* ContentView.swift in Sources */,
+				AEE64065E5F9425838ED4D44 /* Models.swift in Sources */,
+				524B99530031F2D2FDFE34AB /* DeepSeekAPI.swift in Sources */,
+				6E1AD774F3831FF11D677989 /* UserDefaults+Shared.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		B13A63579D1184201E05F633 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = ( );
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXResourcesBuildPhase section */
+		99AEF87373BB8E0DBCA64F78 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F43B67D1A5E171CC5FF54E75 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin XCConfigurationList section */
+		3310DDD30EFB4A8C6AB9C189 /* Build configuration list for PBXNativeTarget "DeepSeekBalance" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5C3C9E615D042BB090880EF4 /* Debug */,
+				E5AAB01F009BA87DFE0AC398 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B9EACD5B950CEA3A53B1A8E9 /* Build configuration list for PBXProject "DeepSeekBalance" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E31B23D63E89396912933D6F /* Debug */,
+				56B72F7CBE3B4401AE1CEEE9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCBuildConfiguration section */
+		E31B23D63E89396912933D6F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		56B72F7CBE3B4401AE1CEEE9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_OPTIMIZATION_LEVEL = s;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		5C3C9E615D042BB090880EF4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = DeepSeekBalance/DeepSeekBalance.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = DeepSeekBalance/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.deepseek.balance;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		E5AAB01F009BA87DFE0AC398 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = DeepSeekBalance/DeepSeekBalance.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = DeepSeekBalance/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.deepseek.balance;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin PBXContainerItemProxy section */
+/* End PBXContainerItemProxy section */
+/* Begin PBXCopyFilesBuildPhase section */
+/* End PBXCopyFilesBuildPhase section */
+/* Begin PBXFileSystemSynchronizedRootGroupBuildPhaseMembershipExceptionSet section */
+/* End PBXFileSystemSynchronizedRootGroupBuildPhaseMembershipExceptionSet section */
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+/* Begin PBXShellScriptBuildPhase section */
+/* End PBXShellScriptBuildPhase section */
+/* Begin PBXTargetDependency section */
+/* End PBXTargetDependency section */
+
+	};
+	rootObject = DD7512F5E0289CDDCE66B0F8 /* Project object */;
+}

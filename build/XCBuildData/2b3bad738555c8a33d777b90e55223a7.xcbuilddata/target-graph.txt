@@ -1,0 +1,6 @@
+Target dependency graph (3 targets)
+Target 'DeepSeekBalanceTests' in project 'DeepSeekBalance'
+➜ Explicit dependency on target 'DeepSeekBalance' in project 'DeepSeekBalance'
+Target 'DeepSeekBalance' in project 'DeepSeekBalance'
+➜ Explicit dependency on target 'DeepSeekBalanceWidgetExtension' in project 'DeepSeekBalance'
+Target 'DeepSeekBalanceWidgetExtension' in project 'DeepSeekBalance' (no dependencies)

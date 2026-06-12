@@ -1,0 +1,1059 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0774626B4A08A51D80DB32FF /* DashboardSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 660FE7DBB6DF63C5A3B7756C /* DashboardSnapshot.swift */; };
+		08B71E66C86478691B9F79E4 /* SettingsHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 124309601C5129F66D0DBDA6 /* SettingsHomeView.swift */; };
+		08D841051F553FE72FD7998B /* DashboardStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83466B3893EF860C0F41FDBC /* DashboardStore.swift */; };
+		14FB2C2B9DE08A0D2E1B4C71 /* PurchaseCoffeeIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECFF20BFF9B1A4FEB35A71BB /* PurchaseCoffeeIntent.swift */; };
+		16BB8A01ECA809873C38F9EE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 42A381C23AC5AC82A84D80D7 /* Assets.xcassets */; };
+		1984F95484F3BAE60502DC49 /* PrintReceiptViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9522D44EA4E303F88C681A14 /* PrintReceiptViews.swift */; };
+		1B11ACA217909F785559F741 /* DeepSeekProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8906440417C5E9F5F3761602 /* DeepSeekProvider.swift */; };
+		1B6527423DF1FCEFF77D1DFC /* LiveActivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC4D706718581DCA22B7978 /* LiveActivityManager.swift */; };
+		27457BA403C87042BC7C993F /* UsageProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36820287C8904743E6FC6214 /* UsageProvider.swift */; };
+		2755C4A61FA934BE56287581 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6872A2A16220E00E147E4F65 /* ContentView.swift */; };
+		2C3DEEF77F78B2D5EC311C54 /* DeepSeekAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF770956ED2FEA4EC6472620 /* DeepSeekAPI.swift */; };
+		2C4277B95873E0AC6A3C2D8A /* DeepSeekAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF770956ED2FEA4EC6472620 /* DeepSeekAPI.swift */; };
+		2EFD4DAEF2638D5DD7D45261 /* CoffeeRelayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6FE83A2967B3E6505BC665C /* CoffeeRelayView.swift */; };
+		35CC4556AB13A2E6E0D9A079 /* Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A29297256C99A8C51DD01B7D /* Ext.swift */; };
+		36957E38A36CA8ADC53C4471 /* CredentialStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0CEDC65E3ECEA9D68419C5D /* CredentialStore.swift */; };
+		3F6018808AEDE826CDF40CF7 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DD5C05A37985327F83D1CEF /* Models.swift */; };
+		40B56F4CF8F2F4BED174AA0B /* AgentConnectionModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FEA93A98F146E2DA944FF7B /* AgentConnectionModels.swift */; };
+		431D6D0FFD14BC55CA439540 /* BrokerPairing.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA38C6A33F70B08AF12BA19F /* BrokerPairing.swift */; };
+		4438A6B2D19CBA5C47E2822C /* AgentServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034AC3F5F5DC23632DD742B6 /* AgentServer.swift */; };
+		4F8851E23500855C4E138605 /* CredentialStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0CEDC65E3ECEA9D68419C5D /* CredentialStore.swift */; };
+		50F06EB984D03DA4C3999AFC /* CenterHubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC51C300E84E52211E77C852 /* CenterHubView.swift */; };
+		57759ADC997A3F3C90FC916C /* AuthFlowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DC6A68925E8C1E43CE0393C /* AuthFlowView.swift */; };
+		68FC8437B8DBADA2A354CFC6 /* RepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E07B2ABF96597AA6517D92C8 /* RepositoryTests.swift */; };
+		695C294BDBF831BE7F4559A2 /* MonitorLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D5CC0F8EAED47BC7D798AD5 /* MonitorLiveActivity.swift */; };
+		6C18B37C3F3B1780B7F82B8F /* AgentModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61CB68238F288DD0EC50147B /* AgentModule.swift */; };
+		7058F252DCD6EF6F749E6717 /* CredentialStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC0DE7D2CC791CDB5827B39 /* CredentialStoreTests.swift */; };
+		72DCF93D19D792E3B6BEBD4E /* TeamHubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EF8CCC5DBAEACD58984AFDD /* TeamHubView.swift */; };
+		74C80805B611B8439ABCDDA5 /* OrderOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 575351E00DF998E88D99683F /* OrderOrchestrator.swift */; };
+		80C73ED33A56DD33453BFE91 /* CenterModeViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = E05736B88897D8325929F715 /* CenterModeViews.swift */; };
+		83F034959102029D5FB6FCCA /* MonitorActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10703CD4F07B91564A27F3EF /* MonitorActivityAttributes.swift */; };
+		850100C7D0FAB4DF58EAEDAF /* DeepSeekBalanceApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C6201F3630199195EA38E52 /* DeepSeekBalanceApp.swift */; };
+		85DB7BCAE0DA9040F32F80DD /* CoffeeRelayApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D43ED6F9B9E14232FBCA2CD /* CoffeeRelayApp.swift */; };
+		883BD8A3616FE2996D321A97 /* CoffeeRelayStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB98B77BB25771E495FA11B7 /* CoffeeRelayStore.swift */; };
+		8A0B5EAF5615C5BCA23BC9F8 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DD5C05A37985327F83D1CEF /* Models.swift */; };
+		946A3D0E7D07F22D57BE8D71 /* DeepSeekBalanceWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE344218746AC68D4BAEF58 /* DeepSeekBalanceWidgetBundle.swift */; };
+		9B04335D9C0EC8A53A511681 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 72D6F1896C02A1A111AF711A /* Assets.xcassets */; };
+		9ED58C3937DB1A9B0FAE0520 /* MonitorActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10703CD4F07B91564A27F3EF /* MonitorActivityAttributes.swift */; };
+		A35E719F4C8D68A02ABF7AE0 /* LuckinMCPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70373BCD266F2DAA0608B2DB /* LuckinMCPClient.swift */; };
+		A562A48A41FE102A87F87A31 /* TokenWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3568F5F89CFB2DDB45ED33 /* TokenWebView.swift */; };
+		A8EA3168A26F2927D3E5198D /* TeamModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC27B5F7ADCF5ECDE0CD31F5 /* TeamModels.swift */; };
+		AA2F83D844D251760BE86EA0 /* OrderOrchestratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E22ACE14C18AC89217599847 /* OrderOrchestratorTests.swift */; };
+		AAEDBC57920AB3C5A2499964 /* AgentDeviceRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767B7845CDA322E363BA12D7 /* AgentDeviceRegistry.swift */; };
+		ACE8B9A54AA9B8C8F5F4B232 /* HermesAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9AE645760FF6D4E3542A2A5 /* HermesAPI.swift */; };
+		B5108EE4497CD6EA72F3C5E9 /* LocationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B44240FF4C1CDB1C3AABA5 /* LocationProvider.swift */; };
+		B59259844090EF8224C5E1FF /* UserDefaults+Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D689B5552F65C29D1C49BFB /* UserDefaults+Shared.swift */; };
+		BA46797C9D21234464F58D57 /* WidgetPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72D21EDACB33DBEABB133C88 /* WidgetPreviewView.swift */; };
+		C07B94555695455D614EEAE2 /* CoffeeModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C801A1FC07B7D3BBB5D3C013 /* CoffeeModels.swift */; };
+		CAD6A22DB603D993EC579174 /* DeepSeekBalanceWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 23FEA21E6497650C20EE38DB /* DeepSeekBalanceWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		D0955FC52B6363CA42EDAE43 /* CoffeeTokenStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29511E2697917BE1F4A2B53 /* CoffeeTokenStore.swift */; };
+		D71854F3E2A79840B91E3AD0 /* UsageRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 618975E4A4B98D01984835F0 /* UsageRepository.swift */; };
+		DB2602013C01CEC69B063D8F /* AgentBrokerClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AB6CC977275E9973037B33D /* AgentBrokerClient.swift */; };
+		DCA95D5CC31653189387C7FD /* AppShell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80A0624A18082AAEA4861D09 /* AppShell.swift */; };
+		EB84EA3C690F8259AFA83E10 /* DeepSeekBalanceWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4BEB6D765EA41EDAA7F58F1 /* DeepSeekBalanceWidget.swift */; };
+		EBBD6E9AB60D3D0430956C50 /* UserDefaults+Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D689B5552F65C29D1C49BFB /* UserDefaults+Shared.swift */; };
+		FD0B94341DD4F7499EBCD169 /* DashboardSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 660FE7DBB6DF63C5A3B7756C /* DashboardSnapshot.swift */; };
+		FDC8AD83F37DEB4D17E6787D /* UsageProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36820287C8904743E6FC6214 /* UsageProvider.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		1F162BAA0214F7A71D52990B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8628396FDA491FD535D8BF6F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 967ECEDD1F59ED8DFF865A10;
+			remoteInfo = DeepSeekBalance;
+		};
+		34068FFF4F7B21E06CC469FE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8628396FDA491FD535D8BF6F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9685DB323179B12A4A93C491;
+			remoteInfo = CoffeeRelay;
+		};
+		BFBDAE8C0FDC1B1404D25164 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8628396FDA491FD535D8BF6F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1B9E9634123570FB6D4B0431;
+			remoteInfo = DeepSeekBalanceWidgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		2CF1B294565E4E98259AFCD5 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				CAD6A22DB603D993EC579174 /* DeepSeekBalanceWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		034AC3F5F5DC23632DD742B6 /* AgentServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentServer.swift; sourceTree = "<group>"; };
+		0AE344218746AC68D4BAEF58 /* DeepSeekBalanceWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepSeekBalanceWidgetBundle.swift; sourceTree = "<group>"; };
+		10703CD4F07B91564A27F3EF /* MonitorActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorActivityAttributes.swift; sourceTree = "<group>"; };
+		124309601C5129F66D0DBDA6 /* SettingsHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsHomeView.swift; sourceTree = "<group>"; };
+		1EF8CCC5DBAEACD58984AFDD /* TeamHubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamHubView.swift; sourceTree = "<group>"; };
+		23FEA21E6497650C20EE38DB /* DeepSeekBalanceWidgetExtension.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = DeepSeekBalanceWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		2AB6CC977275E9973037B33D /* AgentBrokerClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentBrokerClient.swift; sourceTree = "<group>"; };
+		36820287C8904743E6FC6214 /* UsageProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageProvider.swift; sourceTree = "<group>"; };
+		36B44240FF4C1CDB1C3AABA5 /* LocationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationProvider.swift; sourceTree = "<group>"; };
+		3C6201F3630199195EA38E52 /* DeepSeekBalanceApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepSeekBalanceApp.swift; sourceTree = "<group>"; };
+		42A381C23AC5AC82A84D80D7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		42EBD3BC5AE9D76B7AB4E436 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		529C10070BA03D983385F1F1 /* CoffeeRelay.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = CoffeeRelay.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		575351E00DF998E88D99683F /* OrderOrchestrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderOrchestrator.swift; sourceTree = "<group>"; };
+		5D689B5552F65C29D1C49BFB /* UserDefaults+Shared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Shared.swift"; sourceTree = "<group>"; };
+		5DC6A68925E8C1E43CE0393C /* AuthFlowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthFlowView.swift; sourceTree = "<group>"; };
+		618975E4A4B98D01984835F0 /* UsageRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageRepository.swift; sourceTree = "<group>"; };
+		61CB68238F288DD0EC50147B /* AgentModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentModule.swift; sourceTree = "<group>"; };
+		660FE7DBB6DF63C5A3B7756C /* DashboardSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardSnapshot.swift; sourceTree = "<group>"; };
+		6872A2A16220E00E147E4F65 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		6CC4D706718581DCA22B7978 /* LiveActivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityManager.swift; sourceTree = "<group>"; };
+		6D5CC0F8EAED47BC7D798AD5 /* MonitorLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorLiveActivity.swift; sourceTree = "<group>"; };
+		70373BCD266F2DAA0608B2DB /* LuckinMCPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuckinMCPClient.swift; sourceTree = "<group>"; };
+		72D21EDACB33DBEABB133C88 /* WidgetPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetPreviewView.swift; sourceTree = "<group>"; };
+		72D6F1896C02A1A111AF711A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		767B7845CDA322E363BA12D7 /* AgentDeviceRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentDeviceRegistry.swift; sourceTree = "<group>"; };
+		79A2B46288D1693647A18162 /* DeepSeekBalance.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = DeepSeekBalance.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7C75787B6CBAD164C913BDC4 /* DeepSeekBalanceTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = DeepSeekBalanceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		7DD5C05A37985327F83D1CEF /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		80A0624A18082AAEA4861D09 /* AppShell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppShell.swift; sourceTree = "<group>"; };
+		83466B3893EF860C0F41FDBC /* DashboardStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardStore.swift; sourceTree = "<group>"; };
+		8906440417C5E9F5F3761602 /* DeepSeekProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepSeekProvider.swift; sourceTree = "<group>"; };
+		8D43ED6F9B9E14232FBCA2CD /* CoffeeRelayApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoffeeRelayApp.swift; sourceTree = "<group>"; };
+		8FEA93A98F146E2DA944FF7B /* AgentConnectionModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentConnectionModels.swift; sourceTree = "<group>"; };
+		9522D44EA4E303F88C681A14 /* PrintReceiptViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrintReceiptViews.swift; sourceTree = "<group>"; };
+		A29297256C99A8C51DD01B7D /* Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ext.swift; sourceTree = "<group>"; };
+		AB98B77BB25771E495FA11B7 /* CoffeeRelayStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoffeeRelayStore.swift; sourceTree = "<group>"; };
+		B29511E2697917BE1F4A2B53 /* CoffeeTokenStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoffeeTokenStore.swift; sourceTree = "<group>"; };
+		BB34D854A38F6F6402A087A8 /* CoffeeRelayTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = CoffeeRelayTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		BC51C300E84E52211E77C852 /* CenterHubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenterHubView.swift; sourceTree = "<group>"; };
+		BDC0DE7D2CC791CDB5827B39 /* CredentialStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialStoreTests.swift; sourceTree = "<group>"; };
+		C0CEDC65E3ECEA9D68419C5D /* CredentialStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialStore.swift; sourceTree = "<group>"; };
+		C4BEB6D765EA41EDAA7F58F1 /* DeepSeekBalanceWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepSeekBalanceWidget.swift; sourceTree = "<group>"; };
+		C801A1FC07B7D3BBB5D3C013 /* CoffeeModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoffeeModels.swift; sourceTree = "<group>"; };
+		C9AE645760FF6D4E3542A2A5 /* HermesAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HermesAPI.swift; sourceTree = "<group>"; };
+		CF770956ED2FEA4EC6472620 /* DeepSeekAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepSeekAPI.swift; sourceTree = "<group>"; };
+		DB3568F5F89CFB2DDB45ED33 /* TokenWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenWebView.swift; sourceTree = "<group>"; };
+		DF83DC1066D932CB744425E5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		E05736B88897D8325929F715 /* CenterModeViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenterModeViews.swift; sourceTree = "<group>"; };
+		E07B2ABF96597AA6517D92C8 /* RepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryTests.swift; sourceTree = "<group>"; };
+		E22ACE14C18AC89217599847 /* OrderOrchestratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderOrchestratorTests.swift; sourceTree = "<group>"; };
+		E32B07F58E13F9E6BDDE44DF /* DeepSeekBalance.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DeepSeekBalance.entitlements; sourceTree = "<group>"; };
+		E6FE83A2967B3E6505BC665C /* CoffeeRelayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoffeeRelayView.swift; sourceTree = "<group>"; };
+		EC27B5F7ADCF5ECDE0CD31F5 /* TeamModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamModels.swift; sourceTree = "<group>"; };
+		ECFF20BFF9B1A4FEB35A71BB /* PurchaseCoffeeIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseCoffeeIntent.swift; sourceTree = "<group>"; };
+		FA38C6A33F70B08AF12BA19F /* BrokerPairing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrokerPairing.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		0F0FA47EE2D8E89620C157E1 /* Center */ = {
+			isa = PBXGroup;
+			children = (
+				BC51C300E84E52211E77C852 /* CenterHubView.swift */,
+				E05736B88897D8325929F715 /* CenterModeViews.swift */,
+			);
+			path = Center;
+			sourceTree = "<group>";
+		};
+		0FA48637560162A085E5516A /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				5E82E241DD7CAB354F32CB56 /* Agent */,
+				27949D71E8BD48BC4ACAA8A4 /* Auth */,
+				0F0FA47EE2D8E89620C157E1 /* Center */,
+				D03114148C769AF7D4265B27 /* Settings */,
+				18B0BA1A1587F26BBDDC1241 /* Team */,
+			);
+			name = Features;
+			path = DeepSeekBalance/Features;
+			sourceTree = "<group>";
+		};
+		18B0BA1A1587F26BBDDC1241 /* Team */ = {
+			isa = PBXGroup;
+			children = (
+				1EF8CCC5DBAEACD58984AFDD /* TeamHubView.swift */,
+				EC27B5F7ADCF5ECDE0CD31F5 /* TeamModels.swift */,
+			);
+			path = Team;
+			sourceTree = "<group>";
+		};
+		1A8A7C5A6827C09CBE6429D5 = {
+			isa = PBXGroup;
+			children = (
+				A86047D55A4AC57DCFFE059B /* CoffeeRelay */,
+				769F8B624CD2794249D5A432 /* CoffeeRelayTests */,
+				4654C2D18FEFE143364A9C38 /* DeepSeekBalance */,
+				32899B5BCEFA40C2B9C1D9EE /* DeepSeekBalanceTests */,
+				FAF80786F6F3528C38D37E45 /* DeepSeekBalanceWidget */,
+				0FA48637560162A085E5516A /* Features */,
+				4591A1DED603B1569F93D46D /* Shared */,
+				50B94EA52EDC340FFC745645 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		2699257691413FFEF7077BC9 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				2AB6CC977275E9973037B33D /* AgentBrokerClient.swift */,
+				767B7845CDA322E363BA12D7 /* AgentDeviceRegistry.swift */,
+				C9AE645760FF6D4E3542A2A5 /* HermesAPI.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		27949D71E8BD48BC4ACAA8A4 /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				5DC6A68925E8C1E43CE0393C /* AuthFlowView.swift */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
+		32899B5BCEFA40C2B9C1D9EE /* DeepSeekBalanceTests */ = {
+			isa = PBXGroup;
+			children = (
+				BDC0DE7D2CC791CDB5827B39 /* CredentialStoreTests.swift */,
+				E07B2ABF96597AA6517D92C8 /* RepositoryTests.swift */,
+			);
+			path = DeepSeekBalanceTests;
+			sourceTree = "<group>";
+		};
+		4591A1DED603B1569F93D46D /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				C0CEDC65E3ECEA9D68419C5D /* CredentialStore.swift */,
+				660FE7DBB6DF63C5A3B7756C /* DashboardSnapshot.swift */,
+				CF770956ED2FEA4EC6472620 /* DeepSeekAPI.swift */,
+				7DD5C05A37985327F83D1CEF /* Models.swift */,
+				10703CD4F07B91564A27F3EF /* MonitorActivityAttributes.swift */,
+				36820287C8904743E6FC6214 /* UsageProvider.swift */,
+				5D689B5552F65C29D1C49BFB /* UserDefaults+Shared.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		4654C2D18FEFE143364A9C38 /* DeepSeekBalance */ = {
+			isa = PBXGroup;
+			children = (
+				034AC3F5F5DC23632DD742B6 /* AgentServer.swift */,
+				80A0624A18082AAEA4861D09 /* AppShell.swift */,
+				42A381C23AC5AC82A84D80D7 /* Assets.xcassets */,
+				6872A2A16220E00E147E4F65 /* ContentView.swift */,
+				83466B3893EF860C0F41FDBC /* DashboardStore.swift */,
+				E32B07F58E13F9E6BDDE44DF /* DeepSeekBalance.entitlements */,
+				3C6201F3630199195EA38E52 /* DeepSeekBalanceApp.swift */,
+				8906440417C5E9F5F3761602 /* DeepSeekProvider.swift */,
+				42EBD3BC5AE9D76B7AB4E436 /* Info.plist */,
+				6CC4D706718581DCA22B7978 /* LiveActivityManager.swift */,
+				9522D44EA4E303F88C681A14 /* PrintReceiptViews.swift */,
+				DB3568F5F89CFB2DDB45ED33 /* TokenWebView.swift */,
+				618975E4A4B98D01984835F0 /* UsageRepository.swift */,
+			);
+			path = DeepSeekBalance;
+			sourceTree = "<group>";
+		};
+		50B94EA52EDC340FFC745645 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				529C10070BA03D983385F1F1 /* CoffeeRelay.app */,
+				BB34D854A38F6F6402A087A8 /* CoffeeRelayTests.xctest */,
+				79A2B46288D1693647A18162 /* DeepSeekBalance.app */,
+				7C75787B6CBAD164C913BDC4 /* DeepSeekBalanceTests.xctest */,
+				23FEA21E6497650C20EE38DB /* DeepSeekBalanceWidgetExtension.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		5E82E241DD7CAB354F32CB56 /* Agent */ = {
+			isa = PBXGroup;
+			children = (
+				61CB68238F288DD0EC50147B /* AgentModule.swift */,
+				FA38C6A33F70B08AF12BA19F /* BrokerPairing.swift */,
+				EC4543A134A89AD81C25190D /* Models */,
+				2699257691413FFEF7077BC9 /* Services */,
+			);
+			path = Agent;
+			sourceTree = "<group>";
+		};
+		769F8B624CD2794249D5A432 /* CoffeeRelayTests */ = {
+			isa = PBXGroup;
+			children = (
+				E22ACE14C18AC89217599847 /* OrderOrchestratorTests.swift */,
+			);
+			path = CoffeeRelayTests;
+			sourceTree = "<group>";
+		};
+		899291A70F9F630E276F4AA7 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				C801A1FC07B7D3BBB5D3C013 /* CoffeeModels.swift */,
+				70373BCD266F2DAA0608B2DB /* LuckinMCPClient.swift */,
+				575351E00DF998E88D99683F /* OrderOrchestrator.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		A1289F784854A42921E7F280 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				B29511E2697917BE1F4A2B53 /* CoffeeTokenStore.swift */,
+				36B44240FF4C1CDB1C3AABA5 /* LocationProvider.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		A86047D55A4AC57DCFFE059B /* CoffeeRelay */ = {
+			isa = PBXGroup;
+			children = (
+				DF83DC1066D932CB744425E5 /* Info.plist */,
+				DEB90B99D1C3E1F3BD032A63 /* App */,
+				899291A70F9F630E276F4AA7 /* Core */,
+				A1289F784854A42921E7F280 /* Services */,
+			);
+			path = CoffeeRelay;
+			sourceTree = "<group>";
+		};
+		D03114148C769AF7D4265B27 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				124309601C5129F66D0DBDA6 /* SettingsHomeView.swift */,
+				72D21EDACB33DBEABB133C88 /* WidgetPreviewView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		DEB90B99D1C3E1F3BD032A63 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				8D43ED6F9B9E14232FBCA2CD /* CoffeeRelayApp.swift */,
+				AB98B77BB25771E495FA11B7 /* CoffeeRelayStore.swift */,
+				E6FE83A2967B3E6505BC665C /* CoffeeRelayView.swift */,
+				ECFF20BFF9B1A4FEB35A71BB /* PurchaseCoffeeIntent.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		EC4543A134A89AD81C25190D /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				8FEA93A98F146E2DA944FF7B /* AgentConnectionModels.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		FAF80786F6F3528C38D37E45 /* DeepSeekBalanceWidget */ = {
+			isa = PBXGroup;
+			children = (
+				72D6F1896C02A1A111AF711A /* Assets.xcassets */,
+				C4BEB6D765EA41EDAA7F58F1 /* DeepSeekBalanceWidget.swift */,
+				0AE344218746AC68D4BAEF58 /* DeepSeekBalanceWidgetBundle.swift */,
+				A29297256C99A8C51DD01B7D /* Ext.swift */,
+				6D5CC0F8EAED47BC7D798AD5 /* MonitorLiveActivity.swift */,
+			);
+			path = DeepSeekBalanceWidget;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1B9E9634123570FB6D4B0431 /* DeepSeekBalanceWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F85109FEAF1B19C9B1481FA6 /* Build configuration list for PBXNativeTarget "DeepSeekBalanceWidgetExtension" */;
+			buildPhases = (
+				A7553816D5DBFEFD05921BF0 /* Sources */,
+				A31EC091BAED17B56E91D527 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DeepSeekBalanceWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = DeepSeekBalanceWidgetExtension;
+			productReference = 23FEA21E6497650C20EE38DB /* DeepSeekBalanceWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		93C60B205378A06FEE906509 /* CoffeeRelayTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C9D190F69085BD32BEF0581E /* Build configuration list for PBXNativeTarget "CoffeeRelayTests" */;
+			buildPhases = (
+				96B4FF43055280D50E843B3A /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				16651C3C30C2D70D75F6F675 /* PBXTargetDependency */,
+			);
+			name = CoffeeRelayTests;
+			packageProductDependencies = (
+			);
+			productName = CoffeeRelayTests;
+			productReference = BB34D854A38F6F6402A087A8 /* CoffeeRelayTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		967ECEDD1F59ED8DFF865A10 /* DeepSeekBalance */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4C9ABC03221CC3091AD51D19 /* Build configuration list for PBXNativeTarget "DeepSeekBalance" */;
+			buildPhases = (
+				570CF82D0D40CED97561F071 /* Sources */,
+				CB1C0CC220E72B0E6864423D /* Resources */,
+				2CF1B294565E4E98259AFCD5 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B938E0179D0AFB862D1F1FF9 /* PBXTargetDependency */,
+			);
+			name = DeepSeekBalance;
+			packageProductDependencies = (
+			);
+			productName = DeepSeekBalance;
+			productReference = 79A2B46288D1693647A18162 /* DeepSeekBalance.app */;
+			productType = "com.apple.product-type.application";
+		};
+		9685DB323179B12A4A93C491 /* CoffeeRelay */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8235A004E985B0A3B9EDFEDE /* Build configuration list for PBXNativeTarget "CoffeeRelay" */;
+			buildPhases = (
+				68E6E5DA24E1DC0A8C60522C /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CoffeeRelay;
+			packageProductDependencies = (
+			);
+			productName = CoffeeRelay;
+			productReference = 529C10070BA03D983385F1F1 /* CoffeeRelay.app */;
+			productType = "com.apple.product-type.application";
+		};
+		AB813561459CDFB7FD1E80A3 /* DeepSeekBalanceTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8D1BE42546ED14EF799B2E5E /* Build configuration list for PBXNativeTarget "DeepSeekBalanceTests" */;
+			buildPhases = (
+				37C73E8A30EB61FD143AAF7E /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E2FCDFB22B025BF0C0BE3F03 /* PBXTargetDependency */,
+			);
+			name = DeepSeekBalanceTests;
+			packageProductDependencies = (
+			);
+			productName = DeepSeekBalanceTests;
+			productReference = 7C75787B6CBAD164C913BDC4 /* DeepSeekBalanceTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		8628396FDA491FD535D8BF6F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					1B9E9634123570FB6D4B0431 = {
+						DevelopmentTeam = 534H8W5WL8;
+						ProvisioningStyle = Automatic;
+					};
+					93C60B205378A06FEE906509 = {
+						DevelopmentTeam = 534H8W5WL8;
+						ProvisioningStyle = Automatic;
+					};
+					967ECEDD1F59ED8DFF865A10 = {
+						DevelopmentTeam = 534H8W5WL8;
+						ProvisioningStyle = Automatic;
+					};
+					9685DB323179B12A4A93C491 = {
+						DevelopmentTeam = 534H8W5WL8;
+						ProvisioningStyle = Automatic;
+					};
+					AB813561459CDFB7FD1E80A3 = {
+						DevelopmentTeam = 534H8W5WL8;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = FA6B219CD9F3AF75E6ECB00B /* Build configuration list for PBXProject "DeepSeekBalance" */;
+			developmentRegion = "zh-Hans";
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				"zh-Hans",
+			);
+			mainGroup = 1A8A7C5A6827C09CBE6429D5;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 50B94EA52EDC340FFC745645 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				9685DB323179B12A4A93C491 /* CoffeeRelay */,
+				93C60B205378A06FEE906509 /* CoffeeRelayTests */,
+				967ECEDD1F59ED8DFF865A10 /* DeepSeekBalance */,
+				AB813561459CDFB7FD1E80A3 /* DeepSeekBalanceTests */,
+				1B9E9634123570FB6D4B0431 /* DeepSeekBalanceWidgetExtension */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A31EC091BAED17B56E91D527 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9B04335D9C0EC8A53A511681 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CB1C0CC220E72B0E6864423D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				16BB8A01ECA809873C38F9EE /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		37C73E8A30EB61FD143AAF7E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7058F252DCD6EF6F749E6717 /* CredentialStoreTests.swift in Sources */,
+				68FC8437B8DBADA2A354CFC6 /* RepositoryTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		570CF82D0D40CED97561F071 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DB2602013C01CEC69B063D8F /* AgentBrokerClient.swift in Sources */,
+				40B56F4CF8F2F4BED174AA0B /* AgentConnectionModels.swift in Sources */,
+				AAEDBC57920AB3C5A2499964 /* AgentDeviceRegistry.swift in Sources */,
+				6C18B37C3F3B1780B7F82B8F /* AgentModule.swift in Sources */,
+				4438A6B2D19CBA5C47E2822C /* AgentServer.swift in Sources */,
+				DCA95D5CC31653189387C7FD /* AppShell.swift in Sources */,
+				57759ADC997A3F3C90FC916C /* AuthFlowView.swift in Sources */,
+				431D6D0FFD14BC55CA439540 /* BrokerPairing.swift in Sources */,
+				50F06EB984D03DA4C3999AFC /* CenterHubView.swift in Sources */,
+				80C73ED33A56DD33453BFE91 /* CenterModeViews.swift in Sources */,
+				2755C4A61FA934BE56287581 /* ContentView.swift in Sources */,
+				4F8851E23500855C4E138605 /* CredentialStore.swift in Sources */,
+				0774626B4A08A51D80DB32FF /* DashboardSnapshot.swift in Sources */,
+				08D841051F553FE72FD7998B /* DashboardStore.swift in Sources */,
+				2C3DEEF77F78B2D5EC311C54 /* DeepSeekAPI.swift in Sources */,
+				850100C7D0FAB4DF58EAEDAF /* DeepSeekBalanceApp.swift in Sources */,
+				1B11ACA217909F785559F741 /* DeepSeekProvider.swift in Sources */,
+				ACE8B9A54AA9B8C8F5F4B232 /* HermesAPI.swift in Sources */,
+				1B6527423DF1FCEFF77D1DFC /* LiveActivityManager.swift in Sources */,
+				8A0B5EAF5615C5BCA23BC9F8 /* Models.swift in Sources */,
+				9ED58C3937DB1A9B0FAE0520 /* MonitorActivityAttributes.swift in Sources */,
+				1984F95484F3BAE60502DC49 /* PrintReceiptViews.swift in Sources */,
+				08B71E66C86478691B9F79E4 /* SettingsHomeView.swift in Sources */,
+				72DCF93D19D792E3B6BEBD4E /* TeamHubView.swift in Sources */,
+				A8EA3168A26F2927D3E5198D /* TeamModels.swift in Sources */,
+				A562A48A41FE102A87F87A31 /* TokenWebView.swift in Sources */,
+				FDC8AD83F37DEB4D17E6787D /* UsageProvider.swift in Sources */,
+				D71854F3E2A79840B91E3AD0 /* UsageRepository.swift in Sources */,
+				B59259844090EF8224C5E1FF /* UserDefaults+Shared.swift in Sources */,
+				BA46797C9D21234464F58D57 /* WidgetPreviewView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		68E6E5DA24E1DC0A8C60522C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C07B94555695455D614EEAE2 /* CoffeeModels.swift in Sources */,
+				85DB7BCAE0DA9040F32F80DD /* CoffeeRelayApp.swift in Sources */,
+				883BD8A3616FE2996D321A97 /* CoffeeRelayStore.swift in Sources */,
+				2EFD4DAEF2638D5DD7D45261 /* CoffeeRelayView.swift in Sources */,
+				D0955FC52B6363CA42EDAE43 /* CoffeeTokenStore.swift in Sources */,
+				B5108EE4497CD6EA72F3C5E9 /* LocationProvider.swift in Sources */,
+				A35E719F4C8D68A02ABF7AE0 /* LuckinMCPClient.swift in Sources */,
+				74C80805B611B8439ABCDDA5 /* OrderOrchestrator.swift in Sources */,
+				14FB2C2B9DE08A0D2E1B4C71 /* PurchaseCoffeeIntent.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		96B4FF43055280D50E843B3A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA2F83D844D251760BE86EA0 /* OrderOrchestratorTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A7553816D5DBFEFD05921BF0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				36957E38A36CA8ADC53C4471 /* CredentialStore.swift in Sources */,
+				FD0B94341DD4F7499EBCD169 /* DashboardSnapshot.swift in Sources */,
+				2C4277B95873E0AC6A3C2D8A /* DeepSeekAPI.swift in Sources */,
+				EB84EA3C690F8259AFA83E10 /* DeepSeekBalanceWidget.swift in Sources */,
+				946A3D0E7D07F22D57BE8D71 /* DeepSeekBalanceWidgetBundle.swift in Sources */,
+				35CC4556AB13A2E6E0D9A079 /* Ext.swift in Sources */,
+				3F6018808AEDE826CDF40CF7 /* Models.swift in Sources */,
+				83F034959102029D5FB6FCCA /* MonitorActivityAttributes.swift in Sources */,
+				695C294BDBF831BE7F4559A2 /* MonitorLiveActivity.swift in Sources */,
+				27457BA403C87042BC7C993F /* UsageProvider.swift in Sources */,
+				EBBD6E9AB60D3D0430956C50 /* UserDefaults+Shared.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		16651C3C30C2D70D75F6F675 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9685DB323179B12A4A93C491 /* CoffeeRelay */;
+			targetProxy = 34068FFF4F7B21E06CC469FE /* PBXContainerItemProxy */;
+		};
+		B938E0179D0AFB862D1F1FF9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1B9E9634123570FB6D4B0431 /* DeepSeekBalanceWidgetExtension */;
+			targetProxy = BFBDAE8C0FDC1B1404D25164 /* PBXContainerItemProxy */;
+		};
+		E2FCDFB22B025BF0C0BE3F03 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 967ECEDD1F59ED8DFF865A10 /* DeepSeekBalance */;
+			targetProxy = 1F162BAA0214F7A71D52990B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		0429B1FE538CFE54E25DA49C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = DeepSeekBalanceWidget/DeepSeekBalanceWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 534H8W5WL8;
+				INFOPLIST_FILE = DeepSeekBalanceWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.deepseek.balance.widget;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_INTERFACE_ORIENTATIONS = (
+					UIInterfaceOrientationPortrait,
+				);
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		053D7BC06715B36D991CC7F8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 534H8W5WL8;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = CoffeeRelay/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.deepseek.coffeerelay;
+				SDKROOT = iphoneos;
+				SUPPORTED_INTERFACE_ORIENTATIONS = (
+					UIInterfaceOrientationPortrait,
+				);
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		08138F6D74F3B7DDD494DC87 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 534H8W5WL8;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.deepseek.coffeerelay.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CoffeeRelay.app/CoffeeRelay";
+			};
+			name = Debug;
+		};
+		2FB07803390C7DCD32E7F2BC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		3C188E32F6C5073B8640B3C7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 534H8W5WL8;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.deepseek.coffeerelay.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CoffeeRelay.app/CoffeeRelay";
+			};
+			name = Release;
+		};
+		408976A2CE7112798A3BB5D9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = DeepSeekBalanceWidget/DeepSeekBalanceWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 534H8W5WL8;
+				INFOPLIST_FILE = DeepSeekBalanceWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.deepseek.balance.widget;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_INTERFACE_ORIENTATIONS = (
+					UIInterfaceOrientationPortrait,
+				);
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		97BD95254FCAA567CA84078F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 534H8W5WL8;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = CoffeeRelay/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.deepseek.coffeerelay;
+				SDKROOT = iphoneos;
+				SUPPORTED_INTERFACE_ORIENTATIONS = (
+					UIInterfaceOrientationPortrait,
+				);
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		A868A5C3FB0A9EA50530CAEE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 534H8W5WL8;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.deepseek.balance.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DeepSeekBalance.app/DeepSeekBalance";
+			};
+			name = Debug;
+		};
+		ABD424043E080DECAB49818D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		B4A739E15352976D2BA4B177 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = DeepSeekBalance/DeepSeekBalance.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 534H8W5WL8;
+				INFOPLIST_FILE = DeepSeekBalance/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = DeepLink;
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.deepseek.balance;
+				SDKROOT = iphoneos;
+				SUPPORTED_INTERFACE_ORIENTATIONS = (
+					UIInterfaceOrientationPortrait,
+				);
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		C00A1EF404B5B0D45F125A7F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = DeepSeekBalance/DeepSeekBalance.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 534H8W5WL8;
+				INFOPLIST_FILE = DeepSeekBalance/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = DeepLink;
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.deepseek.balance;
+				SDKROOT = iphoneos;
+				SUPPORTED_INTERFACE_ORIENTATIONS = (
+					UIInterfaceOrientationPortrait,
+				);
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		F795204690836EF99316652F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 534H8W5WL8;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.deepseek.balance.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DeepSeekBalance.app/DeepSeekBalance";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		4C9ABC03221CC3091AD51D19 /* Build configuration list for PBXNativeTarget "DeepSeekBalance" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B4A739E15352976D2BA4B177 /* Debug */,
+				C00A1EF404B5B0D45F125A7F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		8235A004E985B0A3B9EDFEDE /* Build configuration list for PBXNativeTarget "CoffeeRelay" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				053D7BC06715B36D991CC7F8 /* Debug */,
+				97BD95254FCAA567CA84078F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		8D1BE42546ED14EF799B2E5E /* Build configuration list for PBXNativeTarget "DeepSeekBalanceTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A868A5C3FB0A9EA50530CAEE /* Debug */,
+				F795204690836EF99316652F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		C9D190F69085BD32BEF0581E /* Build configuration list for PBXNativeTarget "CoffeeRelayTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				08138F6D74F3B7DDD494DC87 /* Debug */,
+				3C188E32F6C5073B8640B3C7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		F85109FEAF1B19C9B1481FA6 /* Build configuration list for PBXNativeTarget "DeepSeekBalanceWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0429B1FE538CFE54E25DA49C /* Debug */,
+				408976A2CE7112798A3BB5D9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		FA6B219CD9F3AF75E6ECB00B /* Build configuration list for PBXProject "DeepSeekBalance" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ABD424043E080DECAB49818D /* Debug */,
+				2FB07803390C7DCD32E7F2BC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 8628396FDA491FD535D8BF6F /* Project object */;
+}

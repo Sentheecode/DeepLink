@@ -1,0 +1,129 @@
+{
+  "" : {
+    "diagnostics" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/DeepSeekBalanceWidgetExtension-primary.dia",
+    "emit-module-dependencies" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/DeepSeekBalanceWidgetExtension-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/DeepSeekBalanceWidgetExtension-primary-emit-module.dia",
+    "pch" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/DeepSeekBalanceWidgetExtension-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/DeepSeekBalanceWidgetExtension-primary.swiftdeps"
+  },
+  "/Users/zhaoyumeng/code/DeepSeekBalance/DeepSeekBalanceWidget/DeepSeekBalanceWidget.swift" : {
+    "const-values" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/DeepSeekBalanceWidget.swiftconstvalues",
+    "dependencies" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/DeepSeekBalanceWidget.d",
+    "diagnostics" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/DeepSeekBalanceWidget.dia",
+    "index-unit-output-path" : "/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/DeepSeekBalanceWidget.o",
+    "llvm-bc" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/DeepSeekBalanceWidget.bc",
+    "object" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/DeepSeekBalanceWidget.o",
+    "swift-dependencies" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/DeepSeekBalanceWidget.swiftdeps",
+    "swiftmodule" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/DeepSeekBalanceWidget~partial.swiftmodule"
+  },
+  "/Users/zhaoyumeng/code/DeepSeekBalance/DeepSeekBalanceWidget/DeepSeekBalanceWidgetBundle.swift" : {
+    "const-values" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/DeepSeekBalanceWidgetBundle.swiftconstvalues",
+    "dependencies" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/DeepSeekBalanceWidgetBundle.d",
+    "diagnostics" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/DeepSeekBalanceWidgetBundle.dia",
+    "index-unit-output-path" : "/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/DeepSeekBalanceWidgetBundle.o",
+    "llvm-bc" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/DeepSeekBalanceWidgetBundle.bc",
+    "object" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/DeepSeekBalanceWidgetBundle.o",
+    "swift-dependencies" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/DeepSeekBalanceWidgetBundle.swiftdeps",
+    "swiftmodule" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/DeepSeekBalanceWidgetBundle~partial.swiftmodule"
+  },
+  "/Users/zhaoyumeng/code/DeepSeekBalance/DeepSeekBalanceWidget/Ext.swift" : {
+    "const-values" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/Ext.swiftconstvalues",
+    "dependencies" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/Ext.d",
+    "diagnostics" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/Ext.dia",
+    "index-unit-output-path" : "/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/Ext.o",
+    "llvm-bc" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/Ext.bc",
+    "object" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/Ext.o",
+    "swift-dependencies" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/Ext.swiftdeps",
+    "swiftmodule" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/Ext~partial.swiftmodule"
+  },
+  "/Users/zhaoyumeng/code/DeepSeekBalance/DeepSeekBalanceWidget/MonitorLiveActivity.swift" : {
+    "const-values" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/MonitorLiveActivity.swiftconstvalues",
+    "dependencies" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/MonitorLiveActivity.d",
+    "diagnostics" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/MonitorLiveActivity.dia",
+    "index-unit-output-path" : "/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/MonitorLiveActivity.o",
+    "llvm-bc" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/MonitorLiveActivity.bc",
+    "object" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/MonitorLiveActivity.o",
+    "swift-dependencies" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/MonitorLiveActivity.swiftdeps",
+    "swiftmodule" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/MonitorLiveActivity~partial.swiftmodule"
+  },
+  "/Users/zhaoyumeng/code/DeepSeekBalance/Shared/CredentialStore.swift" : {
+    "const-values" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/CredentialStore.swiftconstvalues",
+    "dependencies" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/CredentialStore.d",
+    "diagnostics" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/CredentialStore.dia",
+    "index-unit-output-path" : "/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/CredentialStore.o",
+    "llvm-bc" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/CredentialStore.bc",
+    "object" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/CredentialStore.o",
+    "swift-dependencies" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/CredentialStore.swiftdeps",
+    "swiftmodule" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/CredentialStore~partial.swiftmodule"
+  },
+  "/Users/zhaoyumeng/code/DeepSeekBalance/Shared/DashboardSnapshot.swift" : {
+    "const-values" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/DashboardSnapshot.swiftconstvalues",
+    "dependencies" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/DashboardSnapshot.d",
+    "diagnostics" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/DashboardSnapshot.dia",
+    "index-unit-output-path" : "/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/DashboardSnapshot.o",
+    "llvm-bc" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/DashboardSnapshot.bc",
+    "object" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/DashboardSnapshot.o",
+    "swift-dependencies" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/DashboardSnapshot.swiftdeps",
+    "swiftmodule" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/DashboardSnapshot~partial.swiftmodule"
+  },
+  "/Users/zhaoyumeng/code/DeepSeekBalance/Shared/DeepSeekAPI.swift" : {
+    "const-values" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/DeepSeekAPI.swiftconstvalues",
+    "dependencies" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/DeepSeekAPI.d",
+    "diagnostics" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/DeepSeekAPI.dia",
+    "index-unit-output-path" : "/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/DeepSeekAPI.o",
+    "llvm-bc" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/DeepSeekAPI.bc",
+    "object" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/DeepSeekAPI.o",
+    "swift-dependencies" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/DeepSeekAPI.swiftdeps",
+    "swiftmodule" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/DeepSeekAPI~partial.swiftmodule"
+  },
+  "/Users/zhaoyumeng/code/DeepSeekBalance/Shared/Models.swift" : {
+    "const-values" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/Models.swiftconstvalues",
+    "dependencies" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/Models.d",
+    "diagnostics" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/Models.dia",
+    "index-unit-output-path" : "/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/Models.o",
+    "llvm-bc" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/Models.bc",
+    "object" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/Models.o",
+    "swift-dependencies" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/Models.swiftdeps",
+    "swiftmodule" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/Models~partial.swiftmodule"
+  },
+  "/Users/zhaoyumeng/code/DeepSeekBalance/Shared/MonitorActivityAttributes.swift" : {
+    "const-values" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/MonitorActivityAttributes.swiftconstvalues",
+    "dependencies" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/MonitorActivityAttributes.d",
+    "diagnostics" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/MonitorActivityAttributes.dia",
+    "index-unit-output-path" : "/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/MonitorActivityAttributes.o",
+    "llvm-bc" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/MonitorActivityAttributes.bc",
+    "object" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/MonitorActivityAttributes.o",
+    "swift-dependencies" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/MonitorActivityAttributes.swiftdeps",
+    "swiftmodule" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/MonitorActivityAttributes~partial.swiftmodule"
+  },
+  "/Users/zhaoyumeng/code/DeepSeekBalance/Shared/UsageProvider.swift" : {
+    "const-values" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/UsageProvider.swiftconstvalues",
+    "dependencies" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/UsageProvider.d",
+    "diagnostics" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/UsageProvider.dia",
+    "index-unit-output-path" : "/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/UsageProvider.o",
+    "llvm-bc" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/UsageProvider.bc",
+    "object" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/UsageProvider.o",
+    "swift-dependencies" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/UsageProvider.swiftdeps",
+    "swiftmodule" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/UsageProvider~partial.swiftmodule"
+  },
+  "/Users/zhaoyumeng/code/DeepSeekBalance/Shared/UserDefaults+Shared.swift" : {
+    "const-values" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/UserDefaults+Shared.swiftconstvalues",
+    "dependencies" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/UserDefaults+Shared.d",
+    "diagnostics" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/UserDefaults+Shared.dia",
+    "index-unit-output-path" : "/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/UserDefaults+Shared.o",
+    "llvm-bc" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/UserDefaults+Shared.bc",
+    "object" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/UserDefaults+Shared.o",
+    "swift-dependencies" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/UserDefaults+Shared.swiftdeps",
+    "swiftmodule" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/UserDefaults+Shared~partial.swiftmodule"
+  },
+  "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "const-values" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftconstvalues",
+    "dependencies" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/GeneratedAssetSymbols.d",
+    "diagnostics" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/GeneratedAssetSymbols.dia",
+    "index-unit-output-path" : "/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "swift-dependencies" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftdeps",
+    "swiftmodule" : "/Users/zhaoyumeng/code/DeepSeekBalance/build/DeepSeekBalance.build/Debug-iphoneos/DeepSeekBalanceWidgetExtension.build/Objects-normal/arm64/GeneratedAssetSymbols~partial.swiftmodule"
+  }
+}
