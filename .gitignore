@@ -1,3 +1,8 @@
 broker/__pycache__/
 broker/*.db
 broker/*.db-*
+*.xcuserdata
+*.xcuserstate
+.DS_Store
+build/
+DerivedData/
