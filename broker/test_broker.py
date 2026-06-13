@@ -4,6 +4,7 @@ import tempfile
 import unittest
 from base64 import b64encode
 from pathlib import Path
+from unittest.mock import patch
 
 os.environ.setdefault("BROKER_ADMIN_TOKEN", "test-admin-token")
 os.environ.setdefault("BROKER_PUBLIC_URL", "https://broker.example.com")
@@ -138,6 +139,32 @@ class BrokerTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(result.ok)
         self.assertEqual(broker.user_usage(user)["rpc_count"], 1)
 
+    async def test_empty_command_poll_handles_python_310_asyncio_timeout(self) -> None:
+        class LegacyAsyncioTimeoutError(Exception):
+            pass
+
+        class EmptyQueue:
+            async def get(self) -> None:
+                raise LegacyAsyncioTimeoutError
+
+        user = self._create_user("Alice")
+        enrollment = broker.create_enrollment(user)
+        node_session = broker.consume_enrollment(
+            enrollment["token"],
+            broker.NodeRegistration(device_id="test-node", name="Test Node"),
+        )
+        node_identity = broker.require_node_token(node_session["node_token"])
+        await broker.register_node(
+            broker.NodeRegistration(device_id="test-node", name="Test Node"),
+            node_identity,
+        )
+        broker.nodes["test-node"].commands = EmptyQueue()
+
+        with patch.object(broker.asyncio, "TimeoutError", LegacyAsyncioTimeoutError):
+            response = await broker.next_command("test-node", node_identity, timeout=1)
+
+        self.assertEqual(response.status_code, 204)
+
     async def test_user_can_revoke_own_device(self) -> None:
         alice = self._create_user("Alice")
         enrollment = broker.create_enrollment(alice)
@@ -199,6 +226,15 @@ class BrokerTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('.deeplink-channel', script)
         self.assertIn("com.deeplink.channel", script)
         self.assertNotIn("deepseekbalance-channel", script)
+
+    async def test_installer_discovers_and_verifies_hermes_key_before_consuming_invite(self) -> None:
+        script = broker.installer_script("enrollment-token")
+
+        self.assertIn('HERMES_ENV="${HERMES_ENV:-$HOME/.hermes/.env}"', script)
+        self.assertIn('HERMES_KEY="${API_SERVER_KEY:-}"', script)
+        self.assertIn('Authorization: Bearer $HERMES_KEY', script)
+        self.assertIn('$HERMES_URL/api/sessions', script)
+        self.assertLess(script.index('$HERMES_URL/api/sessions'), script.index("/v1/enrollments/consume"))
 
     async def test_downloading_installer_does_not_consume_enrollment(self) -> None:
         alice = self._create_user("Alice")

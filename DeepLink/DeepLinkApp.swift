@@ -1,4 +1,5 @@
 import SwiftUI
+import WidgetKit
 
 @main
 struct DeepLinkApp: App {
@@ -62,9 +63,14 @@ struct DeepLinkApp: App {
                 })
             } else if isReady {
                 AppShell(onLogout: {
-                    try? KeychainCredentialStore().deleteToken(for: .brokerKey)
+                    let store = KeychainCredentialStore()
+                    try? store.deleteToken(for: .brokerKey)
+                    try? store.deleteToken(for: .deepseek)
+                    try? store.deleteToken(for: .hermesKey)
                     UserDefaults.standard.hasCompletedLogin = false
                     UserDefaults.standard.cachedUserDisplayName = nil
+                    UserDefaults.shared.savedWidgetData = nil
+                    WidgetKit.WidgetCenter.shared.reloadAllTimelines()
                     refreshState()
                 })
             }

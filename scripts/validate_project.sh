@@ -25,26 +25,26 @@ done
 
 # 3. Verify bundle identifiers via xcodebuild (no hardcoded UUIDs)
 xcodebuild -project "$PROJECT" -target DeepLink -showBuildSettings 2>/dev/null \
-    | grep -q "PRODUCT_BUNDLE_IDENTIFIER = com.deepseek.balance" || {
+    | grep -q "PRODUCT_BUNDLE_IDENTIFIER = com.deeplink.balance" || {
     echo "Project validation failed: app bundle ID not set to com.deepseek.balance" >&2
     exit 1
 }
 
 xcodebuild -project "$PROJECT" -target DeepSeekBalanceWidgetExtension -showBuildSettings 2>/dev/null \
-    | grep -q "PRODUCT_BUNDLE_IDENTIFIER = com.deepseek.balance.widget" || {
+    | grep -q "PRODUCT_BUNDLE_IDENTIFIER = com.deeplink.balance.widget" || {
     echo "Project validation failed: widget bundle ID not set to com.deepseek.balance.widget" >&2
     exit 1
 }
 
 # 4. Verify entitlements are configured via xcodebuild (no hardcoded UUIDs)
 xcodebuild -project "$PROJECT" -target DeepLink -showBuildSettings 2>/dev/null \
-    | grep -q "CODE_SIGN_ENTITLEMENTS.*DeepSeekBalance.entitlements" || {
+    | grep -q "CODE_SIGN_ENTITLEMENTS.*DeepLink.entitlements" || {
     echo "Project validation failed: app entitlements not configured" >&2
     exit 1
 }
 
 xcodebuild -project "$PROJECT" -target DeepSeekBalanceWidgetExtension -showBuildSettings 2>/dev/null \
-    | grep -q "CODE_SIGN_ENTITLEMENTS.*DeepSeekBalanceWidget.entitlements" || {
+    | grep -q "CODE_SIGN_ENTITLEMENTS.*DeepLinkWidget.entitlements" || {
     echo "Project validation failed: widget entitlements not configured" >&2
     exit 1
 }

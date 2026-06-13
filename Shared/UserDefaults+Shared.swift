@@ -1,6 +1,6 @@
 import Foundation
 
-let appGroupID = "group.com.deepseek.balance"
+let appGroupID = "group.com.deeplink.balance"
 let widgetDataKey = "widgetData"
 let userTokenKey = "userToken"
 let usageAmountKey = "usageAmount"

@@ -7,51 +7,51 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		01DC3924C7A959C3B45FCF4C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8C09D8AE86157ADED15817E0 /* Assets.xcassets */; };
+		00AB6F54F5BA95C969161C15 /* MonitorLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C36C0AFF8A325A55276AE22 /* MonitorLiveActivity.swift */; };
 		02386108A9F375CE2473F930 /* DeepSeekAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A88AD7216E3940C28F1AB9 /* DeepSeekAPI.swift */; };
 		07A8CB574EEB8835C0142FF1 /* AuthFlowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7206179898504C20D8785D1D /* AuthFlowView.swift */; };
 		0B5FDACA8E047D5026598591 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = D72633A1476B059499165E93 /* Models.swift */; };
 		19258AEF1054C6543895B1AE /* AgentDeviceRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EAC3085E4E8BE7D1CA4E93 /* AgentDeviceRegistry.swift */; };
-		1AFB45D617E6257D0EDDE279 /* AgentServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32789EDB4BD9B581EBA5B0B6 /* AgentServer.swift */; };
 		32FEF3AB01F15FCF226FFF1D /* UsageProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91538B19C33D6706122376A2 /* UsageProvider.swift */; };
 		33B47159602E8B0FBBF81B44 /* UserDefaults+Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4E2482FF6FD862ADC68DFB4 /* UserDefaults+Shared.swift */; };
-		3C8EED9F93EFF3FC9A6E5820 /* AppShell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF931B6BE6A15B5EC86CDDA0 /* AppShell.swift */; };
 		3CB51D098FD79E6FCE3EB541 /* AgentConnectionModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85651220CF25BAF2F51CC7D0 /* AgentConnectionModels.swift */; };
 		407FADB25482BACF3D90ABD2 /* CenterHubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 075B0E3E3051631ED841EEF9 /* CenterHubView.swift */; };
 		42F72AABB2777D443763DAC7 /* DashboardSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0294DDEAF34C01163BA0F8D /* DashboardSnapshot.swift */; };
-		472E014E96AFCCB9AD3A8BEB /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30206551BC0EF7829FE4DAF0 /* ContentView.swift */; };
+		4EA6DD6F4770799FFA52C949 /* DeepLinkWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A16121C0109ED47B0AE825A8 /* DeepLinkWidgetBundle.swift */; };
 		580212F7355956BFA67614D5 /* MonitorActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647C640666CCCC0A6259C227 /* MonitorActivityAttributes.swift */; };
 		5C5D34633FB96962BD8590B6 /* DeepSeekBalanceWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 0E33B1C178E35D170530B827 /* DeepSeekBalanceWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		5C9EF38CA6A7A2A823290716 /* LiveActivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41A29892A401C16B8AD4C5C /* LiveActivityManager.swift */; };
 		5CAD020F878F7D49EE15ECD6 /* CredentialStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E42FA5EEAFDAF0A0CFD8CF8 /* CredentialStore.swift */; };
+		6273B8036F1145F7A4393E72 /* Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BED873036F3C3CB349875C /* Ext.swift */; };
 		682F7FC4DE72A08A82B41734 /* TeamModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC262922624328C7E48E8037 /* TeamModels.swift */; };
+		69EE515177181D45D1157239 /* AgentServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978C6CEB8332B9E7D85E698E /* AgentServer.swift */; };
+		6B370B80ADC063B1E0D2724E /* AppShell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA2C3F8FB93686664A85DEB1 /* AppShell.swift */; };
 		6D99A740B7B8C8687AF4A562 /* MonitorActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647C640666CCCC0A6259C227 /* MonitorActivityAttributes.swift */; };
 		6F9909B05FE89A49F36BBA44 /* CredentialStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E42FA5EEAFDAF0A0CFD8CF8 /* CredentialStore.swift */; };
-		74FD941A82BE87DB6813710D /* DeepSeekBalanceWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = F454A6BB75CB48740B948CF1 /* DeepSeekBalanceWidgetBundle.swift */; };
 		78D4DFD4DDC886F89A71B597 /* UsageProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91538B19C33D6706122376A2 /* UsageProvider.swift */; };
-		7A266F19D38C097633D414E4 /* DashboardStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607ED6B729A4079875AA10E9 /* DashboardStore.swift */; };
-		83C17130B1DC1D0C489EDA6D /* TokenWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F810E6F79D9A79E53B8F1B3 /* TokenWebView.swift */; };
 		854C2A4D18962B762FA630D3 /* TeamHubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7F9498581E964E85E5EDBF7 /* TeamHubView.swift */; };
-		95A34900ADBABFFD90860891 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18885CB5701E74AEEAF07A5A /* Assets.xcassets */; };
+		880676DD48FF315DC7533C81 /* DeepLinkApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEF6DD93043D6F0A3549C5D /* DeepLinkApp.swift */; };
+		91608042272E9C02BB12D16F /* PrintReceiptViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = A87228B60ADC94D4F137FA61 /* PrintReceiptViews.swift */; };
+		9214ABFA6E92CEDC6CE4DC93 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5CE52EF7261295BE6E752635 /* Assets.xcassets */; };
+		9BDC518F532EA80BE44779CD /* CredentialStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17227C6E1374D1DB75293FE /* CredentialStoreTests.swift */; };
 		9C5A205DAA635EDC0A749957 /* SettingsHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B232379D1703D6519C90479 /* SettingsHomeView.swift */; };
-		AAB64EE44E0779A1553BCC9D /* UsageRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D936264CD7FEAB35B3CE78C /* UsageRepository.swift */; };
-		AD8130A36D68E5A29AED4941 /* DeepSeekProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C71EF5C93F337B55F3BB8FA2 /* DeepSeekProvider.swift */; };
-		B4B1691C3AF4AE7CDC1C4BEC /* RepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF91B73786F9D54EDB145732 /* RepositoryTests.swift */; };
-		BD1309D4C809BF89BFD4B6DA /* Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829DABDC058BA22DEFD8410A /* Ext.swift */; };
+		9F2EB3B959D6995DDC5C5DFD /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 856C4E35F19C27245DE6702A /* ContentView.swift */; };
+		A59237C23ABE33CFF46996A0 /* DeepLinkWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65060513164EB095A7F809C9 /* DeepLinkWidget.swift */; };
+		A6CB456D6986428DE7FEB93B /* UsageRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = F80028BE5D49ADB615297858 /* UsageRepository.swift */; };
+		ABEC550CE219AFFD8A89F14A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 37F5C0A486B2E4FF9E1474CD /* Assets.xcassets */; };
 		BD7EFA52F227DB349C024437 /* HermesAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A7D4065387E7162CAAE40D /* HermesAPI.swift */; };
 		C305338EFE197E530473667E /* CenterModeViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC5F0E1EC57F13CFE0A39A0A /* CenterModeViews.swift */; };
-		C4713C28A3E49002E4BAE6E4 /* PrintReceiptViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 772FDF51426A444053C5E1D5 /* PrintReceiptViews.swift */; };
+		C7D5171FEBECB54AD30E8050 /* TokenWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A0AC4586F0B382D76B824A /* TokenWebView.swift */; };
 		C8537F007009E072E1F4A1D8 /* DashboardSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0294DDEAF34C01163BA0F8D /* DashboardSnapshot.swift */; };
-		CB458347B6D792A70B21613A /* DeepSeekBalanceApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59054505753D99730DF58A7D /* DeepSeekBalanceApp.swift */; };
 		CBA4D14904F8ACAB22F9BD9E /* WidgetPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A9EE0FA824A9989056A311A /* WidgetPreviewView.swift */; };
+		CBAA6CBC36F2D76319B11305 /* RepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D20CA566F9CB0FF956479A3 /* RepositoryTests.swift */; };
+		CD0489D72F13F89B90BD0A11 /* FeatureSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E66819C91C2EAE8306FBDD1 /* FeatureSupport.swift */; };
 		CEABEC6B808A37297F650E5E /* DeepSeekAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A88AD7216E3940C28F1AB9 /* DeepSeekAPI.swift */; };
+		D86074525D9A72A157FE6722 /* DeepSeekProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5879D8AAF8BD205B815FB933 /* DeepSeekProvider.swift */; };
+		D9EE88243FC0D2CB8FFBA3F4 /* DashboardStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0172A767CBA5983C0FCFF51F /* DashboardStore.swift */; };
 		DD428757843AED66F68B91AE /* AgentModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA8DCE7A63B3B2870BE2CE53 /* AgentModule.swift */; };
-		DEBC5965B7312045E24CE6DC /* LiveActivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D67A36C83497C01BEDCFB29C /* LiveActivityManager.swift */; };
 		E32C204FE5DEE4DB4240AD84 /* AgentBrokerClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F835C0785FAA39473F7782E /* AgentBrokerClient.swift */; };
 		E4AEE422CDB90482F6E106A5 /* UserDefaults+Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4E2482FF6FD862ADC68DFB4 /* UserDefaults+Shared.swift */; };
-		EC5505AD68604D123A3C77BF /* CredentialStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCEF6AE89780A7F1D4B0C1C3 /* CredentialStoreTests.swift */; };
-		EF1E9144241DF041AF908D36 /* MonitorLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674B41EC667BCB2E9C0D5C7E /* MonitorLiveActivity.swift */; };
-		EFB33FE63594379589169AEC /* DeepSeekBalanceWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 926DB08C17BD5FCDE76B5DC9 /* DeepSeekBalanceWidget.swift */; };
-		F4BB84F2DEF7F6F35EA878C4 /* FeatureSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E60FC7A84818C3F9E8259D /* FeatureSupport.swift */; };
 		F9F8F705171CB6CCFAC294C3 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = D72633A1476B059499165E93 /* Models.swift */; };
 		FCC7C2CA8A95BEE47836622C /* BrokerPairing.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82AAD1FCAA42964AE668ADC /* BrokerPairing.swift */; };
 /* End PBXBuildFile section */
@@ -88,50 +88,50 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0172A767CBA5983C0FCFF51F /* DashboardStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardStore.swift; sourceTree = "<group>"; };
 		075B0E3E3051631ED841EEF9 /* CenterHubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenterHubView.swift; sourceTree = "<group>"; };
 		0E33B1C178E35D170530B827 /* DeepSeekBalanceWidgetExtension.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = DeepSeekBalanceWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		18885CB5701E74AEEAF07A5A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		20B03113155F900060EA3665 /* DeepLink.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = DeepLink.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2E42FA5EEAFDAF0A0CFD8CF8 /* CredentialStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialStore.swift; sourceTree = "<group>"; };
-		30206551BC0EF7829FE4DAF0 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		32789EDB4BD9B581EBA5B0B6 /* AgentServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentServer.swift; sourceTree = "<group>"; };
+		36BED873036F3C3CB349875C /* Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ext.swift; sourceTree = "<group>"; };
+		37F5C0A486B2E4FF9E1474CD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4B232379D1703D6519C90479 /* SettingsHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsHomeView.swift; sourceTree = "<group>"; };
-		4F810E6F79D9A79E53B8F1B3 /* TokenWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenWebView.swift; sourceTree = "<group>"; };
-		517932FF2263715575E40A3C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		59054505753D99730DF58A7D /* DeepSeekBalanceApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepSeekBalanceApp.swift; sourceTree = "<group>"; };
-		607ED6B729A4079875AA10E9 /* DashboardStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardStore.swift; sourceTree = "<group>"; };
+		55A0AC4586F0B382D76B824A /* TokenWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenWebView.swift; sourceTree = "<group>"; };
+		5879D8AAF8BD205B815FB933 /* DeepSeekProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepSeekProvider.swift; sourceTree = "<group>"; };
+		5CE52EF7261295BE6E752635 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		5E66819C91C2EAE8306FBDD1 /* FeatureSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureSupport.swift; sourceTree = "<group>"; };
 		647C640666CCCC0A6259C227 /* MonitorActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorActivityAttributes.swift; sourceTree = "<group>"; };
-		674B41EC667BCB2E9C0D5C7E /* MonitorLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorLiveActivity.swift; sourceTree = "<group>"; };
+		65060513164EB095A7F809C9 /* DeepLinkWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkWidget.swift; sourceTree = "<group>"; };
 		7206179898504C20D8785D1D /* AuthFlowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthFlowView.swift; sourceTree = "<group>"; };
-		772FDF51426A444053C5E1D5 /* PrintReceiptViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrintReceiptViews.swift; sourceTree = "<group>"; };
+		7C907391BCD43565FCAC40CA /* DeepLink.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DeepLink.entitlements; sourceTree = "<group>"; };
 		7F835C0785FAA39473F7782E /* AgentBrokerClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentBrokerClient.swift; sourceTree = "<group>"; };
-		7FCC42FE4C81EC99141F47E8 /* DeepSeekBalance.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DeepSeekBalance.entitlements; sourceTree = "<group>"; };
-		829DABDC058BA22DEFD8410A /* Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ext.swift; sourceTree = "<group>"; };
+		7FEF6DD93043D6F0A3549C5D /* DeepLinkApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkApp.swift; sourceTree = "<group>"; };
 		85651220CF25BAF2F51CC7D0 /* AgentConnectionModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentConnectionModels.swift; sourceTree = "<group>"; };
-		8C09D8AE86157ADED15817E0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		856C4E35F19C27245DE6702A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		8C36C0AFF8A325A55276AE22 /* MonitorLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorLiveActivity.swift; sourceTree = "<group>"; };
+		8D20CA566F9CB0FF956479A3 /* RepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryTests.swift; sourceTree = "<group>"; };
 		91538B19C33D6706122376A2 /* UsageProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageProvider.swift; sourceTree = "<group>"; };
-		926DB08C17BD5FCDE76B5DC9 /* DeepSeekBalanceWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepSeekBalanceWidget.swift; sourceTree = "<group>"; };
+		92841ABB3C6FDBDC73AE55F8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		92EAC3085E4E8BE7D1CA4E93 /* AgentDeviceRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentDeviceRegistry.swift; sourceTree = "<group>"; };
 		96A88AD7216E3940C28F1AB9 /* DeepSeekAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepSeekAPI.swift; sourceTree = "<group>"; };
+		978C6CEB8332B9E7D85E698E /* AgentServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentServer.swift; sourceTree = "<group>"; };
 		9A9EE0FA824A9989056A311A /* WidgetPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetPreviewView.swift; sourceTree = "<group>"; };
-		9D936264CD7FEAB35B3CE78C /* UsageRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageRepository.swift; sourceTree = "<group>"; };
+		A16121C0109ED47B0AE825A8 /* DeepLinkWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkWidgetBundle.swift; sourceTree = "<group>"; };
+		A87228B60ADC94D4F137FA61 /* PrintReceiptViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrintReceiptViews.swift; sourceTree = "<group>"; };
 		A957AB62D7462A481FAD040B /* DeepLinkTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = DeepLinkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AC5F0E1EC57F13CFE0A39A0A /* CenterModeViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenterModeViews.swift; sourceTree = "<group>"; };
-		B3E60FC7A84818C3F9E8259D /* FeatureSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureSupport.swift; sourceTree = "<group>"; };
+		B17227C6E1374D1DB75293FE /* CredentialStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialStoreTests.swift; sourceTree = "<group>"; };
+		BA2C3F8FB93686664A85DEB1 /* AppShell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppShell.swift; sourceTree = "<group>"; };
 		BC262922624328C7E48E8037 /* TeamModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamModels.swift; sourceTree = "<group>"; };
-		BF91B73786F9D54EDB145732 /* RepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryTests.swift; sourceTree = "<group>"; };
 		C0294DDEAF34C01163BA0F8D /* DashboardSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardSnapshot.swift; sourceTree = "<group>"; };
 		C3A7D4065387E7162CAAE40D /* HermesAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HermesAPI.swift; sourceTree = "<group>"; };
 		C4E2482FF6FD862ADC68DFB4 /* UserDefaults+Shared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Shared.swift"; sourceTree = "<group>"; };
-		C71EF5C93F337B55F3BB8FA2 /* DeepSeekProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepSeekProvider.swift; sourceTree = "<group>"; };
-		CCEF6AE89780A7F1D4B0C1C3 /* CredentialStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialStoreTests.swift; sourceTree = "<group>"; };
-		D67A36C83497C01BEDCFB29C /* LiveActivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityManager.swift; sourceTree = "<group>"; };
 		D72633A1476B059499165E93 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		D7F9498581E964E85E5EDBF7 /* TeamHubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamHubView.swift; sourceTree = "<group>"; };
 		D82AAD1FCAA42964AE668ADC /* BrokerPairing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrokerPairing.swift; sourceTree = "<group>"; };
+		E41A29892A401C16B8AD4C5C /* LiveActivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityManager.swift; sourceTree = "<group>"; };
 		EA8DCE7A63B3B2870BE2CE53 /* AgentModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentModule.swift; sourceTree = "<group>"; };
-		F454A6BB75CB48740B948CF1 /* DeepSeekBalanceWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepSeekBalanceWidgetBundle.swift; sourceTree = "<group>"; };
-		FF931B6BE6A15B5EC86CDDA0 /* AppShell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppShell.swift; sourceTree = "<group>"; };
+		F80028BE5D49ADB615297858 /* UsageRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageRepository.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -154,36 +154,6 @@
 			path = Settings;
 			sourceTree = "<group>";
 		};
-		2CCB8F3A2E07676812C33F0B /* DeepSeekBalanceTests */ = {
-			isa = PBXGroup;
-			children = (
-				CCEF6AE89780A7F1D4B0C1C3 /* CredentialStoreTests.swift */,
-				BF91B73786F9D54EDB145732 /* RepositoryTests.swift */,
-			);
-			path = DeepSeekBalanceTests;
-			sourceTree = "<group>";
-		};
-		30CE0753C5302D4B5BE46D11 /* DeepSeekBalance */ = {
-			isa = PBXGroup;
-			children = (
-				32789EDB4BD9B581EBA5B0B6 /* AgentServer.swift */,
-				FF931B6BE6A15B5EC86CDDA0 /* AppShell.swift */,
-				18885CB5701E74AEEAF07A5A /* Assets.xcassets */,
-				30206551BC0EF7829FE4DAF0 /* ContentView.swift */,
-				607ED6B729A4079875AA10E9 /* DashboardStore.swift */,
-				7FCC42FE4C81EC99141F47E8 /* DeepSeekBalance.entitlements */,
-				59054505753D99730DF58A7D /* DeepSeekBalanceApp.swift */,
-				C71EF5C93F337B55F3BB8FA2 /* DeepSeekProvider.swift */,
-				B3E60FC7A84818C3F9E8259D /* FeatureSupport.swift */,
-				517932FF2263715575E40A3C /* Info.plist */,
-				D67A36C83497C01BEDCFB29C /* LiveActivityManager.swift */,
-				772FDF51426A444053C5E1D5 /* PrintReceiptViews.swift */,
-				4F810E6F79D9A79E53B8F1B3 /* TokenWebView.swift */,
-				9D936264CD7FEAB35B3CE78C /* UsageRepository.swift */,
-			);
-			path = DeepSeekBalance;
-			sourceTree = "<group>";
-		};
 		402F6AA40953547D6D119709 /* Team */ = {
 			isa = PBXGroup;
 			children = (
@@ -191,18 +161,6 @@
 				BC262922624328C7E48E8037 /* TeamModels.swift */,
 			);
 			path = Team;
-			sourceTree = "<group>";
-		};
-		4888B6B4C1F22FBE62702CB8 /* DeepSeekBalanceWidget */ = {
-			isa = PBXGroup;
-			children = (
-				8C09D8AE86157ADED15817E0 /* Assets.xcassets */,
-				926DB08C17BD5FCDE76B5DC9 /* DeepSeekBalanceWidget.swift */,
-				F454A6BB75CB48740B948CF1 /* DeepSeekBalanceWidgetBundle.swift */,
-				829DABDC058BA22DEFD8410A /* Ext.swift */,
-				674B41EC667BCB2E9C0D5C7E /* MonitorLiveActivity.swift */,
-			);
-			path = DeepSeekBalanceWidget;
 			sourceTree = "<group>";
 		};
 		59AE5838808BB3432746C716 /* Features */ = {
@@ -215,7 +173,28 @@
 				402F6AA40953547D6D119709 /* Team */,
 			);
 			name = Features;
-			path = DeepSeekBalance/Features;
+			path = DeepLink/Features;
+			sourceTree = "<group>";
+		};
+		639E1258B9F0F935C6392CD3 /* DeepLink */ = {
+			isa = PBXGroup;
+			children = (
+				978C6CEB8332B9E7D85E698E /* AgentServer.swift */,
+				BA2C3F8FB93686664A85DEB1 /* AppShell.swift */,
+				5CE52EF7261295BE6E752635 /* Assets.xcassets */,
+				856C4E35F19C27245DE6702A /* ContentView.swift */,
+				0172A767CBA5983C0FCFF51F /* DashboardStore.swift */,
+				7C907391BCD43565FCAC40CA /* DeepLink.entitlements */,
+				7FEF6DD93043D6F0A3549C5D /* DeepLinkApp.swift */,
+				5879D8AAF8BD205B815FB933 /* DeepSeekProvider.swift */,
+				5E66819C91C2EAE8306FBDD1 /* FeatureSupport.swift */,
+				92841ABB3C6FDBDC73AE55F8 /* Info.plist */,
+				E41A29892A401C16B8AD4C5C /* LiveActivityManager.swift */,
+				A87228B60ADC94D4F137FA61 /* PrintReceiptViews.swift */,
+				55A0AC4586F0B382D76B824A /* TokenWebView.swift */,
+				F80028BE5D49ADB615297858 /* UsageRepository.swift */,
+			);
+			path = DeepLink;
 			sourceTree = "<group>";
 		};
 		752496AD4A56A05FAD964550 /* Agent */ = {
@@ -227,6 +206,18 @@
 				12C6383E8CD182170C387E90 /* Services */,
 			);
 			path = Agent;
+			sourceTree = "<group>";
+		};
+		75DF97DF0289A3624C130511 /* DeepLinkWidget */ = {
+			isa = PBXGroup;
+			children = (
+				37F5C0A486B2E4FF9E1474CD /* Assets.xcassets */,
+				65060513164EB095A7F809C9 /* DeepLinkWidget.swift */,
+				A16121C0109ED47B0AE825A8 /* DeepLinkWidgetBundle.swift */,
+				36BED873036F3C3CB349875C /* Ext.swift */,
+				8C36C0AFF8A325A55276AE22 /* MonitorLiveActivity.swift */,
+			);
+			path = DeepLinkWidget;
 			sourceTree = "<group>";
 		};
 		9905C8D4A9A99A34FF2B0574 /* Models */ = {
@@ -278,12 +269,21 @@
 			path = Center;
 			sourceTree = "<group>";
 		};
+		D9033C84B0B7E44B4B9EC7F8 /* DeepLinkTests */ = {
+			isa = PBXGroup;
+			children = (
+				B17227C6E1374D1DB75293FE /* CredentialStoreTests.swift */,
+				8D20CA566F9CB0FF956479A3 /* RepositoryTests.swift */,
+			);
+			path = DeepLinkTests;
+			sourceTree = "<group>";
+		};
 		EF7D29F9E48E783FC5F0D7A5 = {
 			isa = PBXGroup;
 			children = (
-				30CE0753C5302D4B5BE46D11 /* DeepSeekBalance */,
-				2CCB8F3A2E07676812C33F0B /* DeepSeekBalanceTests */,
-				4888B6B4C1F22FBE62702CB8 /* DeepSeekBalanceWidget */,
+				639E1258B9F0F935C6392CD3 /* DeepLink */,
+				D9033C84B0B7E44B4B9EC7F8 /* DeepLinkTests */,
+				75DF97DF0289A3624C130511 /* DeepLinkWidget */,
 				59AE5838808BB3432746C716 /* Features */,
 				9AE1EECCAACE2DA69FE4181F /* Shared */,
 				D132D0D3D58569B9A751214A /* Products */,
@@ -398,7 +398,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				95A34900ADBABFFD90860891 /* Assets.xcassets in Resources */,
+				9214ABFA6E92CEDC6CE4DC93 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -406,7 +406,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				01DC3924C7A959C3B45FCF4C /* Assets.xcassets in Resources */,
+				ABEC550CE219AFFD8A89F14A /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -421,31 +421,31 @@
 				3CB51D098FD79E6FCE3EB541 /* AgentConnectionModels.swift in Sources */,
 				19258AEF1054C6543895B1AE /* AgentDeviceRegistry.swift in Sources */,
 				DD428757843AED66F68B91AE /* AgentModule.swift in Sources */,
-				1AFB45D617E6257D0EDDE279 /* AgentServer.swift in Sources */,
-				3C8EED9F93EFF3FC9A6E5820 /* AppShell.swift in Sources */,
+				69EE515177181D45D1157239 /* AgentServer.swift in Sources */,
+				6B370B80ADC063B1E0D2724E /* AppShell.swift in Sources */,
 				07A8CB574EEB8835C0142FF1 /* AuthFlowView.swift in Sources */,
 				FCC7C2CA8A95BEE47836622C /* BrokerPairing.swift in Sources */,
 				407FADB25482BACF3D90ABD2 /* CenterHubView.swift in Sources */,
 				C305338EFE197E530473667E /* CenterModeViews.swift in Sources */,
-				472E014E96AFCCB9AD3A8BEB /* ContentView.swift in Sources */,
+				9F2EB3B959D6995DDC5C5DFD /* ContentView.swift in Sources */,
 				6F9909B05FE89A49F36BBA44 /* CredentialStore.swift in Sources */,
 				42F72AABB2777D443763DAC7 /* DashboardSnapshot.swift in Sources */,
-				7A266F19D38C097633D414E4 /* DashboardStore.swift in Sources */,
+				D9EE88243FC0D2CB8FFBA3F4 /* DashboardStore.swift in Sources */,
+				880676DD48FF315DC7533C81 /* DeepLinkApp.swift in Sources */,
 				CEABEC6B808A37297F650E5E /* DeepSeekAPI.swift in Sources */,
-				CB458347B6D792A70B21613A /* DeepSeekBalanceApp.swift in Sources */,
-				AD8130A36D68E5A29AED4941 /* DeepSeekProvider.swift in Sources */,
-				F4BB84F2DEF7F6F35EA878C4 /* FeatureSupport.swift in Sources */,
+				D86074525D9A72A157FE6722 /* DeepSeekProvider.swift in Sources */,
+				CD0489D72F13F89B90BD0A11 /* FeatureSupport.swift in Sources */,
 				BD7EFA52F227DB349C024437 /* HermesAPI.swift in Sources */,
-				DEBC5965B7312045E24CE6DC /* LiveActivityManager.swift in Sources */,
+				5C9EF38CA6A7A2A823290716 /* LiveActivityManager.swift in Sources */,
 				F9F8F705171CB6CCFAC294C3 /* Models.swift in Sources */,
 				6D99A740B7B8C8687AF4A562 /* MonitorActivityAttributes.swift in Sources */,
-				C4713C28A3E49002E4BAE6E4 /* PrintReceiptViews.swift in Sources */,
+				91608042272E9C02BB12D16F /* PrintReceiptViews.swift in Sources */,
 				9C5A205DAA635EDC0A749957 /* SettingsHomeView.swift in Sources */,
 				854C2A4D18962B762FA630D3 /* TeamHubView.swift in Sources */,
 				682F7FC4DE72A08A82B41734 /* TeamModels.swift in Sources */,
-				83C17130B1DC1D0C489EDA6D /* TokenWebView.swift in Sources */,
+				C7D5171FEBECB54AD30E8050 /* TokenWebView.swift in Sources */,
 				78D4DFD4DDC886F89A71B597 /* UsageProvider.swift in Sources */,
-				AAB64EE44E0779A1553BCC9D /* UsageRepository.swift in Sources */,
+				A6CB456D6986428DE7FEB93B /* UsageRepository.swift in Sources */,
 				E4AEE422CDB90482F6E106A5 /* UserDefaults+Shared.swift in Sources */,
 				CBA4D14904F8ACAB22F9BD9E /* WidgetPreviewView.swift in Sources */,
 			);
@@ -455,8 +455,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EC5505AD68604D123A3C77BF /* CredentialStoreTests.swift in Sources */,
-				B4B1691C3AF4AE7CDC1C4BEC /* RepositoryTests.swift in Sources */,
+				9BDC518F532EA80BE44779CD /* CredentialStoreTests.swift in Sources */,
+				CBAA6CBC36F2D76319B11305 /* RepositoryTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -466,13 +466,13 @@
 			files = (
 				5CAD020F878F7D49EE15ECD6 /* CredentialStore.swift in Sources */,
 				C8537F007009E072E1F4A1D8 /* DashboardSnapshot.swift in Sources */,
+				A59237C23ABE33CFF46996A0 /* DeepLinkWidget.swift in Sources */,
+				4EA6DD6F4770799FFA52C949 /* DeepLinkWidgetBundle.swift in Sources */,
 				02386108A9F375CE2473F930 /* DeepSeekAPI.swift in Sources */,
-				EFB33FE63594379589169AEC /* DeepSeekBalanceWidget.swift in Sources */,
-				74FD941A82BE87DB6813710D /* DeepSeekBalanceWidgetBundle.swift in Sources */,
-				BD1309D4C809BF89BFD4B6DA /* Ext.swift in Sources */,
+				6273B8036F1145F7A4393E72 /* Ext.swift in Sources */,
 				0B5FDACA8E047D5026598591 /* Models.swift in Sources */,
 				580212F7355956BFA67614D5 /* MonitorActivityAttributes.swift in Sources */,
-				EF1E9144241DF041AF908D36 /* MonitorLiveActivity.swift in Sources */,
+				00AB6F54F5BA95C969161C15 /* MonitorLiveActivity.swift in Sources */,
 				32FEF3AB01F15FCF226FFF1D /* UsageProvider.swift in Sources */,
 				33B47159602E8B0FBBF81B44 /* UserDefaults+Shared.swift in Sources */,
 			);
@@ -498,11 +498,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = DeepSeekBalance/DeepSeekBalance.entitlements;
+				CODE_SIGN_ENTITLEMENTS = DeepLink/DeepLink.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 534H8W5WL8;
-				INFOPLIST_FILE = DeepSeekBalance/Info.plist;
+				INFOPLIST_FILE = DeepLink/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = DeepLink;
 				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -512,7 +512,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.deepseek.balance;
+				PRODUCT_BUNDLE_IDENTIFIER = com.deeplink.balance;
 				SDKROOT = iphoneos;
 				SUPPORTED_INTERFACE_ORIENTATIONS = (
 					UIInterfaceOrientationPortrait,
@@ -647,17 +647,17 @@
 		78B1B17A55B0ECC0D88DDB0F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = DeepSeekBalanceWidget/DeepSeekBalanceWidget.entitlements;
+				CODE_SIGN_ENTITLEMENTS = DeepLinkWidget/DeepLinkWidget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 534H8W5WL8;
-				INFOPLIST_FILE = DeepSeekBalanceWidget/Info.plist;
+				INFOPLIST_FILE = DeepLinkWidget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.deepseek.balance.widget;
+				PRODUCT_BUNDLE_IDENTIFIER = com.deeplink.balance.widget;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SUPPORTED_INTERFACE_ORIENTATIONS = (
@@ -690,17 +690,17 @@
 		9555FEA6155920EAA2EE5FA6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = DeepSeekBalanceWidget/DeepSeekBalanceWidget.entitlements;
+				CODE_SIGN_ENTITLEMENTS = DeepLinkWidget/DeepLinkWidget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 534H8W5WL8;
-				INFOPLIST_FILE = DeepSeekBalanceWidget/Info.plist;
+				INFOPLIST_FILE = DeepLinkWidget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.deepseek.balance.widget;
+				PRODUCT_BUNDLE_IDENTIFIER = com.deeplink.balance.widget;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SUPPORTED_INTERFACE_ORIENTATIONS = (
@@ -734,11 +734,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = DeepSeekBalance/DeepSeekBalance.entitlements;
+				CODE_SIGN_ENTITLEMENTS = DeepLink/DeepLink.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 534H8W5WL8;
-				INFOPLIST_FILE = DeepSeekBalance/Info.plist;
+				INFOPLIST_FILE = DeepLink/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = DeepLink;
 				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -748,7 +748,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.deepseek.balance;
+				PRODUCT_BUNDLE_IDENTIFIER = com.deeplink.balance;
 				SDKROOT = iphoneos;
 				SUPPORTED_INTERFACE_ORIENTATIONS = (
 					UIInterfaceOrientationPortrait,

@@ -118,14 +118,7 @@ actor HermesAPI {
             return []
         }
 
-        return items.compactMap { item in
-            guard let id = item["id"] as? String, let role = item["role"] as? String else { return nil }
-            return HermesMessage(
-                id: id, role: role,
-                content: item["content"] as? String ?? "",
-                createdAt: item["created_at"] as? String
-            )
-        }
+        return items.compactMap(HermesMessage.parse)
     }
 
     // MARK: - Chat (流式)
@@ -327,6 +320,24 @@ struct HermesMessage: Codable, Identifiable {
     let role: String
     let content: String
     let createdAt: String?
+
+    static func parse(_ item: [String: Any]) -> HermesMessage? {
+        let id: String
+        if let stringID = item["id"] as? String {
+            id = stringID
+        } else if let numericID = item["id"] as? NSNumber {
+            id = numericID.stringValue
+        } else {
+            return nil
+        }
+        guard let role = item["role"] as? String else { return nil }
+        return HermesMessage(
+            id: id,
+            role: role,
+            content: item["content"] as? String ?? "",
+            createdAt: item["created_at"] as? String
+        )
+    }
 
     enum CodingKeys: String, CodingKey {
         case id, role, content

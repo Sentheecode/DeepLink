@@ -50,10 +50,9 @@ struct AgentTab: View {
     @State private var selectedAgentID = UserDefaults.standard.string(forKey: BrokerDefaults.deviceIDKey) ?? ""
     @State private var showAgentPicker = false
     @AppStorage("defaultAgentID") private var defaultAgentID: String = ""
-    @State private var agents: [ConfiguredAgent] = []
+    @State private var agents: [AgentInfo] = []
 
     private var selectedAgentName: String {
-        if selectedAgentID == "local" { return "本地" }
         return agents.first(where: { $0.id == selectedAgentID })?.name ?? "选择 Agent"
     }
 
@@ -143,44 +142,28 @@ struct AgentTab: View {
             .sheet(isPresented: $showAgentPicker) {
                 AgentPickerView(agents: agents, selectedID: $selectedAgentID, defaultID: $defaultAgentID)
             }
-            .onChange(of: selectedAgentID) { _, deviceID in
-                guard !deviceID.isEmpty, deviceID != "local" else { return }
-                UserDefaults.standard.set(deviceID, forKey: BrokerDefaults.deviceIDKey)
+            .onChange(of: selectedAgentID) { _, agentID in
+                guard !agentID.isEmpty else { return }
+                UserDefaults.standard.set(agentID, forKey: BrokerDefaults.deviceIDKey)
                 Task { await store.loadSessions() }
             }
         }
     }
 
     private func loadAgents() {
-        let mode = AgentConnectionMode(
-            rawValue: UserDefaults.standard.string(forKey: BrokerDefaults.connectionModeKey) ?? ""
-        ) ?? .local
-        if mode == .local {
-            agents = HermesAPI.shared.isConfigured
-                ? [ConfiguredAgent(id: "local", name: "Hermes Agent", type: "本地连接", icon: "point.3.connected.trianglepath.dotted", isConnected: true)]
-                : []
-            selectedAgentID = agents.first?.id ?? ""
-            return
-        }
-
         guard KeychainCredentialStore().hasToken(for: .brokerKey) else {
             agents = []
+            selectedAgentID = ""
             return
         }
         Task {
-            do {
-                let client = RemoteBrokerClient()
-                await client.loadSavedConfig()
-                let devices = try await client.fetchDevices()
-                agents = devices.map {
-                    ConfiguredAgent(id: $0.id, name: $0.name, type: $0.kind.rawValue, icon: "desktopcomputer", isConnected: $0.isOnline)
+            let client = RemoteBrokerClient()
+            await client.loadSavedConfig()
+            if let devices = try? await client.fetchDevices() {
+                agents = devices.flatMap { $0.agents }
+                if selectedAgentID.isEmpty || !agents.contains(where: { $0.id == selectedAgentID }) {
+                    selectedAgentID = agents.first?.id ?? ""
                 }
-                if selectedAgentID.isEmpty, let first = devices.first {
-                    selectedAgentID = first.id
-                    UserDefaults.standard.set(first.id, forKey: BrokerDefaults.deviceIDKey)
-                }
-            } catch {
-                agents = []
             }
         }
     }
@@ -189,7 +172,7 @@ struct AgentTab: View {
 // MARK: - Agent Picker Sheet
 
 struct AgentPickerView: View {
-    let agents: [ConfiguredAgent]
+    let agents: [AgentInfo]
     @Binding var selectedID: String
     @Binding var defaultID: String
     @Environment(\.dismiss) private var dismiss
@@ -197,67 +180,35 @@ struct AgentPickerView: View {
     var body: some View {
         NavigationStack {
             List {
-                Section("当前 Agent") {
+                Section("选择 Agent") {
                     ForEach(agents) { agent in
                         Button {
                             selectedID = agent.id
-                            dismiss()
                         } label: {
                             HStack {
-                                Circle().fill(agent.isConnected ? Color.green : Color.gray).frame(width: 8, height: 8)
+                                Circle().fill(agent.isOnline ? Color.green : Color.gray).frame(width: 8, height: 8)
                                 VStack(alignment: .leading, spacing: 2) {
-                                    Text(agent.name).foregroundColor(.primary).fontWeight(.medium)
-                                    Text(agent.type).font(.caption).foregroundColor(.secondary)
+                                    Text(agent.name).foregroundColor(.primary).font(.subheadline.weight(.medium))
+                                    if let v = agent.version { Text("v\(v)").font(.caption).foregroundColor(.secondary) }
                                 }
                                 Spacer()
-                                if selectedID == agent.id { Image(systemName: "checkmark").font(.caption) }
+                                if selectedID == agent.id { Image(systemName: "checkmark") }
                             }
                         }
                     }
                 }
-
-                Section {
-                    ForEach(agents) { agent in
-                        Button {
-                            defaultID = agent.id
-                            dismiss()
-                        } label: {
-                            HStack {
-                                Text(agent.name).foregroundColor(.primary)
-                                Spacer()
-                                if defaultID == agent.id { Image(systemName: "checkmark").font(.caption) }
-                            }
-                        }
-                    }
-                    if defaultID.isEmpty {
-                        HStack {
-                            Text("不启用").foregroundColor(.primary)
-                            Spacer()
-                            Image(systemName: "checkmark").font(.caption)
-                        }
-                        .contentShape(Rectangle())
-                        .onTapGesture { defaultID = ""; dismiss() }
-                    }
-                } header: {
-                    Text("默认处理 Agent")
-                } footer: {
-                    Text("语音和拍照内容将自动发送到默认 Agent。")
+                if agents.isEmpty {
+                    Section { Text("暂无可用 Agent，请先在设置中配置连接。").font(.subheadline).foregroundColor(.secondary) }
                 }
             }
-            .navigationTitle("选择 Agent")
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("切换 Agent")
+            .presentationDetents([.medium])
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("完成") { dismiss() }
-                }
+                ToolbarItem(placement: .topBarTrailing) { Button("完成") { dismiss() } }
             }
         }
-        .presentationDetents([.medium])
     }
 }
-
-// MARK: - 全局检索
-
 struct GlobalSearchView: View {
     @State private var searchText = ""
     @State private var messages: [GlobalSearchMessage] = []
@@ -474,6 +425,7 @@ struct AgentConversationView: View {
     @State private var inputText = ""
     @State private var messages: [AgentChatMessage] = []
     @State private var isLoadingHistory = false
+    @State private var historyError: String?
     @State private var isSending = false
     @State private var sendTask: Task<Void, Never>?
     @FocusState private var isFocused: Bool
@@ -486,6 +438,23 @@ struct AgentConversationView: View {
                     LazyVStack(spacing: 12) {
                         if isLoadingHistory {
                             ProgressView().padding()
+                        } else if let historyError, messages.isEmpty {
+                            VStack(spacing: 10) {
+                                Image(systemName: "exclamationmark.triangle")
+                                    .font(.title2)
+                                    .foregroundStyle(.orange)
+                                Text("会话记录加载失败")
+                                    .font(.headline)
+                                Text(historyError)
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                    .multilineTextAlignment(.center)
+                                Button("重新加载") {
+                                    Task { await loadMessages() }
+                                }
+                            }
+                            .padding(.horizontal, 24)
+                            .padding(.vertical, 60)
                         } else if messages.isEmpty, !isSending {
                             VStack(spacing: 8) {
                                 Image(systemName: "bubble.left.and.bubble.right").font(.title2).foregroundColor(.secondary)
@@ -651,18 +620,17 @@ struct AgentConversationView: View {
             messages = cached
         }
         isLoadingHistory = true
+        historyError = nil
         do {
             let msgs = try await store.channel.listMessages(sessionId: sessionId, before: nil, limit: 50)
             let mapped = msgs.map {
                 AgentChatMessage(id: $0.id, role: $0.role, content: $0.content, isStreaming: false, state: .normal)
             }
-            if !mapped.isEmpty {
-                messages = mapped
-                store.messageCache[sessionId] = mapped
-                store.saveMessagesToDisk(sessionId: sessionId, messages: mapped)
-            }
+            messages = mapped
+            store.messageCache[sessionId] = mapped
+            store.saveMessagesToDisk(sessionId: sessionId, messages: mapped)
         } catch {
-            // 保留缓存，不打断页面
+            historyError = error.localizedDescription
         }
         isLoadingHistory = false
 

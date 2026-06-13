@@ -98,9 +98,9 @@ struct WidgetPreviewView: View {
             }
 
             Section("快捷入口") {
-                LabeledContent("Token") { Text("deepseekbalance://token").foregroundColor(.secondary) }
-                LabeledContent("Agent") { Text("deepseekbalance://agent").foregroundColor(.secondary) }
-                LabeledContent("快捷工具") { Text("deepseekbalance://center/voice").foregroundColor(.secondary) }
+                LabeledContent("Token") { Text("deeplink://token").foregroundColor(.secondary) }
+                LabeledContent("Agent") { Text("deeplink://agent").foregroundColor(.secondary) }
+                LabeledContent("快捷工具") { Text("deeplink://center/voice").foregroundColor(.secondary) }
             }
         }
         .navigationTitle("组件与快捷入口")

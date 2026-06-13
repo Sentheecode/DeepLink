@@ -4,15 +4,9 @@ import WidgetKit
 struct SettingsTab: View {
     let onLogout: () -> Void
 
-    @AppStorage(BrokerDefaults.connectionModeKey) private var connectionModeRawValue = AgentConnectionMode.local.rawValue
     @State private var account: BrokerAccount?
     @State private var isLoadingAccount = false
     @State private var cachedName = UserDefaults.standard.cachedUserDisplayName
-    @State private var showDebugAlert = false
-
-    private var connectionMode: AgentConnectionMode {
-        AgentConnectionMode(rawValue: connectionModeRawValue) ?? .local
-    }
 
     var body: some View {
         NavigationStack {
@@ -46,9 +40,13 @@ struct SettingsTab: View {
                     Task {
                         let store = KeychainCredentialStore()
                         try? store.deleteToken(for: .brokerKey)
+                        try? store.deleteToken(for: .deepseek)
+                        try? store.deleteToken(for: .hermesKey)
                         UserDefaults.standard.hasCompletedLogin = false
                         UserDefaults.standard.savedUserNames = []
                         UserDefaults.standard.cachedUserDisplayName = nil
+                        UserDefaults.shared.savedWidgetData = nil
+                        await WidgetCenter.shared.reloadAllTimelines()
                         await MainActor.run { onLogout() }
                     }
                 }
@@ -59,7 +57,7 @@ struct SettingsTab: View {
                 NavigationLink(destination: AgentConnectionSettingsView()) {
                     settingsRow(icon: "point.3.connected.trianglepath.dotted", color: .blue,
                                 title: "Agent 连接",
-                                subtitle: connectionMode == .broker ? "云端模式" : "局域网模式")
+                                subtitle: "云端模式")
                 }
                 NavigationLink(destination: ModelCredentialSettingsView()) {
                     settingsRow(icon: "key.fill", color: .orange,
@@ -127,32 +125,8 @@ struct SettingsTab: View {
             } header: {
                 settingsSectionHeader(icon: "gearshape.2", title: "应用")
             }
-
-            // MARK: - 调试
-            Section {
-                Button {
-                    connectionModeRawValue = AgentConnectionMode.local.rawValue
-                    UserDefaults.standard.set("http://localhost:8642", forKey: "hermesURL")
-                    Task {
-                        await HermesAPI.shared.configure(baseURL: "http://localhost:8642", apiKey: "")
-                    }
-                    showDebugAlert = true
-                } label: {
-                    HStack(spacing: 10) {
-                        Image(systemName: "hammer.fill")
-                            .font(.system(size: 13))
-                            .foregroundColor(.orange)
-                            .frame(width: 22)
-                        Text("快速配置本地模式")
-                            .foregroundColor(.primary)
-                    }
-                }
-            } header: {
-                settingsSectionHeader(icon: "wrench.adjustable", title: "调试")
-            }
         }
         .refreshable { await loadAccount() }
-        .alert("本地模式已配置完成", isPresented: $showDebugAlert) {}
     }
 
     private func settingsRow(icon: String, color: Color, title: String, subtitle: String?) -> some View {

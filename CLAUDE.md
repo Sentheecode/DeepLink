@@ -140,7 +140,7 @@ Connects to Hermes API Server running on a local Mac (LAN):
 ## Adding New Files
 
 1. Create the file in the filesystem
-2. If under `DeepSeekBalance/Features/`, `project.yml` auto-includes via `**/*.swift` glob
+2. If under `DeepLink/Features/`, `project.yml` auto-includes via `**/*.swift` glob
 3. Otherwise, update `project.yml` sources list
 4. Run `xcodegen generate`
 5. Never edit `project.pbxproj` manually

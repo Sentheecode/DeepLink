@@ -63,7 +63,7 @@ struct AppShell: View {
     }
 
     private func handleDeepLink(_ url: URL) {
-        guard url.scheme == "deepseekbalance" else { return }
+        guard url.scheme == "deeplink" else { return }
 
         // Handle configuration deep link
         if url.host == "configure" || url.pathComponents.contains("configure") {

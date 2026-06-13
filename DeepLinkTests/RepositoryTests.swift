@@ -78,6 +78,24 @@ final class RepositoryTests: XCTestCase {
         )
     }
 
+    func testHermesMessageParsesNumericAndStringIdentifiers() {
+        let numeric = HermesMessage.parse([
+            "id": 12887,
+            "role": "user",
+            "content": "数字消息",
+            "created_at": "2026-06-14T00:00:00Z",
+        ])
+        let string = HermesMessage.parse([
+            "id": "message-2",
+            "role": "assistant",
+            "content": "字符串消息",
+        ])
+
+        XCTAssertEqual(numeric?.id, "12887")
+        XCTAssertEqual(numeric?.content, "数字消息")
+        XCTAssertEqual(string?.id, "message-2")
+    }
+
     func testDeepSeekTokenCandidateExtractsNestedAndBearerValues() {
         XCTAssertEqual(
             DeepSeekTokenCandidate.values(

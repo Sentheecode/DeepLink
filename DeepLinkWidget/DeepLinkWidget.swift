@@ -182,9 +182,9 @@ struct MediumWidgetView: View {
 struct DashboardWidgetView: View {
     let entry: BalanceEntry
 
-    private var tokenURL: URL { URL(string: "deepseekbalance://token")! }
-    private var agentURL: URL { URL(string: "deepseekbalance://agent")! }
-    private var centerURL: URL { URL(string: "deepseekbalance://center/voice")! }
+    private var tokenURL: URL { URL(string: "deeplink://token")! }
+    private var agentURL: URL { URL(string: "deeplink://agent")! }
+    private var centerURL: URL { URL(string: "deeplink://center/voice")! }
 
     var body: some View {
         VStack(spacing: 12) {

@@ -118,13 +118,53 @@ actor RemoteBrokerClient: AgentBrokerClient {
         guard let items = json["data"] as? [[String: Any]] else { return [] }
         return items.compactMap { item in
             guard let id = item["id"] as? String, let name = item["name"] as? String else { return nil }
+            let rawAgents = (item["agents"] as? [[String: Any]]) ?? []
+            let agents = rawAgents.map { a -> AgentInfo in
+                let rawSkills = (a["skills"] as? [[String: Any]]) ?? []
+                let skills = rawSkills.map { AgentSkill(name: $0["name"] as? String ?? "", description: $0["description"] as? String) }
+                return AgentInfo(
+                    id: a["id"] as? String ?? "",
+                    name: a["name"] as? String ?? "",
+                    kind: a["kind"] as? String ?? "hermes",
+                    endpoint: a["endpoint"] as? String,
+                    version: a["version"] as? String,
+                    status: a["status"] as? String ?? "online",
+                    isOnline: a["isOnline"] as? Bool ?? false,
+                    capabilities: a["capabilities"] as? [String] ?? [],
+                    skills: skills,
+                    lastSeenAt: Self.parseDate(a["lastSeenAt"] as? String)
+                )
+            }
             return AgentDevice(
                 id: id,
                 name: name,
                 kind: .brokerRelay,
                 endpoint: item["endpoint"] as? String,
                 isOnline: item["isOnline"] as? Bool ?? false,
-                lastSeenAt: Self.parseDate(item["lastSeenAt"] as? String)
+                lastSeenAt: Self.parseDate(item["lastSeenAt"] as? String),
+                agentCount: item["agentCount"] as? Int ?? agents.count,
+                agents: agents
+            )
+        }
+    }
+
+    func fetchAgents(deviceId: String) async throws -> [AgentInfo] {
+        let json = try await request(path: "/v1/devices/\(deviceId)/agents")
+        guard let items = json["data"] as? [[String: Any]] else { return [] }
+        return items.map { a in
+            let rawSkills = (a["skills"] as? [[String: Any]]) ?? []
+            let skills = rawSkills.map { AgentSkill(name: $0["name"] as? String ?? "", description: $0["description"] as? String) }
+            return AgentInfo(
+                id: a["id"] as? String ?? "",
+                name: a["name"] as? String ?? "",
+                kind: a["kind"] as? String ?? "hermes",
+                endpoint: a["endpoint"] as? String,
+                version: a["version"] as? String,
+                status: a["status"] as? String ?? "online",
+                isOnline: a["isOnline"] as? Bool ?? false,
+                capabilities: a["capabilities"] as? [String] ?? [],
+                skills: skills,
+                lastSeenAt: Self.parseDate(a["lastSeenAt"] as? String)
             )
         }
     }
@@ -161,15 +201,7 @@ actor RemoteBrokerClient: AgentBrokerClient {
               let items = (object["data"] as? [[String: Any]]) ?? (object["messages"] as? [[String: Any]]) else {
             return []
         }
-        return items.compactMap { item in
-            guard let id = item["id"] as? String, let role = item["role"] as? String else { return nil }
-            return HermesMessage(
-                id: id,
-                role: role,
-                content: item["content"] as? String ?? "",
-                createdAt: item["created_at"] as? String
-            )
-        }
+        return items.compactMap(HermesMessage.parse)
     }
 
     func chatStream(sessionId: String, message: String) async -> AsyncThrowingStream<HermesStreamEvent, Error> {

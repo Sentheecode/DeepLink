@@ -96,6 +96,25 @@ def configure_database(path: Path = DATABASE_PATH) -> None:
                 FOREIGN KEY(owner_id) REFERENCES users(id)
             );
             CREATE INDEX IF NOT EXISTS devices_owner_idx ON devices(owner_id);
+            CREATE TABLE IF NOT EXISTS agents (
+                id TEXT PRIMARY KEY,
+                device_id TEXT NOT NULL,
+                owner_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                kind TEXT NOT NULL DEFAULT 'hermes',
+                endpoint TEXT,
+                version TEXT,
+                status TEXT NOT NULL DEFAULT 'online',
+                capabilities_json TEXT NOT NULL DEFAULT '[]',
+                skills_json TEXT NOT NULL DEFAULT '[]',
+                profile_json TEXT NOT NULL DEFAULT '{}',
+                last_seen_at TEXT,
+                created_at TEXT NOT NULL,
+                FOREIGN KEY(device_id) REFERENCES devices(id),
+                FOREIGN KEY(owner_id) REFERENCES users(id)
+            );
+            CREATE INDEX IF NOT EXISTS agents_device_idx ON agents(device_id);
+            CREATE INDEX IF NOT EXISTS agents_owner_idx ON agents(owner_id);
             CREATE TABLE IF NOT EXISTS audit_events (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 actor_type TEXT NOT NULL,
@@ -136,6 +155,10 @@ def configure_database(path: Path = DATABASE_PATH) -> None:
         for name, definition in (("endpoint", "TEXT"),):
             if name not in dev_columns:
                 db.execute(f"ALTER TABLE devices ADD COLUMN {name} {definition}")
+        agent_cols = {row["name"] for row in db.execute("PRAGMA table_info(agents)").fetchall()}
+        for name, definition in (("profile_json", "TEXT NOT NULL DEFAULT '{}'"),):
+            if name not in agent_cols:
+                db.execute(f"ALTER TABLE agents ADD COLUMN {name} {definition}")
         for key, value in (
             ("node_enrollment_minutes", "15"),
             ("online_timeout_seconds", "75"),
@@ -160,6 +183,17 @@ class NodeRegistration(BaseModel):
 class DeviceUpdate(BaseModel):
     name: str | None = Field(default=None, min_length=1, max_length=128)
     endpoint: str | None = Field(default=None, max_length=512)
+
+
+class AgentRegistration(BaseModel):
+    id: str = Field(min_length=1, max_length=128)
+    name: str = Field(min_length=1, max_length=128)
+    kind: str = Field(default="hermes", max_length=64)
+    endpoint: str | None = Field(default=None, max_length=512)
+    version: str | None = Field(default=None, max_length=32)
+    status: str = Field(default="online", max_length=16)
+    capabilities: list[str] = Field(default_factory=list)
+    skills: list[dict[str, Any]] = Field(default_factory=list)
 
 
 class EnrollmentConsumption(BaseModel):
@@ -584,10 +618,23 @@ if [ "$(uname -s 2>/dev/null)" = "Darwin" ]; then
 fi
 HERMES_URL="${{HERMES_URL:-http://$DEFAULT_HOST:8642}}"
 HERMES_KEY="${{HERMES_KEY:-}}"
+HERMES_ENV="${{HERMES_ENV:-$HOME/.hermes/.env}}"
+if [ -z "$HERMES_KEY" ] && [ -f "$HERMES_ENV" ]; then
+  set -a
+  . "$HERMES_ENV"
+  set +a
+  HERMES_KEY="${{API_SERVER_KEY:-}}"
+fi
 
 mkdir -p "$INSTALL_DIR"
 echo "Checking Broker: $BROKER_URL"
 curl -fsSL "$BROKER_URL/health" >/dev/null
+echo "Checking Hermes: $HERMES_URL"
+if [ -n "$HERMES_KEY" ]; then
+  curl -fsSL -H "Authorization: Bearer $HERMES_KEY" "$HERMES_URL/api/sessions" >/dev/null
+else
+  curl -fsSL "$HERMES_URL/api/sessions" >/dev/null
+fi
 curl -fsSL "$BROKER_URL/channel/hermes_bridge.py" -o "$INSTALL_DIR/hermes_bridge.py"
 python3 -m venv "$INSTALL_DIR/.venv"
 "$INSTALL_DIR/.venv/bin/pip" install --quiet 'httpx>=0.28,<1'
@@ -710,16 +757,25 @@ def list_devices(user: UserIdentity = Depends(require_user)) -> dict[str, Any]:
         last_seen = node.last_seen_at if node else (
             datetime.fromisoformat(row["last_seen_at"]) if row["last_seen_at"] else None
         )
+        is_online = bool(
+            last_seen
+            and (now - last_seen).total_seconds() < int(runtime_setting("online_timeout_seconds", "75"))
+        )
+        with database() as db:
+            agent_rows = db.execute(
+                "SELECT id, name, kind, status, version FROM agents WHERE device_id = ? AND owner_id = ? AND status != 'offline'",
+                (row["id"], user.id),
+            ).fetchall()
+        agents_list = [{"id": a["id"], "name": a["name"], "kind": a["kind"], "status": a["status"], "version": a["version"]} for a in agent_rows]
         data.append(
             {
                 "id": row["id"],
                 "name": row["name"],
                 "kind": "brokerRelay",
                 "endpoint": row["endpoint"],
-                "isOnline": bool(
-                    last_seen
-                    and (now - last_seen).total_seconds() < int(runtime_setting("online_timeout_seconds", "75"))
-                ),
+                "isOnline": is_online,
+                "agentCount": len(agents_list),
+                "agents": agents_list,
                 "lastSeenAt": last_seen,
             }
         )
@@ -737,6 +793,74 @@ def delete_device(device_id: str, user: UserIdentity = Depends(require_user)) ->
         raise HTTPException(status_code=404, detail="device not found")
     nodes.pop(device_id, None)
     audit("user", user.id, "revoke_device", "device", device_id)
+    return {"ok": True}
+
+
+@app.get("/v1/devices/{device_id}/agents")
+def list_agents(device_id: str, user: UserIdentity = Depends(require_user)) -> dict[str, Any]:
+    now = utc_now()
+    timeout = int(runtime_setting("online_timeout_seconds", "75"))
+    cutoff = now - timedelta(seconds=timeout) if timeout else now
+    with database() as db:
+        rows = db.execute(
+            "SELECT id, device_id, name, kind, endpoint, version, status, capabilities_json, skills_json, profile_json, last_seen_at, created_at FROM agents WHERE device_id = ? AND owner_id = ? ORDER BY kind, name",
+            (device_id, user.id),
+        ).fetchall()
+    data = []
+    for row in rows:
+        last_seen = datetime.fromisoformat(row["last_seen_at"]) if row["last_seen_at"] else None
+        data.append({
+            "id": row["id"],
+            "deviceId": row["device_id"],
+            "name": row["name"],
+            "kind": row["kind"],
+            "endpoint": row["endpoint"],
+            "version": row["version"],
+            "status": row["status"],
+            "isOnline": bool(last_seen and (now - last_seen).total_seconds() < timeout) if timeout else True,
+            "capabilities": json.loads(row["capabilities_json"] or "[]"),
+            "skills": json.loads(row["skills_json"] or "[]"),
+            "profile": json.loads(row["profile_json"] or "{}"),
+            "lastSeenAt": last_seen,
+        })
+    return {"data": data}
+
+
+@app.post("/v1/agents/register")
+def register_agent(registration: AgentRegistration, identity: NodeIdentity = Depends(require_node)) -> dict[str, Any]:
+    assert_node_device(registration.id, identity)
+    with database() as db:
+        db.execute(
+            """INSERT OR REPLACE INTO agents(id, device_id, owner_id, name, kind, endpoint, version, status, capabilities_json, skills_json, last_seen_at, created_at)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, COALESCE((SELECT created_at FROM agents WHERE id = ?), ?))""",
+            (
+                registration.id,
+                identity.device_id,
+                identity.owner_id,
+                registration.name,
+                registration.kind,
+                registration.endpoint,
+                registration.version,
+                registration.status,
+                json.dumps(registration.capabilities),
+                json.dumps(registration.skills),
+                iso_now(),
+                registration.id,
+                iso_now(),
+            ),
+        )
+    audit("node", registration.id, "register_agent", "agent", registration.id)
+    return {"ok": True}
+
+
+@app.post("/v1/agents/{agent_id}/heartbeat")
+def agent_heartbeat(agent_id: str, identity: NodeIdentity = Depends(require_node)) -> dict[str, Any]:
+    with database() as db:
+        row = db.execute("SELECT device_id FROM agents WHERE id = ? AND owner_id = ?", (agent_id, identity.owner_id)).fetchone()
+        if row is None:
+            raise HTTPException(status_code=404, detail="agent not found")
+        assert_node_device(agent_id, identity)
+        db.execute("UPDATE agents SET last_seen_at = ? WHERE id = ?", (iso_now(), agent_id))
     return {"ok": True}
 
 
@@ -796,7 +920,7 @@ async def next_command(
     node.last_seen_at = utc_now()
     try:
         return await asyncio.wait_for(node.commands.get(), timeout=min(max(timeout, 1), 30))
-    except TimeoutError:
+    except asyncio.TimeoutError:
         return Response(status_code=204)
 
 
@@ -839,7 +963,7 @@ async def rpc(
 
     try:
         result = await asyncio.wait_for(result_future, timeout=RPC_TIMEOUT_SECONDS)
-    except TimeoutError as exc:
+    except asyncio.TimeoutError as exc:
         pending_results.pop(command.id, None)
         record_rpc(user.id, device_id, request.method, False)
         raise HTTPException(status_code=504, detail="node response timed out") from exc
