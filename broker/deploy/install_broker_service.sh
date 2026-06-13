@@ -2,8 +2,8 @@
 set -eu
 
 SOURCE_DIR="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
-INSTALL_DIR=/opt/deepseekbalance-broker
-STATE_DIR=/var/lib/deepseekbalance-broker
+INSTALL_DIR=/opt/deeplink-broker
+STATE_DIR=/var/lib/deeplink-broker
 SERVICE_USER=deepseekbroker
 
 if [ "$(id -u)" -ne 0 ]; then
@@ -19,18 +19,30 @@ python3 -m venv "$INSTALL_DIR/.venv"
 chown -R "$SERVICE_USER:$SERVICE_USER" "$INSTALL_DIR"
 chown -R "$SERVICE_USER:$SERVICE_USER" "$STATE_DIR"
 
-if [ ! -f /etc/deepseekbalance-broker.env ]; then
-  cp "$SOURCE_DIR/deploy/deepseekbalance-broker.env.example" /etc/deepseekbalance-broker.env
-  chmod 600 /etc/deepseekbalance-broker.env
+if [ ! -f /etc/deeplink-broker.env ]; then
+  cp "$SOURCE_DIR/deploy/deeplink-broker.env.example" /etc/deeplink-broker.env
+  chmod 600 /etc/deeplink-broker.env
   ADMIN_TOKEN="$(python3 -c 'import secrets; print(secrets.token_urlsafe(48))')"
-  sed -i "s/replace-with-a-long-random-secret/$ADMIN_TOKEN/" /etc/deepseekbalance-broker.env
-  echo "Created /etc/deepseekbalance-broker.env with a random BROKER_ADMIN_TOKEN."
+  sed -i "s/replace-with-a-long-random-secret/$ADMIN_TOKEN/" /etc/deeplink-broker.env
+  echo "Created /etc/deeplink-broker.env with a random BROKER_ADMIN_TOKEN."
 fi
 
-cp "$SOURCE_DIR/deploy/deepseekbalance-broker.service" /etc/systemd/system/
+cp "$SOURCE_DIR/deploy/deeplink-broker.service" /etc/systemd/system/
 systemctl daemon-reload
-systemctl enable deepseekbalance-broker
+systemctl enable --now deeplink-broker
+systemctl restart deeplink-broker
 
-echo "After editing /etc/deepseekbalance-broker.env, run:"
-echo "  sudo systemctl restart deepseekbalance-broker"
-echo "  sudo systemctl status deepseekbalance-broker"
+echo "Waiting for the Broker health endpoint..."
+attempt=0
+until curl --fail --silent --show-error http://127.0.0.1:8010/health; do
+  attempt=$((attempt + 1))
+  if [ "$attempt" -ge 10 ]; then
+    echo "Broker did not become healthy. Inspect it with:"
+    echo "  sudo systemctl status deeplink-broker --no-pager"
+    echo "  sudo journalctl -u deeplink-broker -n 100 --no-pager"
+    exit 1
+  fi
+  sleep 1
+done
+echo
+echo "Broker is running on http://127.0.0.1:8010."

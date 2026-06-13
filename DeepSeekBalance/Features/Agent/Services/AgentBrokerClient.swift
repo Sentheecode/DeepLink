@@ -5,6 +5,8 @@ protocol AgentBrokerClient: Sendable {
     func disconnect() async
     func fetchDevices() async throws -> [AgentDevice]
     func selectDevice(id: String) async throws
+    func deleteDevice(id: String) async throws
+    func updateDevice(id: String, name: String?, endpoint: String?) async throws
     func listSessions() async throws -> [HermesSession]
     func createSession(title: String?) async throws -> HermesSession
     func deleteSession(id: String) async throws
@@ -19,6 +21,8 @@ struct LocalBrokerClient: AgentBrokerClient {
     func disconnect() async {}
     func fetchDevices() async throws -> [AgentDevice] { [] }
     func selectDevice(id: String) async throws {}
+    func deleteDevice(id: String) async throws {}
+    func updateDevice(id: String, name: String?, endpoint: String?) async throws {}
     func listSessions() async throws -> [HermesSession] { try await channel.listSessions() }
     func createSession(title: String?) async throws -> HermesSession { try await channel.createSession(title: title) }
     func deleteSession(id: String) async throws { try await channel.deleteSession(id: id) }
@@ -231,12 +235,20 @@ actor RemoteBrokerClient: AgentBrokerClient {
         }
     }
 
+    func updateDevice(id: String, name: String? = nil, endpoint: String? = nil) async throws {
+        var body: [String: Any] = [:]
+        if let name { body["name"] = name }
+        if let endpoint { body["endpoint"] = endpoint }
+        guard !body.isEmpty else { return }
+        _ = try await request(path: "/v1/devices/\(id)", method: "PUT", body: body)
+    }
+
     func signOut() throws {
         token = ""
         selectedDeviceID = ""
         try KeychainCredentialStore().deleteToken(for: .brokerKey)
         UserDefaults.standard.removeObject(forKey: BrokerDefaults.deviceIDKey)
-        UserDefaults.standard.set(AgentConnectionMode.local.rawValue, forKey: BrokerDefaults.connectionModeKey)
+        UserDefaults.standard.set(AgentConnectionMode.broker.rawValue, forKey: BrokerDefaults.connectionModeKey)
     }
 
     private func rpc(method: String, params: [String: Any] = [:]) async throws -> Any {

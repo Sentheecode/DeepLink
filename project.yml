@@ -13,11 +13,11 @@ settings:
   SWIFT_VERSION: "5.0"
 
 targets:
-  DeepSeekBalance:
+  DeepLink:
     type: application
     platform: iOS
     deploymentTarget: "18.0"
-    testTarget: DeepSeekBalanceTests
+    testTarget: DeepLinkTests
     info:
       path: DeepSeekBalance/Info.plist
       properties:
@@ -103,7 +103,7 @@ targets:
         CODE_SIGN_STYLE: Automatic
         DEVELOPMENT_TEAM: 534H8W5WL8
 
-  DeepSeekBalanceTests:
+  DeepLinkTests:
     type: bundle.unit-test
     platform: iOS
     deploymentTarget: "18.0"
@@ -112,7 +112,7 @@ targets:
         includes:
           - "*.swift"
     dependencies:
-      - target: DeepSeekBalance
+      - target: DeepLink
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.deepseek.balance.tests

@@ -1,5 +1,5 @@
 import XCTest
-@testable import DeepSeekBalance
+@testable import DeepLink
 
 final class CredentialStoreTests: XCTestCase {
     let store = KeychainCredentialStore()
@@ -36,5 +36,17 @@ final class CredentialStoreTests: XCTestCase {
         try store.deleteToken(for: provider)
         XCTAssertNoThrow(try store.migrateLegacyTokenIfNeeded(for: provider))
         XCTAssertFalse(store.hasToken(for: provider))
+    }
+
+    func testBrokerSignOutKeepsCloudModeSelected() async throws {
+        UserDefaults.standard.set(AgentConnectionMode.broker.rawValue, forKey: BrokerDefaults.connectionModeKey)
+        let client = RemoteBrokerClient()
+
+        try await client.signOut()
+
+        XCTAssertEqual(
+            UserDefaults.standard.string(forKey: BrokerDefaults.connectionModeKey),
+            AgentConnectionMode.broker.rawValue
+        )
     }
 }

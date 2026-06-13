@@ -35,7 +35,7 @@ def password_hash(password: str, salt: str) -> str:
 
 BROKER_ADMIN_TOKEN = os.environ.get("BROKER_ADMIN_TOKEN") or os.environ.get("BROKER_TOKEN", "")
 RPC_TIMEOUT_SECONDS = float(os.environ.get("RPC_TIMEOUT_SECONDS", "180"))
-BROKER_PUBLIC_URL = os.environ.get("BROKER_PUBLIC_URL", "http://127.0.0.1:8000").rstrip("/")
+BROKER_PUBLIC_URL = os.environ.get("BROKER_PUBLIC_URL", "http://127.0.0.1:8010").rstrip("/")
 BASE_DIR = Path(__file__).resolve().parent
 DATABASE_PATH = Path(os.environ.get("BROKER_DB_PATH", BASE_DIR / "broker.db"))
 
@@ -71,6 +71,7 @@ def configure_database(path: Path = DATABASE_PATH) -> None:
                 access_token_hash TEXT NOT NULL UNIQUE,
                 password_salt TEXT,
                 password_hash TEXT,
+                email TEXT NOT NULL DEFAULT '',
                 created_at TEXT NOT NULL,
                 disabled INTEGER NOT NULL DEFAULT 0
             );
@@ -95,8 +96,6 @@ def configure_database(path: Path = DATABASE_PATH) -> None:
                 FOREIGN KEY(owner_id) REFERENCES users(id)
             );
             CREATE INDEX IF NOT EXISTS devices_owner_idx ON devices(owner_id);
-            -- Add email column to users table if not exists (migration v2)
-            ALTER TABLE users ADD COLUMN email TEXT NOT NULL DEFAULT '';
             CREATE TABLE IF NOT EXISTS audit_events (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 actor_type TEXT NOT NULL,
@@ -128,10 +127,15 @@ def configure_database(path: Path = DATABASE_PATH) -> None:
             ("username", "TEXT"),
             ("password_salt", "TEXT"),
             ("password_hash", "TEXT"),
+            ("email", "TEXT NOT NULL DEFAULT ''"),
         ):
             if name not in columns:
                 db.execute(f"ALTER TABLE users ADD COLUMN {name} {definition}")
         db.execute("CREATE UNIQUE INDEX IF NOT EXISTS users_username_idx ON users(username)")
+        dev_columns = {row["name"] for row in db.execute("PRAGMA table_info(devices)").fetchall()}
+        for name, definition in (("endpoint", "TEXT"),):
+            if name not in dev_columns:
+                db.execute(f"ALTER TABLE devices ADD COLUMN {name} {definition}")
         for key, value in (
             ("node_enrollment_minutes", "15"),
             ("online_timeout_seconds", "75"),
@@ -149,7 +153,19 @@ configure_database()
 class NodeRegistration(BaseModel):
     device_id: str = Field(min_length=1, max_length=128)
     name: str = Field(min_length=1, max_length=128)
+    endpoint: str | None = Field(default=None, max_length=512)
     capabilities: list[str] = Field(default_factory=list)
+
+
+class DeviceUpdate(BaseModel):
+    name: str | None = Field(default=None, min_length=1, max_length=128)
+    endpoint: str | None = Field(default=None, max_length=512)
+
+
+class EnrollmentConsumption(BaseModel):
+    token: str = Field(min_length=1, max_length=256)
+    device_id: str = Field(min_length=1, max_length=128)
+    name: str = Field(min_length=1, max_length=128)
 
 
 class LoginRequest(BaseModel):
@@ -336,7 +352,10 @@ def set_runtime_setting(key: str, value: str) -> None:
 
 @app.get("/health")
 async def health() -> dict[str, Any]:
-    return {"ok": True, "online_nodes": len(nodes), "time": utc_now(), "version": app.version}
+    timeout = int(runtime_setting("online_timeout_seconds", "75"))
+    cutoff = utc_now() - timedelta(seconds=timeout)
+    online = sum(1 for n in nodes.values() if n.last_seen_at and n.last_seen_at > cutoff)
+    return {"ok": True, "online_nodes": online, "time": utc_now(), "version": app.version}
 
 
 @app.post("/v1/admin/users")
@@ -373,8 +392,9 @@ def create_user_account(
 
 @app.post("/v1/auth/register")
 def register(request: RegisterRequest) -> dict[str, Any]:
-    user_id = str(uuid.uuid4())
+    user_id = str(uuid4())
     salt = secrets.token_hex(16)
+    access_token = secrets.token_urlsafe(48)
     with database() as db:
         try:
             db.execute(
@@ -388,7 +408,7 @@ def register(request: RegisterRequest) -> dict[str, Any]:
                     user_id,
                     request.username.lower(),
                     request.username,
-                    token_hash(secrets.token_urlsafe(48)),
+                    token_hash(access_token),
                     salt,
                     password_hash(request.password, salt),
                     request.email,
@@ -397,12 +417,6 @@ def register(request: RegisterRequest) -> dict[str, Any]:
             )
         except sqlite3.IntegrityError:
             raise HTTPException(status_code=409, detail="用户名已存在")
-    # Auto-login: generate access token
-    access_token = secrets.token_urlsafe(48)
-    db.execute(
-        "UPDATE users SET access_token_hash = ? WHERE id = ?",
-        (token_hash(access_token), user_id),
-    )
     audit("user", user_id, "register", "user", user_id)
     return {
         "access_token": access_token,
@@ -491,20 +505,27 @@ def create_enrollment(user: UserIdentity = Depends(require_user)) -> dict[str, A
 
 
 def consume_enrollment(token: str, registration: NodeRegistration) -> dict[str, Any]:
-    invite = find_active_invite(token, "node")
     node_token = secrets.token_urlsafe(48)
     with database() as db:
+        # Check and consume within a single transaction to prevent race conditions
+        row = db.execute(
+            "SELECT owner_id FROM invites WHERE token_hash = ? AND kind = 'node' AND consumed_at IS NULL AND (expires_at IS NULL OR expires_at > ?)",
+            (token_hash(token), iso_now()),
+        ).fetchone()
+        if row is None:
+            raise HTTPException(status_code=404, detail="enrollment token is invalid or already consumed")
         db.execute(
             """
             INSERT INTO devices(
-                id, owner_id, name, capabilities_json, node_token_hash, created_at
-            ) VALUES (?, ?, ?, ?, ?, ?)
+                id, owner_id, name, capabilities_json, endpoint, node_token_hash, created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 registration.device_id,
-                invite["owner_id"],
+                row["owner_id"],
                 registration.name,
                 "[]",
+                registration.endpoint,
                 token_hash(node_token),
                 iso_now(),
             ),
@@ -525,7 +546,7 @@ async def download_bridge() -> FileResponse:
 @app.get("/channel/{token}", response_class=PlainTextResponse)
 async def channel_instructions(token: str) -> str:
     find_active_invite(token, "node")
-    return f"""# DeepSeekBalance Custom Agent Channel
+    return f"""# DeepLink Agent Channel
 
 This one-time link belongs to one user and expires after 15 minutes.
 
@@ -537,30 +558,44 @@ curl -fsSL {BROKER_PUBLIC_URL}/channel/{token}/install.sh | sh
 
 @app.get("/channel/{token}/install.sh", response_class=PlainTextResponse)
 async def channel_installer(token: str) -> str:
-    device_id = str(uuid4())
-    session = consume_enrollment(
-        token,
-        NodeRegistration(device_id=device_id, name="Agent Device"),
+    find_active_invite(token, "node")
+    return installer_script(token)
+
+
+@app.post("/v1/enrollments/consume")
+def consume_enrollment_request(request: EnrollmentConsumption) -> dict[str, Any]:
+    return consume_enrollment(
+        request.token,
+        NodeRegistration(device_id=request.device_id, name=request.name),
     )
-    return installer_script(session["node_token"], device_id)
 
 
-def installer_script(node_token: str, device_id: str) -> str:
+def installer_script(enrollment_token: str) -> str:
     return f"""#!/bin/sh
 set -eu
 
 BROKER_URL='{BROKER_PUBLIC_URL}'
-BROKER_TOKEN='{node_token}'
-INSTALL_DIR="${{HOME}}/.deepseekbalance-channel"
-DEVICE_ID='{device_id}'
+ENROLLMENT_TOKEN='{enrollment_token}'
+INSTALL_DIR="${{HOME}}/.deeplink-channel"
 DEVICE_NAME="${{DEVICE_NAME:-$(hostname)}}"
-HERMES_URL="${{HERMES_URL:-http://127.0.0.1:8642}}"
+DEFAULT_HOST="localhost"
+if [ "$(uname -s 2>/dev/null)" = "Darwin" ]; then
+  DEFAULT_HOST="127.0.0.1"
+fi
+HERMES_URL="${{HERMES_URL:-http://$DEFAULT_HOST:8642}}"
 HERMES_KEY="${{HERMES_KEY:-}}"
 
 mkdir -p "$INSTALL_DIR"
+echo "Checking Broker: $BROKER_URL"
+curl -fsSL "$BROKER_URL/health" >/dev/null
 curl -fsSL "$BROKER_URL/channel/hermes_bridge.py" -o "$INSTALL_DIR/hermes_bridge.py"
 python3 -m venv "$INSTALL_DIR/.venv"
 "$INSTALL_DIR/.venv/bin/pip" install --quiet 'httpx>=0.28,<1'
+
+DEVICE_ID="$("$INSTALL_DIR/.venv/bin/python" -c 'import uuid; print(uuid.uuid4())')"
+ENROLLMENT_BODY="$("$INSTALL_DIR/.venv/bin/python" -c 'import json,sys; print(json.dumps({{"token":sys.argv[1],"device_id":sys.argv[2],"name":sys.argv[3]}}))' "$ENROLLMENT_TOKEN" "$DEVICE_ID" "$DEVICE_NAME")"
+ENROLLMENT_RESULT="$(curl -fsSL -X POST "$BROKER_URL/v1/enrollments/consume" -H 'Content-Type: application/json' --data-binary "$ENROLLMENT_BODY")"
+BROKER_TOKEN="$("$INSTALL_DIR/.venv/bin/python" -c 'import json,sys; print(json.loads(sys.argv[1])["node_token"])' "$ENROLLMENT_RESULT")"
 
 cat > "$INSTALL_DIR/channel.env" <<EOF
 BROKER_URL=$BROKER_URL
@@ -572,16 +607,21 @@ HERMES_KEY=$HERMES_KEY
 EOF
 chmod 600 "$INSTALL_DIR/channel.env"
 
+echo "Verifying Channel registration..."
+env BROKER_URL="$BROKER_URL" BROKER_TOKEN="$BROKER_TOKEN" DEVICE_ID="$DEVICE_ID" \
+  DEVICE_NAME="$DEVICE_NAME" HERMES_URL="$HERMES_URL" HERMES_KEY="$HERMES_KEY" \
+  CHANNEL_CHECK_ONLY=1 "$INSTALL_DIR/.venv/bin/python" -u "$INSTALL_DIR/hermes_bridge.py" --check
+
 if [ "$(uname -s)" = "Darwin" ]; then
-  PLIST="$HOME/Library/LaunchAgents/com.deepseekbalance.channel.plist"
+  PLIST="$HOME/Library/LaunchAgents/com.deeplink.channel.plist"
   mkdir -p "$HOME/Library/LaunchAgents"
   cat > "$PLIST" <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0"><dict>
-<key>Label</key><string>com.deepseekbalance.channel</string>
+<key>Label</key><string>com.deeplink.channel</string>
 <key>ProgramArguments</key><array>
-<string>$INSTALL_DIR/.venv/bin/python</string><string>$INSTALL_DIR/hermes_bridge.py</string>
+<string>$INSTALL_DIR/.venv/bin/python</string><string>-u</string><string>$INSTALL_DIR/hermes_bridge.py</string>
 </array>
 <key>EnvironmentVariables</key><dict>
 <key>BROKER_URL</key><string>$BROKER_URL</string>
@@ -596,19 +636,19 @@ if [ "$(uname -s)" = "Darwin" ]; then
 <key>StandardErrorPath</key><string>$INSTALL_DIR/channel-error.log</string>
 </dict></plist>
 EOF
-  launchctl bootout "gui/$(id -u)/com.deepseekbalance.channel" 2>/dev/null || true
+  launchctl bootout "gui/$(id -u)/com.deeplink.channel" 2>/dev/null || true
   launchctl bootstrap "gui/$(id -u)" "$PLIST"
 else
   SERVICE_DIR="$HOME/.config/systemd/user"
   mkdir -p "$SERVICE_DIR"
-  cat > "$SERVICE_DIR/deepseekbalance-channel.service" <<EOF
+  cat > "$SERVICE_DIR/deeplink-channel.service" <<EOF
 [Unit]
-Description=DeepSeekBalance Custom Agent Channel
+Description=DeepLink Agent Channel
 After=network-online.target
 
 [Service]
 EnvironmentFile=$INSTALL_DIR/channel.env
-ExecStart=$INSTALL_DIR/.venv/bin/python $INSTALL_DIR/hermes_bridge.py
+ExecStart=$INSTALL_DIR/.venv/bin/python -u $INSTALL_DIR/hermes_bridge.py
 Restart=always
 RestartSec=3
 
@@ -616,10 +656,12 @@ RestartSec=3
 WantedBy=default.target
 EOF
   systemctl --user daemon-reload
-  systemctl --user enable --now deepseekbalance-channel
+  systemctl --user enable --now deeplink-channel
 fi
 
-echo "DeepSeekBalance Custom Channel installed: $DEVICE_NAME"
+sleep 2
+echo "DeepLink Agent Channel installed and connected: $DEVICE_NAME"
+echo "Diagnostics: $INSTALL_DIR/channel-error.log"
 """
 
 
@@ -634,10 +676,10 @@ async def register_node(
     with database() as db:
         db.execute(
             """
-            UPDATE devices SET name = ?, capabilities_json = ?, last_seen_at = ?
+            UPDATE devices SET name = ?, capabilities_json = ?, endpoint = ?, last_seen_at = ?
             WHERE id = ? AND owner_id = ?
             """,
-            (registration.name, json.dumps(registration.capabilities), iso_now(), registration.device_id, identity.owner_id),
+            (registration.name, json.dumps(registration.capabilities), registration.endpoint, iso_now(), registration.device_id, identity.owner_id),
         )
     return {"ok": True}
 
@@ -659,7 +701,7 @@ def list_devices(user: UserIdentity = Depends(require_user)) -> dict[str, Any]:
     now = utc_now()
     with database() as db:
         rows = db.execute(
-            "SELECT id, name, last_seen_at FROM devices WHERE owner_id = ? AND disabled = 0",
+            "SELECT id, name, endpoint, last_seen_at FROM devices WHERE owner_id = ? AND disabled = 0",
             (user.id,),
         ).fetchall()
     data = []
@@ -673,7 +715,7 @@ def list_devices(user: UserIdentity = Depends(require_user)) -> dict[str, Any]:
                 "id": row["id"],
                 "name": row["name"],
                 "kind": "brokerRelay",
-                "endpoint": None,
+                "endpoint": row["endpoint"],
                 "isOnline": bool(
                     last_seen
                     and (now - last_seen).total_seconds() < int(runtime_setting("online_timeout_seconds", "75"))
@@ -695,6 +737,30 @@ def delete_device(device_id: str, user: UserIdentity = Depends(require_user)) ->
         raise HTTPException(status_code=404, detail="device not found")
     nodes.pop(device_id, None)
     audit("user", user.id, "revoke_device", "device", device_id)
+    return {"ok": True}
+
+
+@app.put("/v1/devices/{device_id}")
+def update_device(device_id: str, body: DeviceUpdate, user: UserIdentity = Depends(require_user)) -> dict[str, Any]:
+    with database() as db:
+        updates: list[str] = []
+        params: list[Any] = []
+        if body.name is not None:
+            updates.append("name = ?")
+            params.append(body.name)
+        if body.endpoint is not None:
+            updates.append("endpoint = ?")
+            params.append(body.endpoint)
+        if not updates:
+            raise HTTPException(status_code=400, detail="no fields to update")
+        params.extend([device_id, user.id])
+        cursor = db.execute(
+            f"UPDATE devices SET {', '.join(updates)} WHERE id = ? AND owner_id = ? AND disabled = 0",
+            params,
+        )
+    if cursor.rowcount == 0:
+        raise HTTPException(status_code=404, detail="device not found")
+    audit("user", user.id, "update_device", "device", device_id)
     return {"ok": True}
 
 
@@ -785,7 +851,7 @@ async def rpc(
     return result
 
 
-def admin_page(message: str = "") -> str:
+def admin_page(online_count: int = 0, message: str = "") -> str:
     with database() as db:
         users = db.execute(
             """
@@ -824,7 +890,7 @@ section{{background:var(--card);padding:22px;border:1px solid #ddd7c8;border-rad
 form{{display:flex;gap:8px;align-items:center}} input,button{{padding:10px 13px;border-radius:9px;border:1px solid #cfc8b8}}
 button{{background:var(--green);color:white;border:0;cursor:pointer}} table{{width:100%;border-collapse:collapse}} td,th{{padding:11px;border-bottom:1px solid #e7e1d5;text-align:left}}
 .qr{{width:240px;display:block;margin:16px 0;image-rendering:pixelated}} code{{display:block;overflow-wrap:anywhere;color:#536057}}
-</style></head><body><main><header><div><h1>Agent Control Plane</h1><p>用户、设备、配对与中继运行状态</p></div><span class="badge">{len(nodes)} 个在线 Agent</span></header>
+</style></head><body><main><header><div><h1>Agent Control Plane</h1><p>用户、设备、配对与中继运行状态</p></div><span class="badge">{online_count} 个在线 Agent</span></header>
 {f'<section>{html.escape(message)}</section>' if message else ''}
 <section><h2>创建用户</h2><form method="post" action="/admin/users"><input name="username" placeholder="登录名" required><input name="display_name" placeholder="显示名称" required><input name="password" type="password" placeholder="初始密码（至少 12 位）" required><button>创建账号</button></form></section>
 <section><h2>用户</h2><table><thead><tr><th>登录名</th><th>名称</th><th>设备</th><th>RPC</th><th>状态</th><th>操作</th></tr></thead><tbody>{user_rows}</tbody></table></section>
@@ -834,7 +900,10 @@ button{{background:var(--green);color:white;border:0;cursor:pointer}} table{{wid
 
 @app.get("/admin", response_class=HTMLResponse)
 def admin_dashboard(_: AdminIdentity = Depends(require_admin)) -> str:
-    return admin_page()
+    timeout = int(runtime_setting("online_timeout_seconds", "75"))
+    cutoff = utc_now() - timedelta(seconds=timeout)
+    online = sum(1 for n in nodes.values() if n.last_seen_at and n.last_seen_at > cutoff)
+    return admin_page(online)
 
 
 @app.post("/admin/users", response_class=HTMLResponse)

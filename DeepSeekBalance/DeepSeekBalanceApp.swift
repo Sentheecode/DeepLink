@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct DeepSeekBalanceApp: App {
+struct DeepLinkApp: App {
     @State private var showSetup = !UserDefaults.standard.hasCompletedSetup
     @State private var showAuth = false
     @State private var isReady = false
@@ -62,9 +62,9 @@ struct DeepSeekBalanceApp: App {
                 })
             } else if isReady {
                 AppShell(onLogout: {
-                    // Logout: only remove broker token
                     try? KeychainCredentialStore().deleteToken(for: .brokerKey)
                     UserDefaults.standard.hasCompletedLogin = false
+                    UserDefaults.standard.cachedUserDisplayName = nil
                     refreshState()
                 })
             }

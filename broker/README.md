@@ -1,4 +1,4 @@
-# DeepSeekBalance Cloud Control Plane
+# DeepLink Broker
 
 This directory contains the server used by the iOS app and Agent channels. It is more than a message broker:
 
@@ -27,45 +27,52 @@ Copy the `broker` directory to the server, then:
 ```bash
 cd broker
 sudo apt update
-sudo apt install -y python3 python3-venv nginx certbot
+sudo apt install -y python3 python3-venv nginx curl snapd
 sudo sh deploy/install_broker_service.sh
-sudo nano /etc/deepseekbalance-broker.env
-sudo systemctl restart deepseekbalance-broker
-sudo systemctl status deepseekbalance-broker --no-pager
-curl http://127.0.0.1:8000/health
+sudo nano /etc/deeplink-broker.env
+sudo systemctl restart deeplink-broker
+sudo systemctl status deeplink-broker --no-pager
+curl http://127.0.0.1:8010/health
 ```
 
 The installer automatically generates a random `BROKER_ADMIN_TOKEN`. View it only when needed:
 
 ```bash
-sudo grep '^BROKER_ADMIN_TOKEN=' /etc/deepseekbalance-broker.env
+sudo grep '^BROKER_ADMIN_TOKEN=' /etc/deeplink-broker.env
 ```
 
 Do not give this token to users.
 
 ## HTTPS For The Public IP
 
-The production URL must use HTTPS. Let's Encrypt supports publicly trusted IP certificates and users do not install certificates.
+The production URL must use HTTPS. Let's Encrypt supports publicly trusted IP certificates and users do not install certificates. IP certificates require Certbot 5.4 or newer; Ubuntu's older `apt` package may not support them.
 
 ```bash
+sudo snap install certbot --classic
+sudo ln -sf /snap/bin/certbot /usr/local/bin/certbot
+certbot --version
+
 sudo mkdir -p /var/www/certbot
-sudo cp deploy/nginx-http-bootstrap.conf /etc/nginx/conf.d/deepseekbalance-broker.conf
+sudo cp deploy/nginx-http-bootstrap.conf /etc/nginx/conf.d/deeplink-broker.conf
 sudo nginx -t
 sudo systemctl reload nginx
 
 sudo certbot certonly \
+  --preferred-profile shortlived \
   --webroot -w /var/www/certbot \
-  --cert-name broker-ip \
-  --ip-address 139.224.211.170 \
-  --required-profile shortlived
+  --ip-address 139.224.211.170
 
-sudo cp deploy/nginx-ip-https.conf /etc/nginx/conf.d/deepseekbalance-broker.conf
+sudo cp deploy/nginx-ip-https.conf /etc/nginx/conf.d/deeplink-broker.conf
 sudo nginx -t
 sudo systemctl reload nginx
-sudo certbot renew --deploy-hook "systemctl reload nginx"
+
+sudo mkdir -p /etc/letsencrypt/renewal-hooks/deploy
+printf '#!/bin/sh\nsystemctl reload nginx\n' | sudo tee /etc/letsencrypt/renewal-hooks/deploy/reload-nginx >/dev/null
+sudo chmod +x /etc/letsencrypt/renewal-hooks/deploy/reload-nginx
+sudo certbot renew --dry-run
 ```
 
-Set `BROKER_PUBLIC_URL=https://139.224.211.170` in `/etc/deepseekbalance-broker.env`, then restart the service.
+Set `BROKER_PUBLIC_URL=https://139.224.211.170` in `/etc/deeplink-broker.env`, then restart the service.
 
 ## Administrator Console
 
@@ -85,9 +92,9 @@ The console can create user accounts, show users/devices/RPC usage, disable user
 You can also create a user from the command line. If `--password` is omitted, a random initial password is generated:
 
 ```bash
-cd /opt/deepseekbalance-broker
+cd /opt/deeplink-broker
 set -a
-. /etc/deepseekbalance-broker.env
+. /etc/deeplink-broker.env
 set +a
 ./.venv/bin/python admin.py create-user --username trial-user --name "Trial User"
 ```
@@ -101,14 +108,23 @@ set +a
 5. The Agent computer opens the link and runs the displayed installer command.
 6. The Agent appears only in that user's device list.
 
+The installer verifies the public Broker, performs a real node registration and heartbeat, and only then installs the background service. Agent computer diagnostics:
+
+```bash
+cat ~/.deeplink-channel/channel.log
+cat ~/.deeplink-channel/channel-error.log
+launchctl print "gui/$(id -u)/com.deeplink.channel"          # macOS
+systemctl --user status deeplink-channel --no-pager          # Linux
+```
+
 ## Operations
 
 ```bash
-sudo journalctl -u deepseekbalance-broker -f
-sudo systemctl restart deepseekbalance-broker
-sudo systemctl stop deepseekbalance-broker
-sudo sqlite3 /var/lib/deepseekbalance-broker/control-plane.db '.tables'
-sudo cp /var/lib/deepseekbalance-broker/control-plane.db /root/control-plane-backup.db
+sudo journalctl -u deeplink-broker -f
+sudo systemctl restart deeplink-broker
+sudo systemctl stop deeplink-broker
+sudo sqlite3 /var/lib/deeplink-broker/control-plane.db '.tables'
+sudo cp /var/lib/deeplink-broker/control-plane.db /root/control-plane-backup.db
 ```
 
 Run exactly one Uvicorn worker. Online presence, pending commands, and results currently live in memory. Before horizontal scaling, move those three runtime concerns to Redis and migrate persistent tables from SQLite to PostgreSQL.

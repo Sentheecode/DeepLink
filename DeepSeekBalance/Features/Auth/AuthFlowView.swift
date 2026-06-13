@@ -32,7 +32,7 @@ struct AuthLandingView: View {
                         .foregroundStyle(
                             LinearGradient(colors: [brandBlue, brandDark], startPoint: .topLeading, endPoint: .bottomTrailing)
                         )
-                    Text("DeepSeekBalance")
+                    Text("DeepLink")
                         .font(.largeTitle.weight(.bold))
                     Text("管理你的 DeepSeek 余额与 Agent")
                         .font(.subheadline)
@@ -247,7 +247,7 @@ struct AuthLoginView: View {
                     .submitLabel(.done)
                     .onSubmit(performLogin)
             } header: {
-                Text("DeepSeekBalance 账户")
+                Text("DeepLink 账户")
             } footer: {
                 Text("登录后可管理 Agent 设备与模型凭证。")
             }
@@ -489,7 +489,7 @@ struct FirstLaunchSetupView: View {
                     LinearGradient(colors: [Color(red: 0.11, green: 0.42, blue: 0.87), Color(red: 0.04, green: 0.2, blue: 0.5)], startPoint: .topLeading, endPoint: .bottomTrailing)
                 )
 
-            Text("欢迎使用 DeepSeekBalance")
+            Text("欢迎使用 DeepLink")
                 .font(.title2.weight(.bold))
 
             Text("请选择 Agent 连接方式")

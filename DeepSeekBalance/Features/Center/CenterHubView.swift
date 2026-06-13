@@ -387,7 +387,7 @@ struct VoiceRecordingView: View {
     @State private var lastAudioFileName: String?
     private var audioFileURL: URL {
         let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        let filename = "voice_\(UUID().uuidString.prefix(8)).wav"
+        let filename = "voice_\(UUID().uuidString.prefix(8)).caf"
         return dir.appendingPathComponent(filename)
     }
 
@@ -591,13 +591,21 @@ struct VoiceRecordingView: View {
     }
 
     private func stopRecording() -> String? {
+        guard isRecording else { return nil }
         isRecording = false
         audioTimer?.invalidate()
         audioTimer = nil
         recognitionTask?.cancel()
         stopEngine()
-        // Return the audio filename for saving
-        return lastAudioFileName
+        let filename = lastAudioFileName
+        lastAudioFileName = nil
+        guard VoiceAudioFile.isPlayable(filename: filename) else {
+            if let filename {
+                try? FileManager.default.removeItem(at: VoiceAudioFile.documentsDirectory.appendingPathComponent(filename))
+            }
+            return nil
+        }
+        return filename
     }
 
     private func stopEngine() {
@@ -881,7 +889,9 @@ struct VoiceHistoryView: View {
     @State private var items: [VoiceHistoryItem] = []
     @State private var searchText = ""
     @State private var audioPlayer: AVAudioPlayer?
+    @State private var audioPlayerDelegate: AudioPlayerDelegate?
     @State private var playingItemID: UUID?
+    @State private var playbackError = ""
 
     private var filteredItems: [VoiceHistoryItem] {
         if searchText.isEmpty {
@@ -911,7 +921,7 @@ struct VoiceHistoryView: View {
                                     .foregroundColor(.secondary)
                             }
 
-                            if item.audioFilename != nil {
+                            if VoiceAudioFile.isPlayable(filename: item.audioFilename) {
                                 Spacer()
                                 Button {
                                     playAudio(item: item)
@@ -936,7 +946,18 @@ struct VoiceHistoryView: View {
         .navigationTitle("语音历史")
         .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "搜索语音记录")
         .onAppear { items = VoiceHistoryStore.load() }
-        .onDisappear { audioPlayer?.stop() }
+        .onDisappear {
+            audioPlayer?.stop()
+            audioPlayerDelegate = nil
+        }
+        .alert("无法播放录音", isPresented: Binding(
+            get: { !playbackError.isEmpty },
+            set: { if !$0 { playbackError = "" } }
+        )) {
+            Button("知道了", role: .cancel) {}
+        } message: {
+            Text(playbackError)
+        }
     }
 
     private func playAudio(item: VoiceHistoryItem) {
@@ -950,11 +971,10 @@ struct VoiceHistoryView: View {
             print("Playback: no audio filename for item \(item.id)")
             return
         }
-        let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        let url = dir.appendingPathComponent(filename)
+        let url = VoiceAudioFile.documentsDirectory.appendingPathComponent(filename)
 
-        guard FileManager.default.fileExists(atPath: url.path) else {
-            print("Audio file not found: \(url.path)")
+        guard VoiceAudioFile.isPlayable(filename: filename) else {
+            playbackError = "录音文件已经丢失或不完整。"
             return
         }
 
@@ -969,27 +989,28 @@ struct VoiceHistoryView: View {
             try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
             try AVAudioSession.sharedInstance().setActive(true)
 
-            audioPlayer = try AVAudioPlayer(contentsOf: url)
-            audioPlayer?.delegate = AudioPlayerDelegate {
+            let delegate = AudioPlayerDelegate {
                 DispatchQueue.main.async { playingItemID = nil }
             }
+            audioPlayerDelegate = delegate
+            audioPlayer = try AVAudioPlayer(contentsOf: url)
+            audioPlayer?.delegate = delegate
             audioPlayer?.prepareToPlay()
             guard audioPlayer?.play() == true else {
-                print("Playback: play() returned false")
+                playbackError = "系统无法启动这个录音文件。"
                 return
             }
             playingItemID = item.id
             print("Playback started successfully")
         } catch {
-            print("Playback error: \(error.localizedDescription)")
+            playbackError = error.localizedDescription
         }
     }
 
     private func deleteItem(_ item: VoiceHistoryItem) {
         // Delete audio file if exists
         if let filename = item.audioFilename {
-            let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-            let url = dir.appendingPathComponent(filename)
+            let url = VoiceAudioFile.documentsDirectory.appendingPathComponent(filename)
             try? FileManager.default.removeItem(at: url)
         }
         VoiceHistoryStore.delete(item.id)

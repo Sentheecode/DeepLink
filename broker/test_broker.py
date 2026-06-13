@@ -44,6 +44,28 @@ class BrokerTests(unittest.IsolatedAsyncioTestCase):
             broker.login(broker.LoginRequest(username="alice", password="wrong-password"))
         self.assertEqual(context.exception.status_code, 401)
 
+    async def test_registration_returns_usable_user_session(self) -> None:
+        session = broker.register(
+            broker.RegisterRequest(
+                username="new-user",
+                email="new-user@example.com",
+                password="registration-password",
+            )
+        )
+
+        self.assertEqual(session["display_name"], "new-user")
+        self.assertEqual(broker.require_user_token(session["access_token"]).id, session["user_id"])
+
+    async def test_database_configuration_is_idempotent(self) -> None:
+        database_path = Path(self.temp_dir.name) / "broker.db"
+
+        broker.configure_database(database_path)
+        broker.configure_database(database_path)
+
+        with broker.database() as db:
+            columns = {row["name"] for row in db.execute("PRAGMA table_info(users)").fetchall()}
+        self.assertIn("email", columns)
+
     async def test_runtime_policy_is_stored_in_database(self) -> None:
         broker.set_runtime_setting("node_enrollment_minutes", "30")
         alice = self._create_user("Alice")
@@ -163,6 +185,33 @@ class BrokerTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("Console User", response.text)
         self.assertIn("console-user", response.text)
+
+    async def test_installer_runs_registration_check_and_unbuffered_bridge(self) -> None:
+        script = broker.installer_script("enrollment-token")
+
+        self.assertIn("/v1/enrollments/consume", script)
+        self.assertIn("CHANNEL_CHECK_ONLY=1", script)
+        self.assertIn('hermes_bridge.py" --check', script)
+        self.assertIn("<string>-u</string>", script)
+        self.assertIn("ExecStart=", script)
+        self.assertIn(" -u ", script)
+        self.assertIn("channel-error.log", script)
+        self.assertIn('.deeplink-channel', script)
+        self.assertIn("com.deeplink.channel", script)
+        self.assertNotIn("deepseekbalance-channel", script)
+
+    async def test_downloading_installer_does_not_consume_enrollment(self) -> None:
+        alice = self._create_user("Alice")
+        enrollment = broker.create_enrollment(alice)
+
+        script = await broker.channel_installer(enrollment["token"])
+        node_session = broker.consume_enrollment(
+            enrollment["token"],
+            broker.NodeRegistration(device_id="alice-mac", name="Alice Mac"),
+        )
+
+        self.assertIn("/v1/enrollments/consume", script)
+        self.assertEqual(node_session["device_id"], "alice-mac")
 
     def _create_user(self, name: str) -> broker.UserIdentity:
         username = name.lower().replace(" ", "-")

@@ -63,6 +63,11 @@ extension UserDefaults {
         set { set(newValue, forKey: "hasCompletedSetup") }
     }
 
+    var cachedUserDisplayName: String? {
+        get { string(forKey: "cachedUserDisplayName") }
+        set { set(newValue, forKey: "cachedUserDisplayName") }
+    }
+
     var hasCompletedLogin: Bool {
         get { bool(forKey: "hasCompletedLogin") }
         set { set(newValue, forKey: "hasCompletedLogin") }

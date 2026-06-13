@@ -1,6 +1,7 @@
 import asyncio
 import json
 import os
+import sys
 from typing import Any
 
 import httpx
@@ -74,18 +75,38 @@ async def execute(command: dict[str, Any]) -> Any:
 
 
 async def register(client: httpx.AsyncClient) -> None:
-    await client.post(
+    response = await client.post(
         f"{BROKER_URL}/v1/nodes/register",
         headers=headers(BROKER_TOKEN),
-        json={"device_id": DEVICE_ID, "name": DEVICE_NAME, "capabilities": ["hermes"]},
+        json={"device_id": DEVICE_ID, "name": DEVICE_NAME, "endpoint": HERMES_URL, "capabilities": ["hermes"]},
     )
+    response.raise_for_status()
+
+
+async def heartbeat(client: httpx.AsyncClient) -> None:
+    response = await client.post(
+        f"{BROKER_URL}/v1/nodes/{DEVICE_ID}/heartbeat",
+        headers=headers(BROKER_TOKEN),
+    )
+    response.raise_for_status()
+
+
+async def check() -> None:
+    async with httpx.AsyncClient(timeout=20) as client:
+        await register(client)
+        await heartbeat(client)
+    print(f"channel check passed: {DEVICE_NAME} ({DEVICE_ID})", flush=True)
 
 
 async def run() -> None:
+    registered = False
     async with httpx.AsyncClient(timeout=40) as client:
         while True:
             try:
-                await register(client)
+                if not registered:
+                    await register(client)
+                    registered = True
+                    print(f"channel registered: {DEVICE_NAME} ({DEVICE_ID})", flush=True)
                 response = await client.get(
                     f"{BROKER_URL}/v1/nodes/{DEVICE_ID}/commands/next",
                     headers=headers(BROKER_TOKEN),
@@ -100,16 +121,24 @@ async def run() -> None:
                     result = {"ok": True, "data": data}
                 except Exception as exc:
                     result = {"ok": False, "error": str(exc)}
-                await client.post(
+                result_response = await client.post(
                     f"{BROKER_URL}/v1/nodes/{DEVICE_ID}/commands/{command['id']}/result",
                     headers=headers(BROKER_TOKEN),
                     json=result,
                 )
+                result_response.raise_for_status()
+            except httpx.HTTPStatusError as exc:
+                if exc.response.status_code == 404:
+                    registered = False
+                print(
+                    f"bridge HTTP error: {exc.response.status_code} {exc.response.text}",
+                    flush=True,
+                )
+                await asyncio.sleep(3)
             except Exception as exc:
                 print(f"bridge error: {exc}", flush=True)
                 await asyncio.sleep(3)
 
 
 if __name__ == "__main__":
-    asyncio.run(run())
-
+    asyncio.run(check() if "--check" in sys.argv else run())

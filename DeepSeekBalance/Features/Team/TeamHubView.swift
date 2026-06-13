@@ -5,6 +5,11 @@ struct TeamHubView: View {
     @State private var configuredAgents: [ConfiguredAgent] = []
     @State private var account: BrokerAccount?
     @State private var loadMessage = ""
+    @State private var editingAgent: ConfiguredAgent?
+    @State private var showEditSheet = false
+    @State private var showDeleteConfirm = false
+    @State private var deletingAgent: ConfiguredAgent?
+    @State private var errorMessage: String?
 
     private var teamMode: TeamMode {
         TeamMode(rawValue: teamModeRawValue) ?? .multiAgent
@@ -34,6 +39,50 @@ struct TeamHubView: View {
             .background(Color(.systemGroupedBackground))
             .navigationTitle("Team")
             .task { await loadServerData() }
+            .sheet(isPresented: $showEditSheet) {
+                AgentEditView(agent: $editingAgent, onSave: { name, endpoint in
+                    guard let agent = editingAgent else { return }
+                    Task {
+                        do {
+                            let client = RemoteBrokerClient()
+                            await client.loadSavedConfig()
+                            try await client.updateDevice(id: agent.id, name: name, endpoint: endpoint)
+                            await loadServerData()
+                        } catch {
+                            errorMessage = "保存失败: \(error.localizedDescription)"
+                        }
+                    }
+                })
+            }
+            .alert("删除设备", isPresented: $showDeleteConfirm) {
+                Button("取消", role: .cancel) { deletingAgent = nil }
+                Button("删除", role: .destructive) {
+                    if let agent = deletingAgent {
+                        Task {
+                            do {
+                                let client = RemoteBrokerClient()
+                                await client.loadSavedConfig()
+                                try await client.deleteDevice(id: agent.id)
+                                await loadServerData()
+                            } catch {
+                                errorMessage = "删除失败: \(error.localizedDescription)"
+                                await loadServerData()
+                            }
+                        }
+                    }
+                    deletingAgent = nil
+                }
+            } message: {
+                Text(deletingAgent.map { "确定删除「\($0.name)」？此操作不可撤销。" } ?? "")
+            }
+            .alert("错误", isPresented: Binding(
+                get: { errorMessage != nil },
+                set: { if !$0 { errorMessage = nil } }
+            )) {
+                Button("确定") { errorMessage = nil }
+            } message: {
+                Text(errorMessage ?? "")
+            }
         }
     }
 
@@ -65,6 +114,31 @@ struct TeamHubView: View {
                     ForEach(configuredAgents) { agent in
                         AgentRow(agent: agent)
                             .listRowBackground(Color(.systemBackground))
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                editingAgent = agent
+                                showEditSheet = true
+                            }
+                            .swipeActions(edge: .trailing) {
+                                Button("删除", role: .destructive) {
+                                    deletingAgent = agent
+                                    showDeleteConfirm = true
+                                }
+                            }
+                            .contextMenu {
+                                Button {
+                                    editingAgent = agent
+                                    showEditSheet = true
+                                } label: {
+                                    Label("编辑", systemImage: "pencil")
+                                }
+                                Button(role: .destructive) {
+                                    deletingAgent = agent
+                                    showDeleteConfirm = true
+                                } label: {
+                                    Label("删除", systemImage: "trash")
+                                }
+                            }
                     }
                 }
             } header: {
@@ -171,7 +245,7 @@ struct TeamHubView: View {
 
 struct ConfiguredAgent: Identifiable {
     let id: String
-    let name: String
+    var name: String
     let type: String
     let icon: String
     var isConnected: Bool
@@ -320,6 +394,51 @@ private struct AgentRow: View {
                 )
         }
         .padding(.vertical, 2)
+    }
+}
+
+// MARK: - Agent Edit View
+
+private struct AgentEditView: View {
+    @Binding var agent: ConfiguredAgent?
+    let onSave: (String, String?) -> Void
+    @Environment(\.dismiss) private var dismiss
+
+    @State private var name = ""
+    @State private var endpoint = ""
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section("设备信息") {
+                    TextField("名称", text: $name)
+                        .autocorrectionDisabled()
+                    TextField("Hermes 地址（可选）", text: $endpoint)
+                        .autocorrectionDisabled()
+                        .textInputAutocapitalization(.never)
+                        .keyboardType(.URL)
+                }
+                Section {
+                    Button("保存") {
+                        onSave(name, endpoint.isEmpty ? nil : endpoint)
+                        if let a = agent { agent = ConfiguredAgent(id: a.id, name: name, type: a.type, icon: a.icon, isConnected: a.isConnected) }
+                        dismiss()
+                    }
+                    .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
+                }
+            }
+            .navigationTitle("编辑 Agent")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("取消") { dismiss() }
+                }
+            }
+        }
+        .onAppear {
+            if let a = agent {
+                name = a.name
+            }
+        }
     }
 }
 

@@ -6,6 +6,8 @@ struct SettingsTab: View {
 
     @AppStorage(BrokerDefaults.connectionModeKey) private var connectionModeRawValue = AgentConnectionMode.local.rawValue
     @State private var account: BrokerAccount?
+    @State private var isLoadingAccount = false
+    @State private var cachedName = UserDefaults.standard.cachedUserDisplayName
     @State private var showDebugAlert = false
 
     private var connectionMode: AgentConnectionMode {
@@ -32,7 +34,7 @@ struct SettingsTab: View {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("账户")
                             .font(.body.weight(.medium))
-                        Text(account?.displayName ?? "已登录")
+                        Text(account?.displayName ?? cachedName ?? (isLoadingAccount ? "加载中..." : "未登录"))
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
@@ -46,6 +48,7 @@ struct SettingsTab: View {
                         try? store.deleteToken(for: .brokerKey)
                         UserDefaults.standard.hasCompletedLogin = false
                         UserDefaults.standard.savedUserNames = []
+                        UserDefaults.standard.cachedUserDisplayName = nil
                         await MainActor.run { onLogout() }
                     }
                 }
@@ -182,11 +185,18 @@ struct SettingsTab: View {
     private func loadAccount() async {
         guard KeychainCredentialStore().hasToken(for: .brokerKey) else {
             account = nil
+            isLoadingAccount = false
             return
         }
+        isLoadingAccount = true
         let client = RemoteBrokerClient()
         await client.loadSavedConfig()
         account = try? await client.fetchAccount()
+        if let name = account?.displayName {
+            cachedName = name
+            UserDefaults.standard.cachedUserDisplayName = name
+        }
+        isLoadingAccount = false
     }
 }
 
@@ -303,7 +313,7 @@ struct AboutSettingsView: View {
     var body: some View {
         Form {
             Section {
-                LabeledContent("应用", value: "DeepSeekBalance")
+                LabeledContent("应用", value: "DeepLink")
                 LabeledContent("版本", value: version)
             }
             Section("支持") {

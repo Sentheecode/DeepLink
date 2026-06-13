@@ -24,6 +24,7 @@ struct AppShell: View {
     let onLogout: () -> Void
 
     @State private var selectedTab = 0
+    @State private var showDeepSeekOnboarding = false
     @AppStorage("centerTabMode") private var centerTabMode: CenterTabMode = .voice
     private let tabBarHeight: CGFloat = 70
 
@@ -46,6 +47,18 @@ struct AppShell: View {
         .ignoresSafeArea(.keyboard, edges: .bottom)
         .onOpenURL { url in
             handleDeepLink(url)
+        }
+        .onAppear {
+            let isBrokerMode = UserDefaults.standard.string(forKey: BrokerDefaults.connectionModeKey) == AgentConnectionMode.broker.rawValue
+            showDeepSeekOnboarding = isBrokerMode && !KeychainCredentialStore().hasToken(for: .deepseek)
+        }
+        .sheet(isPresented: $showDeepSeekOnboarding) {
+            TokenLoginView { token in
+                try? KeychainCredentialStore().saveToken(token, for: .deepseek)
+                NotificationCenter.default.post(name: .deepSeekCredentialDidChange, object: nil)
+                showDeepSeekOnboarding = false
+                selectedTab = 0
+            }
         }
     }
 
@@ -89,6 +102,7 @@ struct AppShell: View {
 
         if let url = urlValue {
             UserDefaults.standard.set(url, forKey: "hermesURL")
+            UserDefaults.standard.set(AgentConnectionMode.local.rawValue, forKey: BrokerDefaults.connectionModeKey)
             Task {
                 await HermesAPI.shared.configure(baseURL: url, apiKey: keyValue ?? "")
             }
@@ -365,6 +379,10 @@ struct TokenTab: View {
                 if !hasToken { store.clear() }
                 // 缓存展示由 balanceCard 兜底
                 // 后台刷新
+                if hasToken { refresh() }
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .deepSeekCredentialDidChange)) { _ in
+                token = savedToken
                 if hasToken { refresh() }
             }
             .refreshable { await refreshData() }

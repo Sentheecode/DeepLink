@@ -16,7 +16,7 @@ xcodebuild -project "$PROJECT" -list 2>/dev/null | grep -q "DeepSeekBalanceWidge
 }
 
 # 2. Verify build settings can be resolved for both targets
-for target in DeepSeekBalance DeepSeekBalanceWidgetExtension; do
+for target in DeepLink DeepSeekBalanceWidgetExtension; do
     if ! xcodebuild -project "$PROJECT" -target "$target" -showBuildSettings 2>/dev/null >/dev/null; then
         echo "Project validation failed: target $target has invalid build settings" >&2
         exit 1
@@ -24,7 +24,7 @@ for target in DeepSeekBalance DeepSeekBalanceWidgetExtension; do
 done
 
 # 3. Verify bundle identifiers via xcodebuild (no hardcoded UUIDs)
-xcodebuild -project "$PROJECT" -target DeepSeekBalance -showBuildSettings 2>/dev/null \
+xcodebuild -project "$PROJECT" -target DeepLink -showBuildSettings 2>/dev/null \
     | grep -q "PRODUCT_BUNDLE_IDENTIFIER = com.deepseek.balance" || {
     echo "Project validation failed: app bundle ID not set to com.deepseek.balance" >&2
     exit 1
@@ -37,7 +37,7 @@ xcodebuild -project "$PROJECT" -target DeepSeekBalanceWidgetExtension -showBuild
 }
 
 # 4. Verify entitlements are configured via xcodebuild (no hardcoded UUIDs)
-xcodebuild -project "$PROJECT" -target DeepSeekBalance -showBuildSettings 2>/dev/null \
+xcodebuild -project "$PROJECT" -target DeepLink -showBuildSettings 2>/dev/null \
     | grep -q "CODE_SIGN_ENTITLEMENTS.*DeepSeekBalance.entitlements" || {
     echo "Project validation failed: app entitlements not configured" >&2
     exit 1

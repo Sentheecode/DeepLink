@@ -30,7 +30,7 @@ def main() -> None:
     create.add_argument("--username", required=True)
     create.add_argument("--name", required=True)
     create.add_argument("--password")
-    create.add_argument("--url", default=os.environ.get("BROKER_PUBLIC_URL", "http://127.0.0.1:8000"))
+    create.add_argument("--url", default=os.environ.get("BROKER_PUBLIC_URL", "http://127.0.0.1:8010"))
     create.add_argument("--admin-token", default=os.environ.get("BROKER_ADMIN_TOKEN", ""))
     args = parser.parse_args()
 

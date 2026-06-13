@@ -1,0 +1,22 @@
+[Unit]
+Description=DeepLink Agent Broker
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=deepseekbroker
+Group=deepseekbroker
+WorkingDirectory=/opt/deeplink-broker
+EnvironmentFile=/etc/deeplink-broker.env
+ExecStart=/opt/deeplink-broker/.venv/bin/uvicorn app:app --host 127.0.0.1 --port 8010
+Restart=always
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/deeplink-broker
+
+[Install]
+WantedBy=multi-user.target

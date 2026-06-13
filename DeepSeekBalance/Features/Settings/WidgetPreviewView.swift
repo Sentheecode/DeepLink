@@ -21,6 +21,11 @@ struct PreviewLiveActivityState {
 // MARK: - Widget Preview (Settings)
 
 struct WidgetPreviewView: View {
+    @State private var instructionsTitle = ""
+    @State private var instructionsMessage = ""
+    @State private var showInstructions = false
+    @State private var liveActivityStatus = ""
+
     private let entry = PreviewBalanceEntry(
         balance: "82.93", currency: "CNY",
         monthlyUsage: "779M", monthlyCost: "¥36.33",
@@ -41,9 +46,9 @@ struct WidgetPreviewView: View {
                     .listRowInsets(EdgeInsets())
 
                 Button("添加到桌面") {
-                    if let url = URL(string: "widgetkit://deepseekbalance") {
-                        UIApplication.shared.open(url)
-                    }
+                    instructionsTitle = "添加桌面组件"
+                    instructionsMessage = "回到主屏幕，长按空白处，点击左上角“+”，搜索 DeepLink，然后选择组件尺寸并添加。"
+                    showInstructions = true
                 }
             }
 
@@ -54,7 +59,9 @@ struct WidgetPreviewView: View {
                     .listRowInsets(EdgeInsets())
 
                 Button("添加锁屏插件") {
-                    UIApplication.shared.open(URL(string: "App-prefs:Wallpaper")!)
+                    instructionsTitle = "添加锁屏组件"
+                    instructionsMessage = "锁屏后长按屏幕，点击“自定”并选择锁定屏幕，然后点击组件区域，搜索 DeepLink 并添加。"
+                    showInstructions = true
                 }
             }
 
@@ -67,6 +74,27 @@ struct WidgetPreviewView: View {
                 Text("余额变动或打印账单时，灵动岛会自动显示。")
                     .font(.caption)
                     .foregroundColor(.secondary)
+
+                Button("测试灵动岛") {
+                    let data = UserDefaults.shared.savedWidgetData ?? WidgetData(
+                        balance: "0",
+                        currency: "CNY",
+                        monthlyUsage: "0",
+                        monthlyCost: "0",
+                        lastUpdated: Date(),
+                        isAvailable: false
+                    )
+                    Task {
+                        await LiveActivityManager.shared.printBill(with: data)
+                        liveActivityStatus = "测试已发送；若未出现，请检查系统是否允许实时活动。"
+                    }
+                }
+
+                if !liveActivityStatus.isEmpty {
+                    Text(liveActivityStatus)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
             }
 
             Section("快捷入口") {
@@ -76,6 +104,11 @@ struct WidgetPreviewView: View {
             }
         }
         .navigationTitle("组件与快捷入口")
+        .alert(instructionsTitle, isPresented: $showInstructions) {
+            Button("知道了", role: .cancel) {}
+        } message: {
+            Text(instructionsMessage)
+        }
     }
 }
 

@@ -1,6 +1,7 @@
 broker/__pycache__/
 broker/*.db
 broker/*.db-*
+broker.zip
 *.xcuserdata
 *.xcuserstate
 .DS_Store

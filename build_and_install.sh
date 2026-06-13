@@ -1,5 +1,5 @@
 #!/bin/bash
-# Build both targets and install to connected device
+# Build + install to connected device
 # Usage: ./build_and_install.sh [device_id]
 
 set -e
@@ -12,11 +12,11 @@ CONFIG="Debug"
 ./scripts/validate_project.sh
 
 echo "=== Building App (scheme builds app + widget extension) ==="
-xcodebuild -project "$PROJECT" -scheme DeepSeekBalance -configuration "$CONFIG" -destination 'generic/platform=iOS' build
+xcodebuild -project "$PROJECT" -scheme DeepLink -configuration "$CONFIG" -destination 'generic/platform=iOS' -allowProvisioningUpdates build
 
 # Find DerivedData and app bundle
-DERIVED_DATA=$(xcodebuild -project "$PROJECT" -scheme DeepSeekBalance -showBuildSettings -configuration "$CONFIG" 2>/dev/null | grep -m1 "BUILT_PRODUCTS_DIR" | awk '{print $NF}')
-MAIN_APP="$DERIVED_DATA/DeepSeekBalance.app"
+DERIVED_DATA=$(xcodebuild -project "$PROJECT" -scheme DeepLink -showBuildSettings -configuration "$CONFIG" -allowProvisioningUpdates 2>/dev/null | grep -m1 "BUILT_PRODUCTS_DIR" | awk '{print $NF}')
+MAIN_APP="$DERIVED_DATA/DeepLink.app"
 WIDGET_APP="$MAIN_APP/PlugIns/DeepSeekBalanceWidgetExtension.appex"
 
 if [ ! -d "$WIDGET_APP" ]; then
@@ -26,7 +26,7 @@ fi
 
 echo "=== Re-signing with correct entitlements ==="
 BUILD_DIR=$(dirname "$(dirname "$DERIVED_DATA")")
-APP_XCENT=$(find "$BUILD_DIR" -name "DeepSeekBalance.app.xcent" 2>/dev/null | grep "Debug-iphoneos" | grep -v Simulated | head -1)
+APP_XCENT=$(find "$BUILD_DIR" -name "DeepLink.app.xcent" 2>/dev/null | grep "Debug-iphoneos" | grep -v Simulated | head -1)
 WIDGET_XCENT=$(find "$BUILD_DIR" -name "DeepSeekBalanceWidgetExtension.appex.xcent" 2>/dev/null | grep "Debug-iphoneos" | grep -v Simulated | head -1)
 
 if [ -f "$WIDGET_XCENT" ]; then

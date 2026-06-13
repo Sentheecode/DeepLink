@@ -47,14 +47,14 @@ struct AgentTab: View {
     @State private var store = AgentStore(channel: PreferredAgentChannel())
     @State private var showNewSession = false
     @State private var newSessionTitle = ""
-    @State private var selectedAgentID = "local"
+    @State private var selectedAgentID = UserDefaults.standard.string(forKey: BrokerDefaults.deviceIDKey) ?? ""
     @State private var showAgentPicker = false
     @AppStorage("defaultAgentID") private var defaultAgentID: String = ""
     @State private var agents: [ConfiguredAgent] = []
 
     private var selectedAgentName: String {
         if selectedAgentID == "local" { return "本地" }
-        return agents.first(where: { $0.id == selectedAgentID })?.name ?? "本地"
+        return agents.first(where: { $0.id == selectedAgentID })?.name ?? "选择 Agent"
     }
 
     var body: some View {
@@ -103,7 +103,7 @@ struct AgentTab: View {
                     HStack {
                         Text("会话")
                         Spacer()
-                        if !agents.isEmpty || HermesAPI.shared.isConfigured {
+                        if !agents.isEmpty {
                             Button { showAgentPicker = true } label: {
                                 HStack(spacing: 4) {
                                     Circle().fill(Color.green).frame(width: 6, height: 6)
@@ -143,31 +143,44 @@ struct AgentTab: View {
             .sheet(isPresented: $showAgentPicker) {
                 AgentPickerView(agents: agents, selectedID: $selectedAgentID, defaultID: $defaultAgentID)
             }
+            .onChange(of: selectedAgentID) { _, deviceID in
+                guard !deviceID.isEmpty, deviceID != "local" else { return }
+                UserDefaults.standard.set(deviceID, forKey: BrokerDefaults.deviceIDKey)
+                Task { await store.loadSessions() }
+            }
         }
     }
 
     private func loadAgents() {
-        if HermesAPI.shared.isConfigured {
-            var localAgents: [ConfiguredAgent] = []
-            if HermesAPI.shared.isConfigured {
-                localAgents.append(ConfiguredAgent(id: "local", name: "Hermes Agent", type: "本地连接", icon: "point.3.connected.trianglepath.dotted", isConnected: true))
-            }
-            // Load cloud agents if available
-            if KeychainCredentialStore().hasToken(for: .brokerKey) {
-                Task {
-                    do {
-                        let client = RemoteBrokerClient()
-                        await client.loadSavedConfig()
-                        let devices = try await client.fetchDevices()
-                        agents = localAgents + devices.map {
-                            ConfiguredAgent(id: $0.id, name: $0.name, type: $0.kind.rawValue, icon: "desktopcomputer", isConnected: $0.isOnline)
-                        }
-                    } catch {
-                        agents = localAgents
-                    }
+        let mode = AgentConnectionMode(
+            rawValue: UserDefaults.standard.string(forKey: BrokerDefaults.connectionModeKey) ?? ""
+        ) ?? .local
+        if mode == .local {
+            agents = HermesAPI.shared.isConfigured
+                ? [ConfiguredAgent(id: "local", name: "Hermes Agent", type: "本地连接", icon: "point.3.connected.trianglepath.dotted", isConnected: true)]
+                : []
+            selectedAgentID = agents.first?.id ?? ""
+            return
+        }
+
+        guard KeychainCredentialStore().hasToken(for: .brokerKey) else {
+            agents = []
+            return
+        }
+        Task {
+            do {
+                let client = RemoteBrokerClient()
+                await client.loadSavedConfig()
+                let devices = try await client.fetchDevices()
+                agents = devices.map {
+                    ConfiguredAgent(id: $0.id, name: $0.name, type: $0.kind.rawValue, icon: "desktopcomputer", isConnected: $0.isOnline)
                 }
-            } else {
-                agents = localAgents
+                if selectedAgentID.isEmpty, let first = devices.first {
+                    selectedAgentID = first.id
+                    UserDefaults.standard.set(first.id, forKey: BrokerDefaults.deviceIDKey)
+                }
+            } catch {
+                agents = []
             }
         }
     }
@@ -1037,9 +1050,21 @@ struct BrokerConfigView: View {
                             Spacer()
                         }
                         ShareLink(item: enrollmentURL) {
-                            Label("分享安装链接", systemImage: "square.and.arrow.up")
+                            Label("把配对链接发送到电脑", systemImage: "square.and.arrow.up")
                         }
-                        Text("二维码只能使用一次，并会自动过期。")
+                        Button {
+                            UIPasteboard.general.string = AgentInstallInstructions.command(for: enrollmentURL)
+                            statusText = "电脑安装命令已复制"
+                        } label: {
+                            Label("复制电脑安装命令", systemImage: "terminal")
+                        }
+                        Button {
+                            saveAndFetchDevices()
+                        } label: {
+                            Label("电脑已安装，刷新设备", systemImage: "arrow.clockwise")
+                        }
+                        .disabled(isLoading)
+                        Text("在运行 Hermes 的电脑终端执行复制的命令。二维码仅用于把一次性链接传给电脑，链接会自动过期。")
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
@@ -1100,6 +1125,20 @@ struct BrokerConfigView: View {
             guard !key.isEmpty else { return }
             await refreshAccountAndDevices()
         }
+        .task(id: enrollmentURL) {
+            guard enrollmentURL != nil else { return }
+            for _ in 0..<40 {
+                try? await Task.sleep(nanoseconds: 3_000_000_000)
+                guard !Task.isCancelled else { return }
+                await refreshAccountAndDevices()
+                if let onlineDevice = devices.first(where: \.isOnline) {
+                    selectDevice(onlineDevice)
+                    statusText = "\(onlineDevice.name) 已上线，可以远程连接"
+                    return
+                }
+            }
+            statusText = "尚未检测到在线 Agent，请检查电脑端 Channel 日志"
+        }
     }
 
     private func saveAndFetchDevices() {
@@ -1110,6 +1149,7 @@ struct BrokerConfigView: View {
                 let client = RemoteBrokerClient()
                 try await client.configure(baseURL: url, token: key, deviceID: selectedDeviceID)
                 devices = try await client.fetchDevices()
+                selectFirstDeviceIfNeeded()
                 account = try await client.fetchAccount()
                 statusText = devices.isEmpty ? "云端服务可访问，但暂无 Agent 设备" : "已同步 \(devices.count) 个设备"
             } catch {
@@ -1149,6 +1189,7 @@ struct BrokerConfigView: View {
             async let fetchedDevices = client.fetchDevices()
             async let fetchedAccount = client.fetchAccount()
             devices = try await fetchedDevices
+            selectFirstDeviceIfNeeded()
             account = try await fetchedAccount
         } catch {
             statusText = error.localizedDescription
@@ -1171,6 +1212,11 @@ struct BrokerConfigView: View {
             }
             isLoading = false
         }
+    }
+
+    private func selectFirstDeviceIfNeeded() {
+        guard selectedDeviceID.isEmpty, let first = devices.first else { return }
+        selectDevice(first)
     }
 
     private func signOut() {
