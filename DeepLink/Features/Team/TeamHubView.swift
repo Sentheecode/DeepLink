@@ -6,7 +6,6 @@ struct TeamHubView: View {
     @State private var account: BrokerAccount?
     @State private var loadMessage = ""
     @State private var selectedAgent: AgentInfo?
-    @State private var showAgentDetail = false
     @State private var showDeleteConfirm = false
     @State private var deletingDeviceId: String?
     @State private var errorMessage: String?
@@ -38,10 +37,8 @@ struct TeamHubView: View {
             .background(Color(.systemGroupedBackground))
             .navigationTitle("Team")
             .task { await loadServerData() }
-            .sheet(isPresented: $showAgentDetail) {
-                if let agent = selectedAgent {
-                    AgentDetailView(agent: agent)
-                }
+            .sheet(item: $selectedAgent) { agent in
+                AgentDetailView(agent: agent)
             }
             .alert("删除设备", isPresented: $showDeleteConfirm) {
                 Button("取消", role: .cancel) { deletingDeviceId = nil }
@@ -110,7 +107,6 @@ struct TeamHubView: View {
                             .contentShape(Rectangle())
                             .onTapGesture {
                                 selectedAgent = agent
-                                showAgentDetail = true
                             }
                             .swipeActions(edge: .trailing) {
                                 Button("删除", role: .destructive) {
@@ -295,7 +291,7 @@ private struct AgentRow: View {
 
 // MARK: - Agent Detail View
 
-private struct AgentDetailView: View {
+struct AgentDetailView: View {
     let agent: AgentInfo
 
     var body: some View {

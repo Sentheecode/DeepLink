@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
-from fastapi import Depends, FastAPI, Form, Header, HTTPException, Response
+from fastapi import Depends, FastAPI, Form, Header, HTTPException, Response, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse, HTMLResponse, PlainTextResponse, RedirectResponse
 from pydantic import BaseModel, Field
 
@@ -222,6 +222,7 @@ class AdminUserCreate(BaseModel):
 class RPCRequest(BaseModel):
     method: str = Field(min_length=1, max_length=128)
     params: dict[str, Any] = Field(default_factory=dict)
+    agent_id: str | None = Field(default=None, min_length=1, max_length=128)
 
 
 class Command(BaseModel):
@@ -229,6 +230,7 @@ class Command(BaseModel):
     method: str
     params: dict[str, Any]
     created_at: datetime
+    agent_id: str | None = None
 
 
 class CommandResult(BaseModel):
@@ -265,6 +267,20 @@ class NodeState:
 nodes: dict[str, NodeState] = {}
 pending_results: dict[str, asyncio.Future[CommandResult]] = {}
 state_lock = asyncio.Lock()
+
+# ── WSS Connection Management ──
+
+@dataclass
+class ChannelConnection:
+    device_id: str
+    owner_id: str
+    websocket: WebSocket
+    last_pong_at: datetime
+
+connections: dict[str, ChannelConnection] = {}
+connections_lock = asyncio.Lock()
+WSS_PING_INTERVAL = 20.0
+WSS_TIMEOUT = 60.0
 
 
 def bearer_token(authorization: str | None) -> str:
@@ -719,7 +735,12 @@ async def register_node(
 ) -> dict[str, Any]:
     assert_node_device(registration.device_id, identity)
     async with state_lock:
-        nodes[registration.device_id] = NodeState(registration, identity.owner_id)
+        existing = nodes.get(registration.device_id)
+        if existing is not None and existing.owner_id == identity.owner_id:
+            existing.registration = registration
+            existing.last_seen_at = utc_now()
+        else:
+            nodes[registration.device_id] = NodeState(registration, identity.owner_id)
     with database() as db:
         db.execute(
             """
@@ -757,16 +778,38 @@ def list_devices(user: UserIdentity = Depends(require_user)) -> dict[str, Any]:
         last_seen = node.last_seen_at if node else (
             datetime.fromisoformat(row["last_seen_at"]) if row["last_seen_at"] else None
         )
-        is_online = bool(
+        is_online = device_id in connections or bool(
             last_seen
             and (now - last_seen).total_seconds() < int(runtime_setting("online_timeout_seconds", "75"))
         )
         with database() as db:
             agent_rows = db.execute(
-                "SELECT id, name, kind, status, version FROM agents WHERE device_id = ? AND owner_id = ? AND status != 'offline'",
+                """SELECT id, device_id, name, kind, endpoint, status, version,
+                          capabilities_json, skills_json, last_seen_at
+                   FROM agents
+                   WHERE device_id = ? AND owner_id = ? AND status != 'offline'""",
                 (row["id"], user.id),
             ).fetchall()
-        agents_list = [{"id": a["id"], "name": a["name"], "kind": a["kind"], "status": a["status"], "version": a["version"]} for a in agent_rows]
+        agents_list = []
+        for agent in agent_rows:
+            agent_last_seen = datetime.fromisoformat(agent["last_seen_at"]) if agent["last_seen_at"] else None
+            agents_list.append({
+                "id": agent["id"],
+                "deviceId": agent["device_id"],
+                "name": agent["name"],
+                "kind": agent["kind"],
+                "endpoint": agent["endpoint"],
+                "status": agent["status"],
+                "version": agent["version"],
+                "isOnline": bool(
+                    agent_last_seen
+                    and (now - agent_last_seen).total_seconds()
+                    < int(runtime_setting("online_timeout_seconds", "75"))
+                ),
+                "capabilities": json.loads(agent["capabilities_json"] or "[]"),
+                "skills": json.loads(agent["skills_json"] or "[]"),
+                "lastSeenAt": agent_last_seen,
+            })
         data.append(
             {
                 "id": row["id"],
@@ -828,8 +871,15 @@ def list_agents(device_id: str, user: UserIdentity = Depends(require_user)) -> d
 
 @app.post("/v1/agents/register")
 def register_agent(registration: AgentRegistration, identity: NodeIdentity = Depends(require_node)) -> dict[str, Any]:
-    assert_node_device(registration.id, identity)
     with database() as db:
+        existing = db.execute(
+            "SELECT device_id, owner_id FROM agents WHERE id = ?",
+            (registration.id,),
+        ).fetchone()
+        if existing and (
+            existing["device_id"] != identity.device_id or existing["owner_id"] != identity.owner_id
+        ):
+            raise HTTPException(status_code=403, detail="agent belongs to another device")
         db.execute(
             """INSERT OR REPLACE INTO agents(id, device_id, owner_id, name, kind, endpoint, version, status, capabilities_json, skills_json, last_seen_at, created_at)
                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, COALESCE((SELECT created_at FROM agents WHERE id = ?), ?))""",
@@ -859,7 +909,7 @@ def agent_heartbeat(agent_id: str, identity: NodeIdentity = Depends(require_node
         row = db.execute("SELECT device_id FROM agents WHERE id = ? AND owner_id = ?", (agent_id, identity.owner_id)).fetchone()
         if row is None:
             raise HTTPException(status_code=404, detail="agent not found")
-        assert_node_device(agent_id, identity)
+        assert_node_device(row["device_id"], identity)
         db.execute("UPDATE agents SET last_seen_at = ? WHERE id = ?", (iso_now(), agent_id))
     return {"ok": True}
 
@@ -950,14 +1000,54 @@ async def rpc(
     request: RPCRequest,
     user: UserIdentity = Depends(require_user),
 ) -> CommandResult:
+    # Prefer WSS if available
+    async with connections_lock:
+        conn = connections.get(device_id)
+    if conn and conn.owner_id == user.id:
+        command_id = str(uuid4())
+        result_future: asyncio.Future[CommandResult] = asyncio.get_running_loop().create_future()
+        pending_results[command_id] = result_future
+        try:
+            await conn.websocket.send_json({
+                "type": "command",
+                "command_id": command_id,
+                "agent_id": request.agent_id or "",
+                "method": request.method,
+                "params": request.params,
+            })
+            result = await asyncio.wait_for(result_future, timeout=RPC_TIMEOUT_SECONDS)
+            record_rpc(user.id, device_id, request.method, result.ok)
+            if not result.ok:
+                raise HTTPException(status_code=502, detail=result.error or "command failed")
+            return result
+        except asyncio.TimeoutError:
+            pending_results.pop(command_id, None)
+            record_rpc(user.id, device_id, request.method, False)
+            raise HTTPException(status_code=504, detail="node response timed out")
+
+    # Fallback: HTTP long-poll
     node = nodes.get(device_id)
     if node is None or node.owner_id != user.id:
         raise HTTPException(status_code=404, detail="device is not registered")
     if (utc_now() - node.last_seen_at).total_seconds() >= int(runtime_setting("online_timeout_seconds", "75")):
         raise HTTPException(status_code=503, detail="device is offline")
+    if request.agent_id:
+        with database() as db:
+            agent = db.execute(
+                "SELECT 1 FROM agents WHERE id = ? AND device_id = ? AND owner_id = ?",
+                (request.agent_id, device_id, user.id),
+            ).fetchone()
+        if agent is None:
+            raise HTTPException(status_code=404, detail="agent not found on device")
 
-    command = Command(id=str(uuid4()), method=request.method, params=request.params, created_at=utc_now())
-    result_future: asyncio.Future[CommandResult] = asyncio.get_running_loop().create_future()
+    command = Command(
+        id=str(uuid4()),
+        method=request.method,
+        params=request.params,
+        created_at=utc_now(),
+        agent_id=request.agent_id,
+    )
+    result_future = asyncio.get_running_loop().create_future()
     pending_results[command.id] = result_future
     await node.commands.put(command)
 
@@ -973,6 +1063,127 @@ async def rpc(
         raise HTTPException(status_code=502, detail=result.error or "node command failed")
     record_rpc(user.id, device_id, request.method, True)
     return result
+
+
+@app.websocket("/v1/channel/connect")
+async def wss_channel(websocket: WebSocket):
+    """WebSocket endpoint for Channel connections."""
+    await websocket.accept()
+    conn: ChannelConnection | None = None
+    device_id: str | None = None
+
+    async def ping_loop():
+        while True:
+            await asyncio.sleep(WSS_PING_INTERVAL)
+            try:
+                await websocket.send_json({"type": "ping", "timestamp": utc_now().isoformat()})
+            except Exception:
+                break
+
+    async def check_timeout():
+        while True:
+            await asyncio.sleep(WSS_TIMEOUT)
+            if conn and (utc_now() - conn.last_pong_at).total_seconds() > WSS_TIMEOUT:
+                break
+        await websocket.close(code=4001, reason="ping timeout")
+
+    try:
+        data = await websocket.receive_json()
+        if data.get("type") != "authenticate":
+            await websocket.send_json({"type": "error", "detail": "first message must be authenticate"})
+            await websocket.close(code=4000)
+            return
+
+        device_id = data.get("device_id")
+        token_hash_val = token_hash(data.get("token", ""))
+        with database() as db:
+            row = db.execute(
+                "SELECT id, owner_id FROM devices WHERE id = ? AND node_token_hash = ? AND disabled = 0",
+                (device_id, token_hash_val),
+            ).fetchone()
+        if row is None:
+            await websocket.send_json({"type": "error", "detail": "authentication failed"})
+            await websocket.close(code=4001)
+            return
+
+        owner_id = row["owner_id"]
+        async with connections_lock:
+            old_conn = connections.get(device_id)
+            if old_conn:
+                try:
+                    await old_conn.websocket.close(code=4001, reason="replaced by newer connection")
+                except Exception:
+                    pass
+            conn = ChannelConnection(device_id=device_id, owner_id=owner_id, websocket=websocket, last_pong_at=utc_now())
+            connections[device_id] = conn
+
+        await websocket.send_json({"type": "authenticated", "device_id": device_id})
+
+        # Register agents from auth message
+        agents_list = data.get("agents", [])
+        for agent in agents_list:
+            with database() as db:
+                db.execute(
+                    """INSERT OR REPLACE INTO agents(id, device_id, owner_id, name, kind, endpoint, version, status, capabilities_json, skills_json, last_seen_at, created_at)
+                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, COALESCE((SELECT created_at FROM agents WHERE id = ?), ?))""",
+                    (
+                        agent["id"], device_id, owner_id, agent.get("name", "Unknown"),
+                        agent.get("kind", "hermes"), agent.get("endpoint"),
+                        agent.get("version"), agent.get("status", "online"),
+                        json.dumps(agent.get("capabilities", [])),
+                        json.dumps(agent.get("skills", [])),
+                        iso_now(), agent["id"], iso_now(),
+                    ),
+                )
+
+        ping_task = asyncio.create_task(ping_loop())
+        timeout_task = asyncio.create_task(check_timeout())
+
+        try:
+            while True:
+                data = await websocket.receive_json()
+                msg_type = data.get("type")
+
+                if msg_type == "pong":
+                    if conn:
+                        conn.last_pong_at = utc_now()
+                    continue
+
+                if msg_type == "result":
+                    command_id = data.get("command_id")
+                    if command_id and command_id in pending_results:
+                        future = pending_results.pop(command_id, None)
+                        if future and not future.done():
+                            ok = data.get("ok", True)
+                            if ok:
+                                future.set_result(CommandResult(ok=True, data=data.get("data"),
+                                    error=None, stderr=None))
+                            else:
+                                future.set_result(CommandResult(ok=False, data=data.get("data"),
+                                    error=data.get("error"), stderr=None))
+                    continue
+
+                await websocket.send_json({"type": "error", "detail": f"unknown message type: {msg_type}"})
+        except WebSocketDisconnect:
+            pass
+        finally:
+            ping_task.cancel()
+            timeout_task.cancel()
+            async with connections_lock:
+                if connections.get(device_id) is conn:
+                    connections.pop(device_id, None)
+    except Exception as e:
+        try:
+            await websocket.send_json({"type": "error", "detail": str(e)})
+        except Exception:
+            pass
+    finally:
+        try:
+            await websocket.close()
+        except Exception:
+            pass
+
+
 
 
 def admin_page(online_count: int = 0, message: str = "") -> str:

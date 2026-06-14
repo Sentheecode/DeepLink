@@ -321,6 +321,25 @@ struct HermesMessage: Codable, Identifiable {
     let content: String
     let createdAt: String?
 
+    var isDisplayable: Bool {
+        (role == "user" || role == "assistant")
+            && !content.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
+    static func merge(existing: [HermesMessage], incoming: [HermesMessage]) -> [HermesMessage] {
+        var result = existing
+        var indices = Dictionary(uniqueKeysWithValues: existing.enumerated().map { ($1.id, $0) })
+        for message in incoming {
+            if let index = indices[message.id] {
+                result[index] = message
+            } else {
+                indices[message.id] = result.count
+                result.append(message)
+            }
+        }
+        return result
+    }
+
     static func parse(_ item: [String: Any]) -> HermesMessage? {
         let id: String
         if let stringID = item["id"] as? String {

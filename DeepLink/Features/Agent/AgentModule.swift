@@ -47,7 +47,7 @@ struct AgentTab: View {
     @State private var store = AgentStore(channel: PreferredAgentChannel())
     @State private var showNewSession = false
     @State private var newSessionTitle = ""
-    @State private var selectedAgentID = UserDefaults.standard.string(forKey: BrokerDefaults.deviceIDKey) ?? ""
+    @State private var selectedAgentID = UserDefaults.standard.string(forKey: BrokerDefaults.agentIDKey) ?? ""
     @State private var showAgentPicker = false
     @AppStorage("defaultAgentID") private var defaultAgentID: String = ""
     @State private var agents: [AgentInfo] = []
@@ -89,7 +89,9 @@ struct AgentTab: View {
                             NavigationLink(destination: AgentConversationView(sessionId: conv.id, store: store)) {
                                 VStack(alignment: .leading, spacing: 4) {
                                     Text(conv.displayTitle).font(.headline)
-                                    Text(conv.model ?? "hermes").font(.caption).foregroundColor(.secondary)
+                                    Text(selectedAgentName == "选择 Agent" ? "Hermes" : selectedAgentName)
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
                                 }
                                 .padding(.vertical, 4)
                             }
@@ -102,18 +104,16 @@ struct AgentTab: View {
                     HStack {
                         Text("会话")
                         Spacer()
-                        if !agents.isEmpty {
-                            Button { showAgentPicker = true } label: {
-                                HStack(spacing: 4) {
-                                    Circle().fill(Color.green).frame(width: 6, height: 6)
-                                    Text(selectedAgentName).font(.caption).fontWeight(.medium)
-                                    Image(systemName: "chevron.down").font(.caption2)
-                                }
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 4)
-                                .background(Color(.systemGray6))
-                                .clipShape(Capsule())
+                        Button { showAgentPicker = true } label: {
+                            HStack(spacing: 4) {
+                                Circle().fill(agents.isEmpty ? Color.gray : Color.green).frame(width: 6, height: 6)
+                                Text(selectedAgentName).font(.caption).fontWeight(.medium)
+                                Image(systemName: "chevron.down").font(.caption2)
                             }
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(Color(.systemGray6))
+                            .clipShape(Capsule())
                         }
                     }
                 }
@@ -126,10 +126,7 @@ struct AgentTab: View {
                     }
                 }
             }
-            .onAppear {
-                Task { await store.loadSessions() }
-                loadAgents()
-            }
+            .task { await prepareAgentPage() }
             .refreshable { await store.refreshSessions() }
             .alert("新建会话", isPresented: $showNewSession) {
                 TextField("标题（可选）", text: $newSessionTitle)
@@ -140,32 +137,57 @@ struct AgentTab: View {
                 }
             }
             .sheet(isPresented: $showAgentPicker) {
-                AgentPickerView(agents: agents, selectedID: $selectedAgentID, defaultID: $defaultAgentID)
-            }
-            .onChange(of: selectedAgentID) { _, agentID in
-                guard !agentID.isEmpty else { return }
-                UserDefaults.standard.set(agentID, forKey: BrokerDefaults.deviceIDKey)
-                Task { await store.loadSessions() }
+                AgentPickerView(
+                    agents: agents,
+                    selectedID: selectedAgentID,
+                    defaultID: $defaultAgentID
+                ) { agent in
+                    Task { await activate(agent) }
+                }
             }
         }
     }
 
-    private func loadAgents() {
+    private func prepareAgentPage() async {
+        let mode = UserDefaults.standard.string(forKey: BrokerDefaults.connectionModeKey)
+            ?? AgentConnectionMode.local.rawValue
+        guard mode == AgentConnectionMode.broker.rawValue else {
+            await store.loadSessions()
+            return
+        }
+        await loadAgents()
+    }
+
+    private func loadAgents() async {
         guard KeychainCredentialStore().hasToken(for: .brokerKey) else {
             agents = []
             selectedAgentID = ""
             return
         }
-        Task {
-            let client = RemoteBrokerClient()
-            await client.loadSavedConfig()
-            if let devices = try? await client.fetchDevices() {
-                agents = devices.flatMap { $0.agents }
-                if selectedAgentID.isEmpty || !agents.contains(where: { $0.id == selectedAgentID }) {
-                    selectedAgentID = agents.first?.id ?? ""
-                }
-            }
+        let client = RemoteBrokerClient()
+        await client.loadSavedConfig()
+        guard let devices = try? await client.fetchDevices() else {
+            await store.loadSessions()
+            return
         }
+        agents = devices.flatMap(\.agents)
+        guard let selected = AgentSelectionResolver.resolve(
+            agents: agents,
+            preferredAgentID: selectedAgentID
+        ) else {
+            selectedAgentID = ""
+            return
+        }
+        await activate(selected)
+    }
+
+    private func activate(_ agent: AgentInfo) async {
+        selectedAgentID = agent.id
+        store.switchContext(agentID: agent.id)
+        let client = RemoteBrokerClient()
+        await client.loadSavedConfig()
+        await client.selectAgent(id: agent.id, deviceID: agent.deviceId)
+        await store.loadSessions()
     }
 }
 
@@ -173,27 +195,50 @@ struct AgentTab: View {
 
 struct AgentPickerView: View {
     let agents: [AgentInfo]
-    @Binding var selectedID: String
+    let selectedID: String
     @Binding var defaultID: String
+    let onSelect: (AgentInfo) -> Void
     @Environment(\.dismiss) private var dismiss
+    @State private var detailAgent: AgentInfo?
 
     var body: some View {
         NavigationStack {
             List {
                 Section("选择 Agent") {
                     ForEach(agents) { agent in
-                        Button {
-                            selectedID = agent.id
-                        } label: {
-                            HStack {
-                                Circle().fill(agent.isOnline ? Color.green : Color.gray).frame(width: 8, height: 8)
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text(agent.name).foregroundColor(.primary).font(.subheadline.weight(.medium))
-                                    if let v = agent.version { Text("v\(v)").font(.caption).foregroundColor(.secondary) }
+                        HStack {
+                            Button {
+                                onSelect(agent)
+                                dismiss()
+                            } label: {
+                                HStack(spacing: 10) {
+                                    Circle().fill(agent.isOnline ? Color.green : Color.gray).frame(width: 8, height: 8)
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text(agent.name).foregroundColor(.primary).font(.subheadline.weight(.medium))
+                                        HStack(spacing: 5) {
+                                            if let v = agent.version { Text("v\(v)") }
+                                            Text("\(agent.capabilities.count) 能力")
+                                            Text("\(agent.skills.count) Skills")
+                                        }
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                    }
+                                    Spacer()
+                                    if selectedID == agent.id { Image(systemName: "checkmark") }
                                 }
-                                Spacer()
-                                if selectedID == agent.id { Image(systemName: "checkmark") }
+                                .contentShape(Rectangle())
                             }
+                            .buttonStyle(.plain)
+
+                            Button {
+                                detailAgent = agent
+                            } label: {
+                                Image(systemName: "info.circle")
+                                    .font(.title3)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .buttonStyle(.borderless)
+                            .accessibilityLabel("查看 \(agent.name) 档案")
                         }
                     }
                 }
@@ -205,6 +250,9 @@ struct AgentPickerView: View {
             .presentationDetents([.medium])
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) { Button("完成") { dismiss() } }
+            }
+            .sheet(item: $detailAgent) { agent in
+                AgentDetailView(agent: agent)
             }
         }
     }
@@ -586,7 +634,14 @@ struct AgentConversationView: View {
                         if msg.role != "user" {
                             Image(systemName: msg.icon).font(.caption).foregroundColor(.blue)
                         }
-                        markdownContent(msg.content, streaming: msg.isStreaming)
+                        if msg.role == "user" {
+                            Text(msg.content)
+                                .font(.subheadline)
+                                .textSelection(.enabled)
+                                .fixedSize(horizontal: false, vertical: true)
+                        } else {
+                            markdownContent(msg.content, streaming: msg.isStreaming)
+                        }
                         if msg.role == "user" {
                             Image(systemName: msg.icon).font(.caption).foregroundColor(.green)
                         }
@@ -595,6 +650,7 @@ struct AgentConversationView: View {
                     .padding(.vertical, 8)
                     .background(msg.role == "user" ? Color.blue.opacity(0.1) : Color(.systemGray6))
                     .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .frame(maxWidth: 320, alignment: msg.role == "user" ? .trailing : .leading)
                 }
                 if msg.role == "assistant" { Spacer(minLength: 60) }
             }
@@ -614,21 +670,21 @@ struct AgentConversationView: View {
     }
 
     private func loadMessages() async {
-        messages = store.messageCache[sessionId] ?? []
+        messages = store.cachedMessages(sessionId: sessionId) ?? []
         // Try local disk cache first
         if messages.isEmpty, let cached = store.loadMessagesFromDisk(sessionId: sessionId) {
             messages = cached
         }
-        isLoadingHistory = true
+        isLoadingHistory = messages.isEmpty
         historyError = nil
         do {
             let msgs = try await store.channel.listMessages(sessionId: sessionId, before: nil, limit: 50)
-            let mapped = msgs.map {
+            let mapped = msgs.filter(\.isDisplayable).map {
                 AgentChatMessage(id: $0.id, role: $0.role, content: $0.content, isStreaming: false, state: .normal)
             }
-            messages = mapped
-            store.messageCache[sessionId] = mapped
-            store.saveMessagesToDisk(sessionId: sessionId, messages: mapped)
+            messages = AgentStore.mergeMessages(existing: messages, incoming: mapped)
+            store.setCachedMessages(messages, sessionId: sessionId)
+            store.saveMessagesToDisk(sessionId: sessionId, messages: messages)
         } catch {
             historyError = error.localizedDescription
         }
@@ -647,20 +703,17 @@ struct AgentConversationView: View {
     private func startPollingForUpdates() {
         sendTask?.cancel()
         sendTask = Task {
-            var lastKnownContent: String? = messages.last?.content
             while !Task.isCancelled {
                 await Task.yield()
                 try? await Task.sleep(for: .milliseconds(300))
-                let cached = store.messageCache[sessionId] ?? store.loadMessagesFromDisk(sessionId: sessionId) ?? []
+                let cached = store.cachedMessages(sessionId: sessionId) ?? store.loadMessagesFromDisk(sessionId: sessionId) ?? []
                 if cached.count > messages.count {
                     messages = cached
-                    lastKnownContent = messages.last?.content
                 } else if cached.count == messages.count, cached.count > 0 {
                     let lastCached = cached.last
                     let lastMsg = messages.last
                     if lastCached?.content != lastMsg?.content {
                         messages = cached
-                        lastKnownContent = messages.last?.content
                     }
                 }
                 // Check if streaming is done
@@ -684,7 +737,7 @@ struct AgentConversationView: View {
         let userMsg = AgentChatMessage(id: UUID().uuidString, role: "user", content: text, isStreaming: false, state: .normal)
         messages.append(userMsg)
         messages.append(AgentChatMessage(id: "reply_\(sessionId)", role: "assistant", content: "", isStreaming: true, state: .streaming))
-        store.messageCache[sessionId] = messages
+        store.setCachedMessages(messages, sessionId: sessionId)
         store.saveMessagesToDisk(sessionId: sessionId, messages: messages)
         isSending = true
 
@@ -700,7 +753,7 @@ struct AgentConversationView: View {
         sendTask = nil
         isSending = false
         messages.removeAll { $0.content.isEmpty && $0.isStreaming }
-        store.messageCache[sessionId] = messages
+        store.setCachedMessages(messages, sessionId: sessionId)
         store.saveMessagesToDisk(sessionId: sessionId, messages: messages)
     }
 
@@ -711,7 +764,7 @@ struct AgentConversationView: View {
             if case .failed = $0.state { return true }
             return false
         }
-        store.messageCache[sessionId] = messages
+        store.setCachedMessages(messages, sessionId: sessionId)
         store.saveMessagesToDisk(sessionId: sessionId, messages: messages)
         sendMessage()
     }
@@ -729,15 +782,53 @@ final class AgentStore {
 
     // Active stream management (survives view lifecycles)
     private var activeStreams: [String: Task<Void, Never>] = [:]
+    private var prefetchTask: Task<Void, Never>?
+    private var cacheScope = UserDefaults.standard.string(forKey: BrokerDefaults.agentIDKey) ?? "local"
 
     init(channel: any AgentChannel) {
         self.channel = channel
     }
 
+    private func scopedSessionKey(_ sessionId: String) -> String {
+        "\(cacheScope)::\(sessionId)"
+    }
+
+    func cachedMessages(sessionId: String) -> [AgentChatMessage]? {
+        messageCache[scopedSessionKey(sessionId)]
+    }
+
+    func setCachedMessages(_ messages: [AgentChatMessage], sessionId: String) {
+        messageCache[scopedSessionKey(sessionId)] = messages
+    }
+
+    func switchContext(agentID: String) {
+        guard cacheScope != agentID else { return }
+        prefetchTask?.cancel()
+        prefetchTask = nil
+        cacheScope = agentID
+        conversations = []
+        errorMessage = nil
+        messageCache.removeAll()
+    }
+
+    static func mergeMessages(existing: [AgentChatMessage], incoming: [AgentChatMessage]) -> [AgentChatMessage] {
+        var result = existing
+        for message in incoming {
+            if let index = result.firstIndex(where: {
+                $0.id == message.id || ($0.role == message.role && $0.content == message.content)
+            }) {
+                result[index] = message
+            } else {
+                result.append(message)
+            }
+        }
+        return result
+    }
+
     // MARK: - Disk Persistence
 
     func saveMessagesToDisk(sessionId: String, messages: [AgentChatMessage]) {
-        let key = "chat_messages_\(sessionId)_v1"
+        let key = "chat_messages_\(scopedSessionKey(sessionId))_v2"
         let saveable = messages.map { msg in
             ["id": msg.id, "role": msg.role, "content": msg.content, "isStreaming": String(msg.isStreaming)]
         }
@@ -745,7 +836,7 @@ final class AgentStore {
     }
 
     func loadMessagesFromDisk(sessionId: String) -> [AgentChatMessage]? {
-        let key = "chat_messages_\(sessionId)_v1"
+        let key = "chat_messages_\(scopedSessionKey(sessionId))_v2"
         guard let saved = UserDefaults.standard.array(forKey: key) as? [[String: String]] else { return nil }
         return saved.compactMap { dict in
             guard let id = dict["id"], let role = dict["role"], let content = dict["content"] else { return nil }
@@ -769,7 +860,7 @@ final class AgentStore {
                     if let content = event.content, !content.isEmpty {
                         replyContent += content
                         // Save to disk in real-time so it survives tab switches
-                        var msgs = messageCache[sessionId] ?? loadMessagesFromDisk(sessionId: sessionId) ?? []
+                        var msgs = cachedMessages(sessionId: sessionId) ?? loadMessagesFromDisk(sessionId: sessionId) ?? []
                         if let idx = msgs.lastIndex(where: { $0.id == replyId }) {
                             msgs[idx] = AgentChatMessage(
                                 id: replyId,
@@ -787,12 +878,12 @@ final class AgentStore {
                                 state: .streaming
                             ))
                         }
-                        messageCache[sessionId] = msgs
+                        setCachedMessages(msgs, sessionId: sessionId)
                         saveMessagesToDisk(sessionId: sessionId, messages: msgs)
                     }
                 }
                 // Stream completed - finalize
-                var msgs = messageCache[sessionId] ?? loadMessagesFromDisk(sessionId: sessionId) ?? []
+                var msgs = cachedMessages(sessionId: sessionId) ?? loadMessagesFromDisk(sessionId: sessionId) ?? []
                 if let idx = msgs.lastIndex(where: { $0.id == replyId }) {
                     msgs[idx] = AgentChatMessage(
                         id: replyId,
@@ -802,11 +893,11 @@ final class AgentStore {
                         state: .normal
                     )
                 }
-                messageCache[sessionId] = msgs
+                setCachedMessages(msgs, sessionId: sessionId)
                 saveMessagesToDisk(sessionId: sessionId, messages: msgs)
             } catch {
                 guard !Task.isCancelled else { return }
-                var msgs = messageCache[sessionId] ?? loadMessagesFromDisk(sessionId: sessionId) ?? []
+                var msgs = cachedMessages(sessionId: sessionId) ?? loadMessagesFromDisk(sessionId: sessionId) ?? []
                 if let idx = msgs.lastIndex(where: { $0.id == replyId }) {
                     msgs[idx] = AgentChatMessage(
                         id: replyId,
@@ -816,7 +907,7 @@ final class AgentStore {
                         state: .failed(retryText: message)
                     )
                 }
-                messageCache[sessionId] = msgs
+                setCachedMessages(msgs, sessionId: sessionId)
                 saveMessagesToDisk(sessionId: sessionId, messages: msgs)
             }
             activeStreams.removeValue(forKey: sessionId)
@@ -825,7 +916,7 @@ final class AgentStore {
     }
 
     func getBackgroundStreamContent(sessionId: String) -> [AgentChatMessage]? {
-        return messageCache[sessionId] ?? loadMessagesFromDisk(sessionId: sessionId)
+        return cachedMessages(sessionId: sessionId) ?? loadMessagesFromDisk(sessionId: sessionId)
     }
 
     func loadSessions() async {
@@ -843,10 +934,35 @@ final class AgentStore {
                 let source = s.source ?? ""
                 return source != "cron" && source != "unknown"
             }
+            prefetchTask?.cancel()
+            prefetchTask = Task { await prefetchRecentConversations() }
         } catch {
             errorMessage = error.localizedDescription
         }
         isLoading = false
+    }
+
+    private func prefetchRecentConversations() async {
+        for session in conversations.prefix(20) {
+            guard !Task.isCancelled else { return }
+            guard loadMessagesFromDisk(sessionId: session.id) == nil else { continue }
+            do {
+                let remote = try await channel.listMessages(sessionId: session.id, before: nil, limit: 50)
+                let mapped = remote.filter(\.isDisplayable).map {
+                    AgentChatMessage(
+                        id: $0.id,
+                        role: $0.role,
+                        content: $0.content,
+                        isStreaming: false,
+                        state: .normal
+                    )
+                }
+                setCachedMessages(mapped, sessionId: session.id)
+                saveMessagesToDisk(sessionId: session.id, messages: mapped)
+            } catch {
+                return
+            }
+        }
     }
 
     /// 检查指定 session 是否有活跃的流
@@ -880,8 +996,8 @@ final class AgentStore {
     }
 
     func deleteSession(id: String) {
-        messageCache.removeValue(forKey: id)
-        UserDefaults.standard.removeObject(forKey: "chat_messages_\(id)_v1")
+        messageCache.removeValue(forKey: scopedSessionKey(id))
+        UserDefaults.standard.removeObject(forKey: "chat_messages_\(scopedSessionKey(id))_v2")
         Task {
             do {
                 try await channel.deleteSession(id: id)

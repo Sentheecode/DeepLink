@@ -96,6 +96,70 @@ final class RepositoryTests: XCTestCase {
         XCTAssertEqual(string?.id, "message-2")
     }
 
+    func testHermesMessageMergeUpdatesExistingAndAppendsOnlyNewMessages() {
+        let existing = [
+            HermesMessage(id: "1", role: "user", content: "旧内容", createdAt: nil),
+            HermesMessage(id: "2", role: "assistant", content: "回答", createdAt: nil),
+        ]
+        let incoming = [
+            HermesMessage(id: "1", role: "user", content: "更新内容", createdAt: nil),
+            HermesMessage(id: "3", role: "assistant", content: "新增回答", createdAt: nil),
+        ]
+
+        let merged = HermesMessage.merge(existing: existing, incoming: incoming)
+
+        XCTAssertEqual(merged.map(\.id), ["1", "2", "3"])
+        XCTAssertEqual(merged[0].content, "更新内容")
+    }
+
+    func testHermesMessageDisplayFiltersEmptyAndToolPayloads() {
+        XCTAssertTrue(HermesMessage(id: "1", role: "user", content: "你好", createdAt: nil).isDisplayable)
+        XCTAssertFalse(HermesMessage(id: "2", role: "assistant", content: "", createdAt: nil).isDisplayable)
+        XCTAssertFalse(HermesMessage(id: "3", role: "tool", content: #"{"ok":true}"#, createdAt: nil).isDisplayable)
+    }
+
+    func testAgentSelectionUsesCurrentAgentsDeviceInsteadOfStaleSavedDevice() {
+        let agent = AgentInfo(
+            id: "hermes-agent",
+            deviceId: "current-device",
+            name: "Hermes",
+            kind: "hermes",
+            endpoint: "http://mac.local:8642",
+            version: "0.16.0",
+            status: "online",
+            isOnline: true,
+            capabilities: ["sessions"],
+            skills: [],
+            lastSeenAt: nil
+        )
+
+        let selected = AgentSelectionResolver.resolve(agents: [agent], preferredAgentID: "hermes-agent")
+
+        XCTAssertEqual(selected?.id, "hermes-agent")
+        XCTAssertEqual(selected?.deviceId, "current-device")
+    }
+
+    func testAgentSelectionFallsBackToFirstAvailableAgent() {
+        let agent = AgentInfo(
+            id: "available-agent",
+            deviceId: "available-device",
+            name: "Hermes",
+            kind: "hermes",
+            endpoint: nil,
+            version: nil,
+            status: "online",
+            isOnline: true,
+            capabilities: [],
+            skills: [],
+            lastSeenAt: nil
+        )
+
+        let selected = AgentSelectionResolver.resolve(agents: [agent], preferredAgentID: "removed-agent")
+
+        XCTAssertEqual(selected?.id, "available-agent")
+        XCTAssertEqual(selected?.deviceId, "available-device")
+    }
+
     func testDeepSeekTokenCandidateExtractsNestedAndBearerValues() {
         XCTAssertEqual(
             DeepSeekTokenCandidate.values(

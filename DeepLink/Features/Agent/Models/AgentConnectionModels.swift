@@ -19,6 +19,7 @@ struct AgentDevice: Identifiable, Codable, Hashable {
 
 struct AgentInfo: Identifiable, Codable, Hashable {
     let id: String
+    let deviceId: String
     let name: String
     let kind: String
     let endpoint: String?
@@ -34,6 +35,12 @@ struct AgentSkill: Identifiable, Codable, Hashable {
     let name: String
     let description: String?
     var id: String { name }
+}
+
+enum AgentSelectionResolver {
+    static func resolve(agents: [AgentInfo], preferredAgentID: String) -> AgentInfo? {
+        agents.first(where: { $0.id == preferredAgentID }) ?? agents.first
+    }
 }
 
 struct AgentConnectionProfile: Identifiable, Codable, Hashable {

@@ -44,6 +44,7 @@ enum AgentConnectionMode: String, CaseIterable {
 enum BrokerDefaults {
     static let baseURLKey = "agent.brokerURL"
     static let deviceIDKey = "agent.brokerDeviceID"
+    static let agentIDKey = "agent.brokerAgentID"
     static let connectionModeKey = "agent.connectionMode"
     static var defaultBaseURL: String {
         Bundle.main.object(forInfoDictionaryKey: "BrokerBaseURL") as? String ?? ""
@@ -61,10 +62,12 @@ actor RemoteBrokerClient: AgentBrokerClient {
     private var baseURL = BrokerDefaults.defaultBaseURL
     private var token = ""
     private var selectedDeviceID = ""
+    private var selectedAgentID = ""
 
     func loadSavedConfig() {
         baseURL = UserDefaults.standard.string(forKey: BrokerDefaults.baseURLKey) ?? BrokerDefaults.defaultBaseURL
         selectedDeviceID = UserDefaults.standard.string(forKey: BrokerDefaults.deviceIDKey) ?? ""
+        selectedAgentID = UserDefaults.standard.string(forKey: BrokerDefaults.agentIDKey) ?? ""
         token = (try? KeychainCredentialStore().getToken(for: .brokerKey)) ?? ""
     }
 
@@ -124,6 +127,7 @@ actor RemoteBrokerClient: AgentBrokerClient {
                 let skills = rawSkills.map { AgentSkill(name: $0["name"] as? String ?? "", description: $0["description"] as? String) }
                 return AgentInfo(
                     id: a["id"] as? String ?? "",
+                    deviceId: id,
                     name: a["name"] as? String ?? "",
                     kind: a["kind"] as? String ?? "hermes",
                     endpoint: a["endpoint"] as? String,
@@ -156,6 +160,7 @@ actor RemoteBrokerClient: AgentBrokerClient {
             let skills = rawSkills.map { AgentSkill(name: $0["name"] as? String ?? "", description: $0["description"] as? String) }
             return AgentInfo(
                 id: a["id"] as? String ?? "",
+                deviceId: a["deviceId"] as? String ?? deviceId,
                 name: a["name"] as? String ?? "",
                 kind: a["kind"] as? String ?? "hermes",
                 endpoint: a["endpoint"] as? String,
@@ -172,6 +177,13 @@ actor RemoteBrokerClient: AgentBrokerClient {
     func selectDevice(id: String) async throws {
         selectedDeviceID = id
         UserDefaults.standard.set(id, forKey: BrokerDefaults.deviceIDKey)
+    }
+
+    func selectAgent(id: String, deviceID: String) {
+        selectedAgentID = id
+        selectedDeviceID = deviceID
+        UserDefaults.standard.set(id, forKey: BrokerDefaults.agentIDKey)
+        UserDefaults.standard.set(deviceID, forKey: BrokerDefaults.deviceIDKey)
     }
 
     func listSessions() async throws -> [HermesSession] {
@@ -278,8 +290,10 @@ actor RemoteBrokerClient: AgentBrokerClient {
     func signOut() throws {
         token = ""
         selectedDeviceID = ""
+        selectedAgentID = ""
         try KeychainCredentialStore().deleteToken(for: .brokerKey)
         UserDefaults.standard.removeObject(forKey: BrokerDefaults.deviceIDKey)
+        UserDefaults.standard.removeObject(forKey: BrokerDefaults.agentIDKey)
         UserDefaults.standard.set(AgentConnectionMode.broker.rawValue, forKey: BrokerDefaults.connectionModeKey)
     }
 
@@ -288,7 +302,11 @@ actor RemoteBrokerClient: AgentBrokerClient {
         let json = try await request(
             path: "/v1/rpc/\(selectedDeviceID)",
             method: "POST",
-            body: ["method": method, "params": params]
+            body: [
+                "method": method,
+                "params": params,
+                "agent_id": selectedAgentID.isEmpty ? NSNull() : selectedAgentID,
+            ]
         )
         guard json["ok"] as? Bool == true, let data = json["data"] else {
             throw BrokerError.invalidResponse

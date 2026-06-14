@@ -139,6 +139,110 @@ class BrokerTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(result.ok)
         self.assertEqual(broker.user_usage(user)["rpc_count"], 1)
 
+    async def test_repeated_node_registration_preserves_pending_command_queue(self) -> None:
+        user = self._create_user("Alice")
+        enrollment = broker.create_enrollment(user)
+        node_session = broker.consume_enrollment(
+            enrollment["token"],
+            broker.NodeRegistration(device_id="test-node", name="Test Node"),
+        )
+        identity = broker.require_node_token(node_session["node_token"])
+        registration = broker.NodeRegistration(device_id="test-node", name="Test Node")
+        await broker.register_node(registration, identity)
+        original_queue = broker.nodes["test-node"].commands
+
+        await broker.register_node(registration, identity)
+
+        self.assertIs(broker.nodes["test-node"].commands, original_queue)
+
+    async def test_node_can_register_agent_belonging_to_its_device(self) -> None:
+        user = self._create_user("Alice")
+        enrollment = broker.create_enrollment(user)
+        node_session = broker.consume_enrollment(
+            enrollment["token"],
+            broker.NodeRegistration(device_id="alice-mac", name="Alice Mac"),
+        )
+        node_identity = broker.require_node_token(node_session["node_token"])
+
+        broker.register_agent(
+            broker.AgentRegistration(id="alice-mac-hermes", name="Hermes", version="1.2.3"),
+            node_identity,
+        )
+        broker.agent_heartbeat("alice-mac-hermes", node_identity)
+
+        devices = broker.list_devices(user)["data"]
+        self.assertEqual(devices[0]["agentCount"], 1)
+        self.assertEqual(devices[0]["agents"][0]["id"], "alice-mac-hermes")
+        self.assertTrue(devices[0]["agents"][0]["isOnline"])
+
+    async def test_rpc_rejects_agent_from_another_device_and_routes_selected_agent(self) -> None:
+        user = self._create_user("Alice")
+        first = broker.create_enrollment(user)
+        second = broker.create_enrollment(user)
+        first_session = broker.consume_enrollment(
+            first["token"],
+            broker.NodeRegistration(device_id="first", name="First"),
+        )
+        second_session = broker.consume_enrollment(
+            second["token"],
+            broker.NodeRegistration(device_id="second", name="Second"),
+        )
+        first_identity = broker.require_node_token(first_session["node_token"])
+        second_identity = broker.require_node_token(second_session["node_token"])
+        await broker.register_node(broker.NodeRegistration(device_id="first", name="First"), first_identity)
+        await broker.register_node(broker.NodeRegistration(device_id="second", name="Second"), second_identity)
+        broker.register_agent(broker.AgentRegistration(id="first-hermes", name="Hermes"), first_identity)
+        broker.register_agent(broker.AgentRegistration(id="second-hermes", name="Hermes"), second_identity)
+
+        with self.assertRaises(broker.HTTPException) as context:
+            await broker.rpc(
+                "first",
+                broker.RPCRequest(method="list_sessions", params={}, agent_id="second-hermes"),
+                user,
+            )
+        self.assertEqual(context.exception.status_code, 404)
+
+        rpc_task = asyncio.create_task(
+            broker.rpc(
+                "first",
+                broker.RPCRequest(method="list_sessions", params={}, agent_id="first-hermes"),
+                user,
+            )
+        )
+        command = await broker.next_command("first", first_identity, timeout=1)
+        self.assertEqual(command.agent_id, "first-hermes")
+        await broker.submit_result(
+            "first",
+            command.id,
+            broker.CommandResult(ok=True, data={"data": []}),
+            first_identity,
+        )
+        self.assertTrue((await rpc_task).ok)
+
+    async def test_node_cannot_take_over_agent_registered_to_another_device(self) -> None:
+        user = self._create_user("Alice")
+        first = broker.create_enrollment(user)
+        second = broker.create_enrollment(user)
+        first_session = broker.consume_enrollment(
+            first["token"],
+            broker.NodeRegistration(device_id="first", name="First"),
+        )
+        second_session = broker.consume_enrollment(
+            second["token"],
+            broker.NodeRegistration(device_id="second", name="Second"),
+        )
+        first_identity = broker.require_node_token(first_session["node_token"])
+        second_identity = broker.require_node_token(second_session["node_token"])
+        broker.register_agent(broker.AgentRegistration(id="shared-agent", name="First Agent"), first_identity)
+
+        with self.assertRaises(broker.HTTPException) as context:
+            broker.register_agent(
+                broker.AgentRegistration(id="shared-agent", name="Hijacked Agent"),
+                second_identity,
+            )
+
+        self.assertEqual(context.exception.status_code, 403)
+
     async def test_empty_command_poll_handles_python_310_asyncio_timeout(self) -> None:
         class LegacyAsyncioTimeoutError(Exception):
             pass

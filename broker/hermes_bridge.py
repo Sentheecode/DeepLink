@@ -64,7 +64,9 @@ async def discover_agent() -> dict[str, Any]:
         if isinstance(caps, list):
             info["capabilities"] = caps
         elif isinstance(caps, dict):
-            info["capabilities"] = caps.get("capabilities", [])
+            features = caps.get("features", {})
+            if isinstance(features, dict):
+                info["capabilities"] = sorted(key for key, enabled in features.items() if enabled is True)
     except Exception:
         pass
 
@@ -106,8 +108,18 @@ async def register_agents(client: httpx.AsyncClient, agent_info: dict[str, Any])
     )
     response.raise_for_status()
 
+async def heartbeat_agent(client: httpx.AsyncClient) -> None:
+    response = await client.post(
+        f"{BROKER_URL}/v1/agents/{AGENT_ID}/heartbeat",
+        headers=headers(BROKER_TOKEN),
+    )
+    response.raise_for_status()
+
 
 async def execute(command: dict[str, Any]) -> Any:
+    requested_agent_id = command.get("agent_id")
+    if requested_agent_id and requested_agent_id != AGENT_ID:
+        raise ValueError(f"agent is not available on this channel: {requested_agent_id}")
     method = command["method"]
     params = command.get("params", {})
 
@@ -174,6 +186,7 @@ async def run_forever() -> None:
                     params={"timeout": 25},
                 )
                 if response.status_code == 204:
+                    await heartbeat_agent(client)
                     continue
                 response.raise_for_status()
                 command = response.json()
@@ -188,6 +201,7 @@ async def run_forever() -> None:
                     json=result,
                 )
                 result_response.raise_for_status()
+                await heartbeat_agent(client)
             except httpx.HTTPStatusError as exc:
                 if exc.response.status_code == 404:
                     registered = False
