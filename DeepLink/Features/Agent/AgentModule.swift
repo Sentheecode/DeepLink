@@ -49,6 +49,7 @@ struct AgentTab: View {
     @State private var newSessionTitle = ""
     @State private var selectedAgentID = UserDefaults.standard.string(forKey: BrokerDefaults.agentIDKey) ?? ""
     @State private var showAgentPicker = false
+    @State private var showSidebar = false
     @AppStorage("defaultAgentID") private var defaultAgentID: String = ""
     @State private var agents: [AgentInfo] = []
 
@@ -58,71 +59,67 @@ struct AgentTab: View {
 
     var body: some View {
         NavigationStack {
-            List {
-                Section {
-                    NavigationLink(destination: GlobalSearchView()) {
-                        Label("全局检索", systemImage: "doc.text.magnifyingglass")
-                            .font(.body)
-                    }
-                }
-
-                // Sessions section
-                Section {
+            ZStack(alignment: .leading) {
+                Group {
                     if store.isLoading && store.conversations.isEmpty {
-                        HStack { Spacer(); ProgressView("连接 Agent…"); Spacer() }
-                            .listRowBackground(Color.clear)
-                    } else if store.errorMessage != nil && store.conversations.isEmpty {
-                        VStack(spacing: 8) {
-                            Image(systemName: "wifi.slash").font(.title2).foregroundColor(.secondary)
-                            Text("无法连接").foregroundColor(.secondary)
-                            Text(store.errorMessage ?? "").font(.caption).foregroundColor(.secondary)
+                        ProgressView("正在连接 \(selectedAgentName)…")
+                    } else if let error = store.errorMessage, store.conversations.isEmpty {
+                        ContentUnavailableView {
+                            Label("无法连接 Agent", systemImage: "wifi.slash")
+                        } description: {
+                            Text(error)
+                        } actions: {
                             Button("重试") { Task { await store.loadSessions() } }
                         }
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 12)
-                        .listRowBackground(Color.clear)
                     } else if store.conversations.isEmpty {
-                        Text("暂无会话").foregroundColor(.secondary).frame(maxWidth: .infinity)
-                            .listRowBackground(Color.clear)
+                        AgentWorkspaceEmptyState(agentName: selectedAgentName) { showNewSession = true }
                     } else {
-                        ForEach(store.conversations) { conv in
-                            NavigationLink(destination: AgentConversationView(sessionId: conv.id, store: store)) {
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text(conv.displayTitle).font(.headline)
-                                    Text(selectedAgentName == "选择 Agent" ? "Hermes" : selectedAgentName)
-                                        .font(.caption)
-                                        .foregroundColor(.secondary)
+                        List {
+                            Section {
+                                ForEach(store.conversations) { conversation in
+                                    NavigationLink(destination: AgentConversationView(sessionId: conversation.id, store: store)) {
+                                        VStack(alignment: .leading, spacing: 5) {
+                                            Text(conversation.displayTitle).font(.body.weight(.medium)).lineLimit(1)
+                                            Text(selectedAgentName).font(.caption).foregroundStyle(.secondary)
+                                        }
+                                        .padding(.vertical, 5)
+                                    }
+                                    .swipeActions {
+                                        Button("删除", role: .destructive) { store.deleteSession(id: conversation.id) }
+                                    }
                                 }
-                                .padding(.vertical, 4)
-                            }
-                            .swipeActions(edge: .trailing) {
-                                Button("删除", role: .destructive) { store.deleteSession(id: conv.id) }
+                            } header: {
+                                Text("最近对话")
                             }
                         }
-                    }
-                } header: {
-                    HStack {
-                        Text("会话")
-                        Spacer()
-                        Button { showAgentPicker = true } label: {
-                            HStack(spacing: 4) {
-                                Circle().fill(agents.isEmpty ? Color.gray : Color.green).frame(width: 6, height: 6)
-                                Text(selectedAgentName).font(.caption).fontWeight(.medium)
-                                Image(systemName: "chevron.down").font(.caption2)
-                            }
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 4)
-                            .background(Color(.systemGray6))
-                            .clipShape(Capsule())
-                        }
+                        .listStyle(.plain)
                     }
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .disabled(showSidebar)
+
+                if showSidebar {
+                    Color.black.opacity(0.12).ignoresSafeArea().onTapGesture { closeSidebar() }
+                    AgentWorkspaceSidebar(
+                        agents: agents,
+                        selectedAgentID: selectedAgentID,
+                        onSelectAgent: { agent in Task { await activate(agent); closeSidebar() } },
+                        onClose: closeSidebar
+                    )
+                    .transition(.move(edge: .leading))
+                }
             }
-            .navigationTitle("Agent")
+            .navigationTitle(selectedAgentName)
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button { withAnimation(.snappy) { showSidebar.toggle() } } label: {
+                        Image(systemName: "sidebar.left")
+                    }
+                }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: { showNewSession = true }) {
-                        Image(systemName: "plus")
+                        Image(systemName: "square.and.pencil")
                     }
                 }
             }
@@ -136,16 +133,11 @@ struct AgentTab: View {
                     newSessionTitle = ""
                 }
             }
-            .sheet(isPresented: $showAgentPicker) {
-                AgentPickerView(
-                    agents: agents,
-                    selectedID: selectedAgentID,
-                    defaultID: $defaultAgentID
-                ) { agent in
-                    Task { await activate(agent) }
-                }
-            }
         }
+    }
+
+    private func closeSidebar() {
+        withAnimation(.snappy) { showSidebar = false }
     }
 
     private func prepareAgentPage() async {
@@ -540,27 +532,40 @@ struct AgentConversationView: View {
                 }
             }
 
-            Divider()
-            HStack(spacing: 8) {
-                TextField("输入消息…", text: $inputText)
-                    .textFieldStyle(.roundedBorder)
+            HStack(alignment: .bottom, spacing: 8) {
+                TextField("给 Agent 发消息", text: $inputText, axis: .vertical)
+                    .lineLimit(1...6)
                     .focused($isFocused)
                     .disabled(isSending)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 11)
+                    .background(Color(.secondarySystemBackground))
+                    .clipShape(RoundedRectangle(cornerRadius: 22))
                 if isSending {
                     Button(action: cancelSend) {
-                        Image(systemName: "stop.circle.fill").font(.title2).foregroundColor(.red)
+                        Image(systemName: "stop.fill")
+                            .font(.caption.bold())
+                            .foregroundStyle(.white)
+                            .frame(width: 38, height: 38)
+                            .background(Color.primary)
+                            .clipShape(Circle())
                     }
                 } else {
                     Button(action: sendMessage) {
-                        Image(systemName: "arrow.up.circle.fill").font(.title2)
+                        Image(systemName: "arrow.up")
+                            .font(.headline.bold())
+                            .foregroundStyle(.white)
+                            .frame(width: 38, height: 38)
+                            .background(inputText.trimmingCharacters(in: .whitespaces).isEmpty ? Color.secondary : Color.primary)
+                            .clipShape(Circle())
                     }
                     .disabled(inputText.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
             }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 12)
-            .background(.regularMaterial)
-            .padding(.bottom, 0)
+            .padding(.horizontal, 14)
+            .padding(.top, 8)
+            .padding(.bottom, 10)
+            .background(.ultraThinMaterial)
         }
         .navigationTitle("会话")
         .task { await loadMessages() }
@@ -627,32 +632,28 @@ struct AgentConversationView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 12))
             }
         default:
-            HStack {
-                if msg.role == "user" { Spacer(minLength: 60) }
-                VStack(alignment: msg.role == "user" ? .trailing : .leading, spacing: 4) {
-                    HStack(spacing: 4) {
-                        if msg.role != "user" {
-                            Image(systemName: msg.icon).font(.caption).foregroundColor(.blue)
-                        }
-                        if msg.role == "user" {
-                            Text(msg.content)
-                                .font(.subheadline)
-                                .textSelection(.enabled)
-                                .fixedSize(horizontal: false, vertical: true)
-                        } else {
-                            markdownContent(msg.content, streaming: msg.isStreaming)
-                        }
-                        if msg.role == "user" {
-                            Image(systemName: msg.icon).font(.caption).foregroundColor(.green)
-                        }
-                    }
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 8)
-                    .background(msg.role == "user" ? Color.blue.opacity(0.1) : Color(.systemGray6))
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                    .frame(maxWidth: 320, alignment: msg.role == "user" ? .trailing : .leading)
+            if msg.role == "user" {
+                HStack {
+                    Spacer(minLength: 44)
+                    Text(msg.content)
+                        .font(.body)
+                        .textSelection(.enabled)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 10)
+                        .background(Color(.secondarySystemBackground))
+                        .clipShape(RoundedRectangle(cornerRadius: 18))
                 }
-                if msg.role == "assistant" { Spacer(minLength: 60) }
+            } else {
+                VStack(alignment: .leading, spacing: 8) {
+                    Image(systemName: "sparkles")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    markdownContent(msg.content, streaming: msg.isStreaming)
+                        .font(.body)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.vertical, 4)
             }
         }
     }
@@ -1033,7 +1034,14 @@ struct AgentConnectionSettingsView: View {
             if connectionModeRawValue == AgentConnectionMode.broker.rawValue {
                 Section("云端连接") {
                     NavigationLink(destination: BrokerConfigView()) {
-                        Label("账号与 Agent 设备", systemImage: "person.2.badge.gearshape")
+                        VStack(alignment: .leading, spacing: 4) {
+                            Label("接入一台设备", systemImage: "plus.rectangle.on.rectangle")
+                                .font(.headline)
+                            Text("生成一次性链接，让电脑上的 Agent 自动安装 Channel 并加入账户。")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(.vertical, 4)
                     }
                 }
             } else {
@@ -1361,7 +1369,9 @@ struct HermesQuickTestView: View {
 }
 
 struct HermesConfigView: View {
-    @State private var url: String
+    @State private var scheme: String
+    @State private var host: String
+    @State private var port: String
     @State private var key: String
     @State private var statusText = ""
     @State private var isTesting = false
@@ -1369,17 +1379,30 @@ struct HermesConfigView: View {
     init() {
         let savedURL = UserDefaults.standard.string(forKey: "hermesURL") ?? ""
         let savedKey = (try? KeychainCredentialStore().getToken(for: .hermesKey)) ?? ""
-        _url = State(initialValue: savedURL.isEmpty ? "http://" : savedURL)
+        let components = URLComponents(string: savedURL)
+        _scheme = State(initialValue: components?.scheme ?? "http")
+        _host = State(initialValue: components?.host ?? "")
+        _port = State(initialValue: components?.port.map(String.init) ?? "8642")
         _key = State(initialValue: savedKey)
+    }
+
+    private var url: String {
+        "\(scheme)://\(host.trimmingCharacters(in: .whitespacesAndNewlines)):\(port)"
     }
 
     var body: some View {
         Form {
             Section("连接信息") {
-                TextField("服务器地址", text: $url)
+                Picker("协议", selection: $scheme) {
+                    Text("HTTP").tag("http")
+                    Text("HTTPS").tag("https")
+                }
+                TextField("局域网 IP 或主机名", text: $host)
                     .autocorrectionDisabled()
                     .textInputAutocapitalization(.never)
                     .keyboardType(.URL)
+                TextField("端口", text: $port)
+                    .keyboardType(.numberPad)
                 SecureField("API Key", text: $key)
                     .autocorrectionDisabled()
                     .textInputAutocapitalization(.never)
@@ -1392,8 +1415,8 @@ struct HermesConfigView: View {
                 .disabled(isTesting)
 
                 Button("保存") {
-                    guard !url.trimmingCharacters(in: .whitespaces).isEmpty else {
-                        statusText = "请输入服务器地址"
+                    guard !host.trimmingCharacters(in: .whitespaces).isEmpty else {
+                        statusText = "请输入局域网 IP 或主机名"
                         return
                     }
                     guard URL(string: url) != nil else {

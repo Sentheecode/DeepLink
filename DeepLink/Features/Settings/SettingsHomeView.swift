@@ -52,78 +52,40 @@ struct SettingsTab: View {
                 }
             }
 
-            // MARK: - Agent
             Section {
                 NavigationLink(destination: AgentConnectionSettingsView()) {
-                    settingsRow(icon: "point.3.connected.trianglepath.dotted", color: .blue,
-                                title: "Agent 连接",
-                                subtitle: "云端模式")
+                    settingsRow(icon: "network", color: .secondary, title: "连接与设备", subtitle: "云端 Channel、局域网与配对")
                 }
                 NavigationLink(destination: ModelCredentialSettingsView()) {
-                    settingsRow(icon: "key.fill", color: .orange,
-                                title: "模型与凭证",
-                                subtitle: "管理 DeepSeek Token 等凭证")
+                    settingsRow(icon: "key", color: .secondary, title: "模型与凭证", subtitle: "DeepSeek 与其他模型服务")
                 }
+            } header: {
+                Text("连接")
+            }
+
+            Section {
                 NavigationLink(destination: DefaultAgentSettingsView()) {
-                    settingsRow(icon: "target", color: .purple,
-                                title: "默认处理 Agent",
-                                subtitle: "语音和拍照自动发送的 Agent")
+                    settingsRow(icon: "target", color: .secondary, title: "默认 Agent", subtitle: "处理语音、图像和文字记录")
                 }
-            } header: {
-                settingsSectionHeader(icon: "brain.head.profile", title: "Agent")
-            }
-
-            // MARK: - 快捷工具
-            Section {
                 NavigationLink(destination: CenterDefaultModeSettingsView()) {
-                    settingsRow(icon: "slider.horizontal.3", color: .green,
-                                title: "快捷工具",
-                                subtitle: "Center 按钮的默认模式")
+                    settingsRow(icon: "slider.horizontal.3", color: .secondary, title: "Center 默认模式", subtitle: nil)
                 }
             } header: {
-                settingsSectionHeader(icon: "square.grid.2x2", title: "快捷工具")
+                Text("偏好")
             }
 
-            // MARK: - 数据记录
-            Section {
-                NavigationLink(destination: VoiceHistoryView()) {
-                    settingsRow(icon: "waveform.circle.fill", color: .purple,
-                                title: "语音历史",
-                                subtitle: nil)
-                }
-                NavigationLink(destination: PhotoHistoryView()) {
-                    settingsRow(icon: "camera.circle.fill", color: .mint,
-                                title: "拍照历史",
-                                subtitle: nil)
-                }
-                NavigationLink(destination: CenterMemoModeView()) {
-                    settingsRow(icon: "note.text", color: .orange,
-                                title: "备忘录",
-                                subtitle: nil)
-                }
-            } header: {
-                settingsSectionHeader(icon: "tray.full", title: "数据记录")
-            }
-
-            // MARK: - 应用
             Section {
                 NavigationLink(destination: WidgetPreviewView()) {
-                    settingsRow(icon: "square.grid.2x2", color: .indigo,
-                                title: "组件与灵动岛",
-                                subtitle: "桌面小组件和 Live Activity")
+                    settingsRow(icon: "square.grid.2x2", color: .secondary, title: "组件与灵动岛", subtitle: nil)
                 }
                 NavigationLink(destination: DataAndPrivacySettingsView()) {
-                    settingsRow(icon: "hand.raised.fill", color: .gray,
-                                title: "数据与隐私",
-                                subtitle: "安全与缓存管理")
+                    settingsRow(icon: "hand.raised", color: .secondary, title: "数据与隐私", subtitle: nil)
                 }
                 NavigationLink(destination: AboutSettingsView()) {
-                    settingsRow(icon: "info.circle.fill", color: .secondary,
-                                title: "关于",
-                                subtitle: nil)
+                    settingsRow(icon: "info.circle", color: .secondary, title: "关于", subtitle: nil)
                 }
             } header: {
-                settingsSectionHeader(icon: "gearshape.2", title: "应用")
+                Text("应用")
             }
         }
         .refreshable { await loadAccount() }
@@ -133,7 +95,7 @@ struct SettingsTab: View {
         HStack(spacing: 10) {
             Image(systemName: icon)
                 .font(.system(size: 14))
-                .foregroundColor(color)
+                .foregroundColor(.secondary)
                 .frame(width: 22)
             VStack(alignment: .leading, spacing: 1) {
                 Text(title).font(.body.weight(.medium))

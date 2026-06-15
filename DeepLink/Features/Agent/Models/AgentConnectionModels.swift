@@ -15,6 +15,23 @@ struct AgentDevice: Identifiable, Codable, Hashable {
     let lastSeenAt: Date?
     let agentCount: Int
     let agents: [AgentInfo]
+
+    var operatingSystem: String {
+        let lowered = "\(name) \(endpoint ?? "")".lowercased()
+        if lowered.contains("mac") || lowered.contains("darwin") { return "macOS" }
+        if lowered.contains("windows") || lowered.contains("win") { return "Windows" }
+        if lowered.contains("linux") || lowered.contains("ubuntu") { return "Linux" }
+        return "未知系统"
+    }
+
+    var systemImage: String {
+        switch operatingSystem {
+        case "macOS": "macbook"
+        case "Windows": "pc"
+        case "Linux": "server.rack"
+        default: "desktopcomputer"
+        }
+    }
 }
 
 struct AgentInfo: Identifiable, Codable, Hashable {
@@ -29,6 +46,26 @@ struct AgentInfo: Identifiable, Codable, Hashable {
     let capabilities: [String]
     let skills: [AgentSkill]
     let lastSeenAt: Date?
+
+    var kindDisplayName: String {
+        switch kind.lowercased() {
+        case "hermes": "Hermes"
+        case "claude-code", "claude": "Claude Code"
+        case "codex": "Codex"
+        case "openclaw": "OpenClaw"
+        default: kind
+        }
+    }
+
+    var brandInitials: String {
+        switch kind.lowercased() {
+        case "hermes": "H"
+        case "claude-code", "claude": "AI"
+        case "codex": "CX"
+        case "openclaw": "OC"
+        default: String(name.prefix(2)).uppercased()
+        }
+    }
 }
 
 struct AgentSkill: Identifiable, Codable, Hashable {

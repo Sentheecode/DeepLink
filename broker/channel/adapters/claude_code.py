@@ -3,18 +3,21 @@ from __future__ import annotations
 import asyncio
 from typing import Any
 
+import httpx
+
 
 class ClaudeCodeAdapter:
-    """Adapter for Claude Code CLI agent.
+    """Adapter for Claude Code agent.
 
-    First phase: basic detection and one-shot Q&A.
-    Future: MCP Server or Plugin for stable session management.
+    Connects to the local Claude Code Bridge HTTP server if available,
+    falls back to direct CLI execution.
     """
 
-    def __init__(self, device_id: str, cli_path: str = "/usr/local/bin/claude") -> None:
+    def __init__(self, device_id: str, cli_path: str = "/usr/local/bin/claude", bridge_url: str = "") -> None:
         self._id = f"{device_id}-claude-code"
         self._device_id = device_id
         self._cli_path = cli_path
+        self._bridge_url = bridge_url.rstrip("/") if bridge_url else ""
         self._version: str | None = None
         self._available = False
 
@@ -31,7 +34,7 @@ class ClaudeCodeAdapter:
             "id": self._id,
             "name": "Claude Code",
             "kind": self.kind,
-            "endpoint": None,
+            "endpoint": self._bridge_url or None,
             "version": self._version,
             "status": "online" if self._available else "offline",
             "capabilities": ["chat"] if self._available else [],
@@ -43,12 +46,30 @@ class ClaudeCodeAdapter:
             "id": self._id,
             "name": "Claude Code",
             "kind": self.kind,
-            "endpoint": None,
+            "endpoint": self._bridge_url or None,
             "version": None,
             "status": "offline",
             "capabilities": [],
             "skills": [],
         }
+
+        # Try bridge first
+        if self._bridge_url:
+            try:
+                async with httpx.AsyncClient(timeout=3) as client:
+                    resp = await client.get(f"{self._bridge_url}/health")
+                    if resp.status_code == 200:
+                        data = resp.json()
+                        self._version = data.get("version", "?")
+                        self._available = True
+                        info["version"] = self._version
+                        info["status"] = "online"
+                        info["capabilities"] = ["chat"]
+                        return info
+            except Exception:
+                pass
+
+        # Fallback: check CLI directly
         try:
             proc = await asyncio.create_subprocess_exec(
                 self._cli_path, "--version",
@@ -84,13 +105,24 @@ class ClaudeCodeAdapter:
         if not message:
             raise ValueError("message is required")
 
+        # Try bridge first
+        if self._bridge_url:
+            try:
+                async with httpx.AsyncClient(timeout=300) as client:
+                    resp = await client.post(f"{self._bridge_url}/chat", json={"message": message})
+                    if resp.status_code == 200:
+                        return resp.json()
+            except Exception:
+                pass
+
+        # Fallback: direct CLI
         proc = await asyncio.create_subprocess_exec(
             self._cli_path, "-p", message,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
         )
         try:
-            stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=120)
+            stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=300)
         except asyncio.TimeoutError:
             proc.kill()
             raise RuntimeError("Claude Code command timed out")

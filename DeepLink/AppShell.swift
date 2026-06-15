@@ -34,7 +34,7 @@ struct AppShell: View {
                 switch selectedTab {
                 case 0: TokenTab()
                 case 1: AgentTab()
-                case 2: CenterDefaultGate(defaultMode: centerTabMode)
+                case 2: CenterWorkspaceView(defaultMode: $centerTabMode)
                 case 3: TeamHubView()
                 case 4: SettingsTab(onLogout: onLogout)
                 default: TokenTab()

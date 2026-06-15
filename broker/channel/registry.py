@@ -44,7 +44,8 @@ def create_default_registry() -> AgentRegistry:
 
     if "claude-code" in enabled:
         claude_path = os.environ.get("CLAUDE_CODE_PATH", "/usr/local/bin/claude")
+        claude_bridge = os.environ.get("CLAUDE_CODE_BRIDGE_URL", "http://127.0.0.1:8643")
         device_id = os.environ.get("DEVICE_ID", "hermes-main")
-        registry.register(ClaudeCodeAdapter(device_id, claude_path))
+        registry.register(ClaudeCodeAdapter(device_id, claude_path, claude_bridge))
 
     return registry

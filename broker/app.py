@@ -593,6 +593,25 @@ async def download_bridge() -> FileResponse:
     return FileResponse(BASE_DIR / "hermes_bridge.py", media_type="text/x-python")
 
 
+CHANNEL_RUNTIME_FILES = {
+    "channel/__init__.py",
+    "channel/main.py",
+    "channel/protocol.py",
+    "channel/registry.py",
+    "channel/adapters/__init__.py",
+    "channel/adapters/base.py",
+    "channel/adapters/claude_code.py",
+    "channel/adapters/hermes.py",
+}
+
+
+@app.get("/channel/runtime/{runtime_path:path}")
+async def download_channel_runtime(runtime_path: str) -> FileResponse:
+    if runtime_path not in CHANNEL_RUNTIME_FILES:
+        raise HTTPException(status_code=404, detail="channel runtime file not found")
+    return FileResponse(BASE_DIR / runtime_path, media_type="text/x-python")
+
+
 @app.get("/channel/{token}", response_class=PlainTextResponse)
 async def channel_instructions(token: str) -> str:
     find_active_invite(token, "node")
@@ -643,6 +662,7 @@ if [ -z "$HERMES_KEY" ] && [ -f "$HERMES_ENV" ]; then
 fi
 
 mkdir -p "$INSTALL_DIR"
+mkdir -p "$INSTALL_DIR/channel/adapters"
 echo "Checking Broker: $BROKER_URL"
 curl -fsSL "$BROKER_URL/health" >/dev/null
 echo "Checking Hermes: $HERMES_URL"
@@ -651,7 +671,18 @@ if [ -n "$HERMES_KEY" ]; then
 else
   curl -fsSL "$HERMES_URL/api/sessions" >/dev/null
 fi
-curl -fsSL "$BROKER_URL/channel/hermes_bridge.py" -o "$INSTALL_DIR/hermes_bridge.py"
+for RUNTIME_FILE in \
+  channel/__init__.py \
+  channel/main.py \
+  channel/protocol.py \
+  channel/registry.py \
+  channel/adapters/__init__.py \
+  channel/adapters/base.py \
+  channel/adapters/claude_code.py \
+  channel/adapters/hermes.py
+do
+  curl -fsSL "$BROKER_URL/channel/runtime/$RUNTIME_FILE" -o "$INSTALL_DIR/$RUNTIME_FILE"
+done
 python3 -m venv "$INSTALL_DIR/.venv"
 "$INSTALL_DIR/.venv/bin/pip" install --quiet 'httpx>=0.28,<1'
 
@@ -671,9 +702,9 @@ EOF
 chmod 600 "$INSTALL_DIR/channel.env"
 
 echo "Verifying Channel registration..."
-env BROKER_URL="$BROKER_URL" BROKER_TOKEN="$BROKER_TOKEN" DEVICE_ID="$DEVICE_ID" \
+(cd "$INSTALL_DIR" && env BROKER_URL="$BROKER_URL" BROKER_TOKEN="$BROKER_TOKEN" DEVICE_ID="$DEVICE_ID" \
   DEVICE_NAME="$DEVICE_NAME" HERMES_URL="$HERMES_URL" HERMES_KEY="$HERMES_KEY" \
-  CHANNEL_CHECK_ONLY=1 "$INSTALL_DIR/.venv/bin/python" -u "$INSTALL_DIR/hermes_bridge.py" --check
+  "$INSTALL_DIR/.venv/bin/python" -u -m channel.main --check)
 
 if [ "$(uname -s)" = "Darwin" ]; then
   PLIST="$HOME/Library/LaunchAgents/com.deeplink.channel.plist"
@@ -684,8 +715,9 @@ if [ "$(uname -s)" = "Darwin" ]; then
 <plist version="1.0"><dict>
 <key>Label</key><string>com.deeplink.channel</string>
 <key>ProgramArguments</key><array>
-<string>$INSTALL_DIR/.venv/bin/python</string><string>-u</string><string>$INSTALL_DIR/hermes_bridge.py</string>
+<string>$INSTALL_DIR/.venv/bin/python</string><string>-u</string><string>-m</string><string>channel.main</string>
 </array>
+<key>WorkingDirectory</key><string>$INSTALL_DIR</string>
 <key>EnvironmentVariables</key><dict>
 <key>BROKER_URL</key><string>$BROKER_URL</string>
 <key>BROKER_TOKEN</key><string>$BROKER_TOKEN</string>
@@ -711,7 +743,8 @@ After=network-online.target
 
 [Service]
 EnvironmentFile=$INSTALL_DIR/channel.env
-ExecStart=$INSTALL_DIR/.venv/bin/python -u $INSTALL_DIR/hermes_bridge.py
+WorkingDirectory=$INSTALL_DIR
+ExecStart=$INSTALL_DIR/.venv/bin/python -u -m channel.main
 Restart=always
 RestartSec=3
 
@@ -778,7 +811,7 @@ def list_devices(user: UserIdentity = Depends(require_user)) -> dict[str, Any]:
         last_seen = node.last_seen_at if node else (
             datetime.fromisoformat(row["last_seen_at"]) if row["last_seen_at"] else None
         )
-        is_online = device_id in connections or bool(
+        is_online = row["id"] in connections or bool(
             last_seen
             and (now - last_seen).total_seconds() < int(runtime_setting("online_timeout_seconds", "75"))
         )
@@ -801,10 +834,13 @@ def list_devices(user: UserIdentity = Depends(require_user)) -> dict[str, Any]:
                 "endpoint": agent["endpoint"],
                 "status": agent["status"],
                 "version": agent["version"],
-                "isOnline": bool(
-                    agent_last_seen
-                    and (now - agent_last_seen).total_seconds()
-                    < int(runtime_setting("online_timeout_seconds", "75"))
+                "isOnline": agent["status"] != "offline" and (
+                    is_online
+                    or bool(
+                        agent_last_seen
+                        and (now - agent_last_seen).total_seconds()
+                        < int(runtime_setting("online_timeout_seconds", "75"))
+                    )
                 ),
                 "capabilities": json.loads(agent["capabilities_json"] or "[]"),
                 "skills": json.loads(agent["skills_json"] or "[]"),

@@ -8,13 +8,15 @@ struct MemoItem: Identifiable, Codable {
     var createdAt: Date
     var updatedAt: Date
     var assignedAgentID: String?
+    var assignedAgentName: String?
 
-    init(id: UUID = UUID(), text: String, createdAt: Date = Date(), updatedAt: Date = Date(), assignedAgentID: String? = nil) {
+    init(id: UUID = UUID(), text: String, createdAt: Date = Date(), updatedAt: Date = Date(), assignedAgentID: String? = nil, assignedAgentName: String? = nil) {
         self.id = id
         self.text = text
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.assignedAgentID = assignedAgentID
+        self.assignedAgentName = assignedAgentName
     }
 }
 
@@ -165,8 +167,8 @@ private struct NoteRow: View {
             HStack(spacing: 8) {
                 Text(memo.updatedAt, style: .date)
                     .font(.caption)
-                if let agentID = memo.assignedAgentID {
-                    Label(agentID, systemImage: "person.crop.circle")
+                if memo.assignedAgentID != nil {
+                    Label(memo.assignedAgentName ?? "已指派 Agent", systemImage: "person.crop.circle")
                         .font(.caption)
                         .foregroundColor(.blue)
                 }
@@ -270,7 +272,7 @@ private struct NoteEditorView: View {
         let t = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !t.isEmpty else { return }
         if let existing = memo {
-            let updated = MemoItem(id: existing.id, text: t, createdAt: existing.createdAt, updatedAt: Date(), assignedAgentID: existing.assignedAgentID)
+            let updated = MemoItem(id: existing.id, text: t, createdAt: existing.createdAt, updatedAt: Date(), assignedAgentID: existing.assignedAgentID, assignedAgentName: existing.assignedAgentName)
             onSave(updated)
         } else {
             onSave(MemoItem(text: t))
@@ -286,7 +288,7 @@ private struct AgentAssignmentSheet: View {
     let onSave: () -> Void
     @Environment(\.dismiss) private var dismiss
 
-    @State private var agents: [TeamNode] = []
+    @State private var agents: [AgentAssignmentTarget] = []
     @State private var loadMessage = ""
 
     var body: some View {
@@ -307,7 +309,7 @@ private struct AgentAssignmentSheet: View {
                     // Local Hermes agent (always available when configured)
                     if HermesAPI.shared.isConfigured {
                         Button {
-                            assign(to: "local_hermes")
+                            assign(to: "local_hermes", name: "Hermes Agent")
                             dismiss()
                         } label: {
                             HStack {
@@ -322,19 +324,19 @@ private struct AgentAssignmentSheet: View {
                         }
                     }
 
-                    ForEach(agents) { agent in
+                    ForEach(agents) { target in
                         Button {
-                            assign(to: agent.id)
+                            assign(to: target.id, name: target.title)
                             dismiss()
                         } label: {
                             HStack {
-                                Circle().fill(agent.isOnline ? Color.green : Color.gray).frame(width: 8, height: 8)
+                                AgentBrandMark(agent: target.agent, size: 34)
                                 VStack(alignment: .leading, spacing: 2) {
-                                    Text(agent.name).foregroundColor(.primary)
-                                    Text(agent.role).font(.caption).foregroundColor(.secondary)
+                                    Text(target.title).foregroundColor(.primary)
+                                    Text(target.subtitle).font(.caption).foregroundColor(.secondary)
                                 }
                                 Spacer()
-                                if memo?.assignedAgentID == agent.id { Image(systemName: "checkmark") }
+                                if memo?.assignedAgentID == target.id { Image(systemName: "checkmark") }
                             }
                         }
                     }
@@ -364,8 +366,8 @@ private struct AgentAssignmentSheet: View {
         do {
             let client = RemoteBrokerClient()
             await client.loadSavedConfig()
-            agents = try await client.fetchDevices().map {
-                TeamNode(id: $0.id, name: $0.name, role: "Agent", isOnline: $0.isOnline)
+            agents = try await client.fetchDevices().flatMap { device in
+                device.agents.map { AgentAssignmentTarget(agent: $0, deviceName: device.name) }
             }
             loadMessage = ""
         } catch {
@@ -374,9 +376,10 @@ private struct AgentAssignmentSheet: View {
         }
     }
 
-    private func assign(to agentID: String) {
+    private func assign(to agentID: String, name: String) {
         guard let m = memo, let idx = memos.firstIndex(where: { $0.id == m.id }) else { return }
         memos[idx].assignedAgentID = agentID
+        memos[idx].assignedAgentName = name
         onSave()
         memo = memos[idx]
     }
@@ -384,6 +387,7 @@ private struct AgentAssignmentSheet: View {
     private func unassign() {
         guard let m = memo, let idx = memos.firstIndex(where: { $0.id == m.id }) else { return }
         memos[idx].assignedAgentID = nil
+        memos[idx].assignedAgentName = nil
         onSave()
         memo = memos[idx]
     }

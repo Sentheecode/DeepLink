@@ -98,27 +98,14 @@ struct TeamHubView: View {
 
             ForEach(devices) { device in
                 Section {
-                    // Device header
-                    DeviceHeaderRow(device: device)
-
-                    // Agents under this device
-                    ForEach(device.agents) { agent in
-                        AgentRow(agent: agent)
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                selectedAgent = agent
-                            }
-                            .swipeActions(edge: .trailing) {
-                                Button("删除", role: .destructive) {
-                                    deletingDeviceId = device.id
-                                    showDeleteConfirm = true
-                                }
-                            }
+                    DeviceTreeCard(device: device) { agent in
+                        selectedAgent = agent
+                    } onDelete: {
+                        deletingDeviceId = device.id
+                        showDeleteConfirm = true
                     }
-                } header: {
-                    Label(device.name, systemImage: "desktopcomputer")
-                        .font(.subheadline)
-                        .textCase(nil)
+                    .listRowInsets(EdgeInsets(top: 8, leading: 14, bottom: 8, trailing: 14))
+                    .listRowBackground(Color.clear)
                 }
             }
 
@@ -128,6 +115,9 @@ struct TeamHubView: View {
                 }
                 NavigationLink(destination: TaskAssignmentView(devices: devices)) {
                     Label("任务指派", systemImage: "checklist")
+                }
+                NavigationLink(destination: WorkflowBoardView(devices: devices)) {
+                    Label("工作流编排", systemImage: "point.3.filled.connected.trianglepath.dotted")
                 }
             }
         }
@@ -194,10 +184,66 @@ struct TeamHubView: View {
             account = try await currentAccount
             loadMessage = ""
         } catch {
-            devices = []
-            account = nil
             loadMessage = error.localizedDescription
         }
+    }
+}
+
+private struct DeviceTreeCard: View {
+    let device: AgentDevice
+    let onSelectAgent: (AgentInfo) -> Void
+    let onDelete: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            HStack(spacing: 13) {
+                Image(systemName: device.systemImage)
+                    .font(.title3)
+                    .frame(width: 42, height: 42)
+                    .background(Color(.tertiarySystemGroupedBackground))
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(device.name).font(.headline)
+                    Text("\(device.operatingSystem) · \(device.isOnline ? "在线" : "离线") · \(device.agents.count) 个 Agent")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+                Spacer()
+                Menu {
+                    Button("移除设备", role: .destructive, action: onDelete)
+                } label: {
+                    Image(systemName: "ellipsis")
+                }
+            }
+            .padding(14)
+
+            if !device.agents.isEmpty {
+                Divider().padding(.leading, 68)
+                VStack(spacing: 0) {
+                    ForEach(device.agents) { agent in
+                        Button { onSelectAgent(agent) } label: {
+                            HStack(spacing: 11) {
+                                Rectangle().fill(Color.secondary.opacity(0.22)).frame(width: 1, height: 30)
+                                AgentBrandMark(agent: agent, size: 34)
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(agent.name).font(.subheadline.weight(.medium)).foregroundStyle(.primary)
+                                    Text("\(agent.kindDisplayName)\(agent.version.map { " · v\($0)" } ?? "")")
+                                        .font(.caption).foregroundStyle(.secondary)
+                                }
+                                Spacer()
+                                Circle().fill(agent.isOnline ? Color.green : Color.gray).frame(width: 7, height: 7)
+                                Image(systemName: "chevron.right").font(.caption2).foregroundStyle(.tertiary)
+                            }
+                            .padding(.leading, 28)
+                            .padding(.trailing, 14)
+                            .padding(.vertical, 9)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+            }
+        }
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 18))
     }
 }
 
