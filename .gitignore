@@ -7,3 +7,5 @@ broker.zip
 .DS_Store
 build/
 DerivedData/
+docs/
+test_*/

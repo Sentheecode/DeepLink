@@ -1,5 +1,0 @@
----
-triple:          'arm64-apple-darwin'
-binary-path:     '/Users/zhaoyumeng/code/DeepSeekBalance/build/Debug-iphoneos/DeepSeekBalance.app/PlugIns/DeepSeekBalanceTests.xctest/DeepSeekBalanceTests'
-relocations:     []
-...
